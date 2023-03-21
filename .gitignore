@@ -1,0 +1,14 @@
+# IDE
+.vscode/
+.idea/
+
+# Build
+myteams_server
+myteams_cli
+unit_tests
+
+# Temp files
+*.gcda
+*.gcno
+*.o
+coding-style-reports.log
