@@ -7,7 +7,7 @@
 
 #include "cli.h"
 
-int main(void)
+int main(int ac, char **av)
 {
-    return teams_cli();
+    return teams_cli(ac, av);
 }

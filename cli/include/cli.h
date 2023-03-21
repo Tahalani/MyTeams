@@ -8,6 +8,6 @@
 #ifndef CLI_H_
     #define CLI_H_
 
-int teams_cli(void);
+int teams_cli(int ac, char **av);
 
 #endif
