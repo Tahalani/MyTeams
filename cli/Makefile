@@ -19,7 +19,7 @@ OBJ_M 		=	$(MAIN:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC)
+CPPFLAGS	=	-iquote $(INC) -iquote ../lib/myteams
 
 all: $(NAME)
 

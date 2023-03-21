@@ -23,7 +23,7 @@ CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic --coverage
 CPPFLAGS	=	-iquote ../cli/include/ -iquote ../server/include/
-TESTFLAGS	=	--coverage -lcriterion $(CPPFLAGS) $(CFLAGS)
+TESTFLAGS	=	--coverage -lcriterion $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	$(RM) $(OBJ)
