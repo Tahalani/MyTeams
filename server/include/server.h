@@ -8,6 +8,6 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-int teams_server(void);
+int teams_server(int ac, char **av);
 
 #endif
