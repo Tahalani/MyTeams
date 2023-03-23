@@ -5,7 +5,9 @@
 ## Makefile
 ##
 
-SRC			=	src/cli.c
+SRC			=	src/cli.c \
+				src/client.c \
+				src/command.c
 
 MAIN		=	src/main.c
 
