@@ -13,7 +13,7 @@
     #define SUCCESS 0
     #define FAILURE 84
 
-int teams_cli(int ac, char **av);
+int teams_cli(int argc, char **argv);
 
 bool start_client(char *address, int port);
 
