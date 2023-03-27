@@ -12,8 +12,6 @@
 
 static void end_ftp(server_t *server)
 {
-    client_t *current = *server->clients;
-
     while (current != NULL) {
         close_connection(current);
         current = current->next;
@@ -70,10 +68,9 @@ bool start_server(int port)
 {
     struct sockaddr *address = generate_address(port, NULL);
     int socket_fd = init_ftp(address);
-    connection_t *clients = NULL;
-    user_t *users = NULL;
-    port_t *ports = NULL;
-    ftp_t ftp = { socket_fd, &clients, &users, &ports };
+    data_t data = { NULL, NULL, NULL, NULL, NULL };
+    SLIST_HEAD(client_list, client_list_t) clients = SLIST_HEAD_INITIALIZER(clients);
+    server_t server = { socket_fd, &data, &clients };
 
     if (socket_fd == -1) {
         return false;

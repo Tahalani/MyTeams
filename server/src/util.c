@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "server.h"
 
-void fatal_error(char *error)
+void fatal_error(const char *error)
 {
     fprintf(stderr, "%s\n", error);
     exit(FAILURE);

@@ -15,7 +15,7 @@
     #define	linked_list(type)       \
     struct {                        \
         type *item;                 \
-        type *next;                 \
+        SLIST_ENTRY(type) next;     \
     }
 
 typedef struct user_s {
@@ -81,7 +81,7 @@ typedef struct data_s {
 typedef struct server_s {
     int socket_fd;
     data_t *data;
-    client_list_t *clients;
+    SLIST_HEAD(client_list, client_list_t) *clients;
 } server_t;
 
 #endif
