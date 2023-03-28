@@ -10,7 +10,11 @@
 
     #include <stddef.h>
 
-static const char *MESSAGES[1] = {
+static const char *MESSAGES[5] = {
+        "200 Command okay.",
+        "220 Service ready for new user.",
+        "500 Unknown command.",
+        "530 Please login with /login.",
         NULL,
 };
 
