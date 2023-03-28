@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include "server.h"
 
-client_t *new_connection(int fd)
+client_t *new_client(int fd)
 {
     client_t *new = malloc(sizeof(client_t));
 

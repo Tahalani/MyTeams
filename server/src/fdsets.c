@@ -6,7 +6,6 @@
 */
 
 #include <stdio.h>
-#include <sys/socket.h>
 #include <sys/param.h>
 #include <unistd.h>
 #include "server.h"
@@ -23,7 +22,7 @@ static void handle_client(server_t *server, client_t *client)
     }
     if (close) {
         close_connection(client);
-        // remove connection
+        SLIST_REMOVE(server->clients, client, client_s, next);
         free_connection(client);
     } else {
         //handle_input(ftp, client, line);
@@ -33,13 +32,13 @@ static void handle_client(server_t *server, client_t *client)
 int refresh_fdsets(server_t *server, fd_set *set)
 {
     int max_fd = server->socket_fd;
-    client_list_t *node = NULL;
+    client_t *node = NULL;
 
     FD_ZERO(set);
     FD_SET(server->socket_fd, set);
     SLIST_FOREACH(node, server->clients, next) {
-        FD_SET(node->item->fd, set);
-        max_fd = MAX(max_fd, node->item->fd);
+        FD_SET(node->fd, set);
+        max_fd = MAX(max_fd, node->fd);
     }
     return max_fd;
 }
@@ -60,17 +59,17 @@ void handle_incoming(server_t *server)
         free_connection(client);
         return;
     }
-    //add_connection(list, connection);
+    SLIST_INSERT_HEAD(server->clients, client, next);
     //send_basic_message(new_fd, "220");
 }
 
 void handle_clients(server_t *server, fd_set *set)
 {
-    client_list_t *node = NULL;
+    client_t *node = NULL;
 
     SLIST_FOREACH(node, server->clients, next) {
-        if (FD_ISSET(node->item->fd, set)) {
-            handle_client(server, node->item);
+        if (FD_ISSET(node->fd, set)) {
+            handle_client(server, node);
         }
     }
 }

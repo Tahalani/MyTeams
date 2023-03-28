@@ -10,33 +10,31 @@
 #include <unistd.h>
 #include "server.h"
 
-static void end_ftp(server_t *server)
+static void end_server(server_t *server)
 {
-    while (current != NULL) {
+    client_t *current = NULL;
+
+    SLIST_FOREACH(current, server->clients, next) {
         close_connection(current);
-        current = current->next;
     }
-    free_connections(*ftp->clients);
-    free_users(*ftp->users);
-    free_ports(*ftp->ports);
 }
 
-static void ftp_loop(ftp_t *ftp)
+static void server_loop(server_t *server)
 {
     fd_set set;
     int max_fd = 0;
     int current = 0;
 
     while (1) {
-        max_fd = refresh_fdsets(&set, ftp->fd, ftp->clients);
+        max_fd = refresh_fdsets(server, &set);
         current = select(max_fd + 1, &set, NULL, NULL, NULL);
         if (current == -1) {
             perror("select failed");
         }
-        if (FD_ISSET(ftp->fd, &set)) {
-            handle_incoming(ftp->fd, ftp->clients);
+        if (FD_ISSET(server->socket_fd, &set)) {
+            handle_incoming(server);
         }
-        handle_clients(&set, ftp);
+        handle_clients(server, &set);
     }
 }
 
@@ -68,17 +66,18 @@ bool start_server(int port)
 {
     struct sockaddr *address = generate_address(port, NULL);
     int socket_fd = init_ftp(address);
-    data_t data = { NULL, NULL, NULL, NULL, NULL };
-    SLIST_HEAD(client_list, client_list_t) clients = SLIST_HEAD_INITIALIZER(clients);
+    data_t data;
+    SLIST_HEAD(client_list, client_s) clients;
+    SLIST_INIT(&clients);
     server_t server = { socket_fd, &data, &clients };
 
     if (socket_fd == -1) {
         return false;
     }
-    srand((unsigned long) &ftp);
-    init_default_user(ftp.users, path);
-    ftp_loop(&ftp);
-    end_ftp(&ftp);
+    srand((unsigned long) &server);
+    // init data
+    server_loop(&server);
+    end_server(&server);
     free(address);
     return true;
 }
