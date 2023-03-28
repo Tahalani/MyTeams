@@ -17,6 +17,8 @@
     #define BUFFER_SIZE 1024
     #define MAX_CONNECTIONS 50
 
+    #define CRLF "\r\n"
+
 int teams_server(int argc, char **argv);
 
 bool start_server(int port);
@@ -27,7 +29,11 @@ void free_connection(client_t *connection);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
+void handle_input(server_t *server, client_t *client, char *input);
 int refresh_fdsets(server_t *server, fd_set *set);
+
+void send_basic_message(int fd, char *code);
+void send_help_message(int fd);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);

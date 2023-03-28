@@ -5,9 +5,12 @@
 ## Makefile
 ##
 
-SRC			=	src/clients.c \
+SRC			=	src/commands/auth.c \
+				src/clients.c \
+				src/commands.c \
 				src/fdsets.c \
 				src/loop.c \
+				src/messages.c \
 				src/server.c \
 				src/util.c
 
