@@ -67,7 +67,7 @@ bool start_server(int port)
     struct sockaddr *address = generate_address(port, NULL);
     int socket_fd = init_ftp(address);
     data_t data;
-    SLIST_HEAD(client_list, client_s) clients;
+    struct client_list clients;
     SLIST_INIT(&clients);
     server_t server = { socket_fd, &data, &clients };
 

@@ -1,0 +1,8 @@
+MESSAGES
+
+CODE / MESSAGE
+
+200 Command okay.
+220 Service ready for new user.
+500 Unknown command.
+530 Please login with /login.

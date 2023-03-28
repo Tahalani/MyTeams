@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <unistd.h>
 #include "server.h"
@@ -25,8 +26,9 @@ static void handle_client(server_t *server, client_t *client)
         SLIST_REMOVE(server->clients, client, client_s, next);
         free_connection(client);
     } else {
-        //handle_input(ftp, client, line);
+        handle_input(server, client, line);
     }
+    free(line);
 }
 
 int refresh_fdsets(server_t *server, fd_set *set)
@@ -60,16 +62,19 @@ void handle_incoming(server_t *server)
         return;
     }
     SLIST_INSERT_HEAD(server->clients, client, next);
-    //send_basic_message(new_fd, "220");
+    send_basic_message(new_fd, "220");
 }
 
 void handle_clients(server_t *server, fd_set *set)
 {
-    client_t *node = NULL;
+    client_t *node = server->clients->slh_first;
+    client_t *tmp = NULL;
 
-    SLIST_FOREACH(node, server->clients, next) {
+    while (node != NULL) {
+        tmp = node->next.sle_next;
         if (FD_ISSET(node->fd, set)) {
             handle_client(server, node);
         }
+        node = tmp;
     }
 }
