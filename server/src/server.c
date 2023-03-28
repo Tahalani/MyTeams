@@ -39,7 +39,7 @@ int teams_server(int argc, char **argv)
         display_help_server(argv[0]);
         return SUCCESS;
     }
-    if (argc != 3) {
+    if (argc != 2) {
         fprintf(stderr, "Error: Invalid number of arguments\n");
         return FAILURE;
     } else if (!check_arguments(argv)) {
