@@ -5,7 +5,11 @@
 ## Makefile
 ##
 
-SRC			=	src/server.c
+SRC			=	src/clients.c \
+				src/fdsets.c \
+				src/loop.c \
+				src/server.c \
+				src/util.c
 
 MAIN		=	src/main.c
 

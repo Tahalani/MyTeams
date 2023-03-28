@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-    return teams_server(ac, av);
+    return teams_server(argc, argv);
 }

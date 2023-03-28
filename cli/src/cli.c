@@ -51,8 +51,7 @@ int teams_cli(int argc, char **argv)
     if (argc != 3) {
         fprintf(stderr, "Error: Invalid number of arguments\n");
         return FAILURE;
-    }
-    if (!check_arguments(argv)) {
+    } else if (!check_arguments(argv)) {
         return FAILURE;
     }
     return start_client(argv[1], atoi(argv[2])) ? SUCCESS : FAILURE;
