@@ -62,22 +62,40 @@ static int init_ftp(struct sockaddr *addr)
     return socket_fd;
 }
 
+void init_data(data_t *data)
+{
+    data->users = malloc(sizeof(struct user_list));
+    data->teams = malloc(sizeof(struct team_list));
+    data->channels = malloc(sizeof(struct channel_list));
+    data->threads = malloc(sizeof(struct thread_list));
+    data->messages = malloc(sizeof(struct message_list));
+    if (data->users == NULL || data->teams == NULL || data->channels == NULL
+    || data->threads == NULL || data->messages == NULL)
+        return;
+    SLIST_INIT(data->users);
+    SLIST_INIT(data->teams);
+    SLIST_INIT(data->channels);
+    SLIST_INIT(data->threads);
+    SLIST_INIT(data->messages);
+}
+
 bool start_server(int port)
 {
     struct sockaddr *address = generate_address(port, NULL);
     int socket_fd = init_ftp(address);
-    data_t data;
+    data_t *data = calloc(sizeof(data_t), 1);
     struct client_list clients;
     SLIST_INIT(&clients);
-    server_t server = { socket_fd, &data, &clients };
-
-    if (socket_fd == -1) {
+    server_t server = { socket_fd, data, &clients };
+    setsockopt(port, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
+    if (socket_fd == -1 || data == NULL) {
         return false;
     }
     srand((unsigned long) &server);
-    // init data
+    init_data(data);
     server_loop(&server);
     end_server(&server);
     free(address);
+    free(data);
     return true;
 }
