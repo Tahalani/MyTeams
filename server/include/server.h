@@ -38,4 +38,5 @@ void send_help_message(int fd);
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 
+char **str_to_word(char const *str, char separator);
 #endif

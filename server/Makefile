@@ -12,7 +12,8 @@ SRC			=	src/commands/auth.c \
 				src/loop.c \
 				src/messages.c \
 				src/server.c \
-				src/util.c
+				src/util.c \
+				src/str_to_word.c
 
 MAIN		=	src/main.c
 

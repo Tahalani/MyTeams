@@ -6,3 +6,4 @@ CODE / MESSAGE
 220 Service ready for new user.
 500 Unknown command.
 530 Please login with /login.
+400 Please add a valid argument.
