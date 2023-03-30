@@ -60,3 +60,11 @@ char *generate_uuid(void)
     uuid[23] = '-';
     return uuid;
 }
+
+time_t get_time(void)
+{
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+
+    return mktime(tm);
+}
