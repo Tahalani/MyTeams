@@ -8,7 +8,8 @@
 #ifndef COMMAND_H_
     #define COMMAND_H_
 
-    #define COMMANDS_COUNT 1
+    #define COMMANDS_COUNT 2
+    #define UNUSED __attribute__((unused))
 
     #include <stdbool.h>
     #include "types.h"
@@ -16,6 +17,7 @@
 typedef void (*command_func_t)(server_t *server, client_t *client, char *input);
 
 void login_command(server_t *server, client_t *client, char *input);
+void logout_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -24,7 +26,8 @@ typedef struct command_s {
 } command_t;
 
 static const command_t COMMANDS[COMMANDS_COUNT] = {
-        { "/login", &login_command, false }
+        { "/login", &login_command, false, },
+        { "/logout", &logout_command, false, },
 };
 
 #endif

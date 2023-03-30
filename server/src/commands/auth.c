@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
 #include "commands.h"
 #include "server.h"
 
@@ -20,7 +22,7 @@ void add_user(server_t **server, client_t **client, char **data, user_t *node)
     node->username = strdup(data[1]);
     SLIST_INSERT_HEAD((*server)->data->users, node, next);
     send_basic_message((*client)->fd, "220");
-    for (int i = 0; data[i] != NULL; i++)
+    for (uint32_t i = 0; data[i] != NULL; i++)
         free(data[i]);
     free(data);
 }
@@ -41,4 +43,13 @@ void login_command(server_t *server, client_t *client, char *input)
         }
     }
     add_user(&server, &client, data, node);
+}
+
+void logout_command
+(UNUSED server_t *server, client_t *client, UNUSED char *input)
+{
+    send_basic_message(client->fd, "221");
+    free(client->user->username);
+    free(client->user->uuid);
+    client->user = NULL;
 }
