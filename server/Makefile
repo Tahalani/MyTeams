@@ -38,7 +38,7 @@ LDFLAGS		=	-L../libs/myteams
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJ_M)
-	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDLIBS) $(LDFLAGS)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDFLAGS) $(LDLIBS)
 	cp $(NAME) ../
 
 clean:

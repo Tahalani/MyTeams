@@ -17,6 +17,7 @@ user_t *new_user(char *username)
     }
     new->uuid = generate_uuid();
     new->username = strdup(username);
+    new->fd = -1;
     new->teams = NULL;
     return new;
 }

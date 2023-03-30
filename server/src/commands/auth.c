@@ -25,7 +25,6 @@ static void logged_in_event(client_t *client, bool new)
 static void connect_user(server_t *server, client_t *client, \
     user_t *user, char *name)
 {
-    // TODO: Add fd
     if (user != NULL) {
         client->user = user;
         logged_in_event(client, false);
@@ -34,6 +33,7 @@ static void connect_user(server_t *server, client_t *client, \
     user = new_user(name);
     SLIST_INSERT_HEAD(server->data->users, user, next);
     client->user = user;
+    client->user->fd = client->fd;
     logged_in_event(client, true);
 }
 

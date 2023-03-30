@@ -23,12 +23,14 @@ client_t *new_client(int fd)
     return new;
 }
 
-void close_connection(client_t *connection)
+void close_connection(client_t *client)
 {
-    close(connection->fd);
+    if (client->user != NULL)
+        client->user->fd = -1;
+    close(client->fd);
 }
 
-void free_connection(client_t *connection)
+void free_connection(client_t *client)
 {
-    free(connection);
+    free(client);
 }

@@ -11,18 +11,6 @@
 #include "commands.h"
 #include "server.h"
 
-void display_time(int fd)
-{
-    time_t current_time;
-    struct tm timestamp;
-    char buffer[80];
-
-    time(&current_time);
-    timestamp = *localtime(&current_time);
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M", &timestamp);
-    dprintf(fd, "%s", buffer);
-}
-
 user_t *get_sender(server_t *server, client_t *client)
 {
     user_t *node = NULL;
@@ -53,21 +41,18 @@ void send_command(server_t *server, client_t *client, char *input)
 
     if (data[1] == NULL || data[2] == NULL || data[3] != NULL) {
         send_basic_message(client->fd, "400");
+        free_array(data);
         return;
     }
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (strcmp(node->username, data[1]) == 0
-        || strcmp(node->uuid, data[1]) == 0) {
-            fill_message_struct(server, client, data);
-            display_time(node->fd);
-            dprintf(node->fd, " - %s: %s%s",
-            get_username_client(server, client), data[2], CRLF);
-            for (int i = 0; data[i] != NULL; i++)
-                free(data[i]);
-            free(data);
-            send_basic_message(client->fd, "200");
-            return;
-        }
+    node = find_user_by_uuid(server, data[1]);
+    if (node == NULL)
+        node = find_user_by_name(server, data[1]);
+    if (node == NULL) {
+        send_basic_message(client->fd, "410");
+        free_array(data);
+        return;
     }
-    send_basic_message(client->fd, "410");
+    fill_message_struct(server, client, data);
+    dprintf(node->fd, "%ld - %s: %s%s", time(NULL), \
+        get_username_client(server, client), data[2], CRLF);
 }
