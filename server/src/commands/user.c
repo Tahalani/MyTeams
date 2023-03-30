@@ -14,12 +14,14 @@
 void users_command(server_t *server, client_t *client, char *input)
 {
     user_t *node = NULL;
-    char *message = NULL;
+    char **data = str_to_word(input, ' ');
 
-    (void)input;
+    if (data[1] != NULL) {
+        send_basic_message(client->fd, "400");
+        return;
+    }
     SLIST_FOREACH(node, server->data->users, next) {
         dprintf(client->fd, "%s%s", node->username, CRLF);
-        free(message);
     }
     send_basic_message(client->fd, "200");
 }
@@ -41,7 +43,7 @@ void user_command(server_t *server, client_t *client, char *input)
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 
-    if (data[1] == NULL) {
+    if (data[1] == NULL || data[2] != NULL) {
         send_basic_message(client->fd, "400");
         return;
     }
