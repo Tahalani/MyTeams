@@ -23,7 +23,8 @@ void send_command(server_t *server, client_t *client, char *input)
     SLIST_FOREACH(node, server->data->users, next) {
         if (strcmp(node->username, data[1]) == 0
         || strcmp(node->uuid, data[1]) == 0) {
-            dprintf(node->fd, "%s: %s%s", get_username_client(server, client), data[2], CRLF);
+            dprintf(node->fd, "%s: %s%s",
+            get_username_client(server, client), data[2], CRLF);
             for (int i = 0; data[i] != NULL; i++)
                 free(data[i]);
             free(data);
