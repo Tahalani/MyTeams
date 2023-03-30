@@ -19,6 +19,7 @@
     #define MAX_NAME_LENGTH 32
     #define MAX_DESCRIPTION_LENGTH 255
     #define MAX_BODY_LENGTH 512
+    #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"
 
@@ -29,6 +30,9 @@ bool start_server(int port);
 client_t *new_client(int fd);
 void close_connection(client_t *connection);
 void free_connection(client_t *connection);
+
+user_t *new_user(char *username);
+user_t *find_user_by_name(server_t *server, char *name);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
@@ -45,4 +49,6 @@ char *get_username_client(server_t *server, client_t *client);
 time_t get_time(void);
 
 char **str_to_word(char const *str, char separator);
+void free_array(char **array);
+
 #endif

@@ -7,47 +7,60 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "commands.h"
+#include "logging_server.h"
 #include "server.h"
 
-static
-void add_user(server_t **server, client_t **client, char **data, user_t *node)
+static void logged_in_event(client_t *client, bool new)
 {
-    node = malloc(sizeof(user_t));
-    if (node == NULL)
-        fatal_error("Malloc failed");
-    if (strlen(data[1]) > MAX_NAME_LENGTH) {
-        send_basic_message((*client)->fd, "420");
+    dprintf(client->fd, "200 Logged in as %s (%s)%s", \
+        client->user->username, client->user->uuid, CRLF);
+    if (new) {
+        server_event_user_created(client->user->uuid, client->user->username);
     } else {
-        node->username = strdup(data[1]);
-        node->uuid = generate_uuid();
-        node->fd = (*client)->fd;
-        SLIST_INSERT_HEAD((*server)->data->users, node, next);
-        send_basic_message((*client)->fd, "220");
+        server_event_user_loaded(client->user->uuid, client->user->username);
     }
-    for (int i = 0; data[i] != NULL; i++)
-        free(data[i]);
-    free(data);
+}
+
+static void connect_user(server_t *server, client_t *client, \
+    user_t *user, char *name)
+{
+    // TODO: Add fd
+    if (user != NULL) {
+        client->user = user;
+        logged_in_event(client, false);
+        return;
+    }
+    user = new_user(name);
+    SLIST_INSERT_HEAD(server->data->users, user, next);
+    client->user = user;
+    logged_in_event(client, true);
 }
 
 void login_command(server_t *server, client_t *client, char *input)
 {
     char **data = str_to_word(input, ' ');
-    user_t *node = NULL;
+    user_t *user = NULL;
 
-    if (data[1] == NULL) {
+    if (data[1] == NULL || data[2] != NULL) {
         send_basic_message(client->fd, "400");
+        free_array(data);
         return;
     }
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (strcmp(node->username, data[1]) == 0) {
-            send_basic_message(client->fd, "220");
-            for (int i = 0; data[i] != NULL; i++)
-                free(data[i]);
-            free(data);
-            return;
-        }
+    user = find_user_by_name(server, data[1]);
+    if (strlen(data[1]) > MAX_NAME_LENGTH) {
+        send_basic_message(client->fd, "420");
+        free_array(data);
+        return;
     }
-    add_user(&server, &client, data, node);
+    connect_user(server, client, user, data[1]);
+    free_array(data);
+}
+
+void logout_command (UNUSED server_t *server, client_t *client, \
+    UNUSED char *input)
+{
+    send_basic_message(client->fd, "221");
+    client->user->fd = -1;
+    client->user = NULL;
 }

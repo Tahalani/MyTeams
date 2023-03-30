@@ -7,9 +7,14 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "commands.h"
 #include "server.h"
+
+static void display_user_info(client_t *client, user_t *node)
+{
+    dprintf(client->fd, "UUID: %s%s", node->uuid, CRLF);
+    dprintf(client->fd, "Username: %s%s", node->username, CRLF);
+}
 
 void users_command(server_t *server, client_t *client, char *input)
 {
@@ -18,24 +23,14 @@ void users_command(server_t *server, client_t *client, char *input)
 
     if (data[1] != NULL) {
         send_basic_message(client->fd, "400");
+        free_array(data);
         return;
     }
     SLIST_FOREACH(node, server->data->users, next) {
         dprintf(client->fd, "%s%s", node->username, CRLF);
     }
     send_basic_message(client->fd, "200");
-}
-
-static void display_user_info(client_t *client, user_t *node)
-{
-    if (node->username != NULL)
-        dprintf(client->fd, "Username : %s%s", node->username, CRLF);
-    else
-        dprintf(client->fd, "Username : %s%s", "NULL", CRLF);
-    if (node->uuid != NULL)
-        dprintf(client->fd, "Uuid : %s%s", node->uuid, CRLF);
-    else
-        dprintf(client->fd, "Uuid : %s%s", "NULL", CRLF);
+    free_array(data);
 }
 
 void user_command(server_t *server, client_t *client, char *input)
@@ -51,12 +46,11 @@ void user_command(server_t *server, client_t *client, char *input)
         if (strcmp(node->username, data[1]) == 0
         || strcmp(node->uuid, data[1]) == 0) {
             display_user_info(client, node);
-            for (int i = 0; data[i] != NULL; i++)
-                free(data[i]);
-            free(data);
+            free_array(data);
             send_basic_message(client->fd, "200");
             return;
         }
     }
     send_basic_message(client->fd, "410");
+    free_array(data);
 }

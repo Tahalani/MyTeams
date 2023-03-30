@@ -43,21 +43,19 @@ char *get_username_client(server_t *server, client_t *client)
 char *generate_uuid(void)
 {
     char *uuid = malloc(sizeof(char) * 37);
+    char *base = "0123456789abcdef";
 
     if (uuid == NULL) {
         fatal_error("malloc failed");
     }
-    uuid[36] = '\0';
     for (int i = 0; i < 36; i++) {
-        uuid[i] = (rand() % 16) + 48;
-        if (uuid[i] > 57) {
-            uuid[i] += 39;
-        }
+        uuid[i] = base[rand() % 16];
     }
     uuid[8] = '-';
     uuid[13] = '-';
     uuid[18] = '-';
     uuid[23] = '-';
+    uuid[36] = '\0';
     return uuid;
 }
 
