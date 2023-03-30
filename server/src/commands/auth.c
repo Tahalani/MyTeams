@@ -22,28 +22,38 @@ static void logged_in_event(client_t *client, bool new)
     }
 }
 
-void login_command(server_t *server, client_t *client, char *input)
+static void connect_user(server_t *server, client_t *client, \
+    user_t *user, char *name)
 {
-    char **data = str_to_word(input, ' ');
-    user_t *node = NULL;
-
-    if (data[1] == NULL || data[2] != NULL) {
-        send_basic_message(client->fd, "400");
-        return;
-    }
-    node = find_user_by_name(server, data[1]);
-    if (strlen(data[1]) > MAX_NAME_LENGTH) {
-        send_basic_message(client->fd, "420");
-        return;
-    } else if (node != NULL) {
-        client->user = node;
+    if (user != NULL) {
+        client->user = user;
         logged_in_event(client, false);
         return;
     }
-    node = new_user(data[1]);
-    SLIST_INSERT_HEAD(server->data->users, node, next);
-    client->user = node;
+    user = new_user(name);
+    SLIST_INSERT_HEAD(server->data->users, user, next);
+    client->user = user;
     logged_in_event(client, true);
+}
+
+void login_command(server_t *server, client_t *client, char *input)
+{
+    char **data = str_to_word(input, ' ');
+    user_t *user = NULL;
+
+    if (data[1] == NULL || data[2] != NULL) {
+        send_basic_message(client->fd, "400");
+        free_array(data);
+        return;
+    }
+    user = find_user_by_name(server, data[1]);
+    if (strlen(data[1]) > MAX_NAME_LENGTH) {
+        send_basic_message(client->fd, "420");
+        free_array(data);
+        return;
+    }
+    connect_user(server, client, user, data[1]);
+    free_array(data);
 }
 
 void logout_command (UNUSED server_t *server, client_t *client, \

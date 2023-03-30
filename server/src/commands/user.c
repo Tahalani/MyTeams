@@ -6,7 +6,6 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "commands.h"
 #include "server.h"
@@ -24,12 +23,14 @@ void users_command(server_t *server, client_t *client, char *input)
 
     if (data[1] != NULL) {
         send_basic_message(client->fd, "400");
+        free_array(data);
         return;
     }
     SLIST_FOREACH(node, server->data->users, next) {
         dprintf(client->fd, "%s%s", node->username, CRLF);
     }
     send_basic_message(client->fd, "200");
+    free_array(data);
 }
 
 void user_command(server_t *server, client_t *client, char *input)
@@ -45,12 +46,11 @@ void user_command(server_t *server, client_t *client, char *input)
         if (strcmp(node->username, data[1]) == 0
         || strcmp(node->uuid, data[1]) == 0) {
             display_user_info(client, node);
-            for (int i = 0; data[i] != NULL; i++)
-                free(data[i]);
-            free(data);
+            free_array(data);
             send_basic_message(client->fd, "200");
             return;
         }
     }
     send_basic_message(client->fd, "410");
+    free_array(data);
 }
