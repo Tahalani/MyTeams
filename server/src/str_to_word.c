@@ -9,6 +9,13 @@
 #include <stddef.h>
 #include <stdio.h>
 
+void free_array(char **array)
+{
+    for (uint32_t i = 0; array[i] != NULL; i++)
+        free(array[i]);
+    free(array);
+}
+
 int verif_char(char x, char separator)
 {
     if (x == separator)
