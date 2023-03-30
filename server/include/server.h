@@ -30,6 +30,8 @@ client_t *new_client(int fd);
 void close_connection(client_t *connection);
 void free_connection(client_t *connection);
 
+user_t *new_user(char *username);
+
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
 void handle_input(server_t *server, client_t *client, char *input);
@@ -43,4 +45,5 @@ struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 
 char **str_to_word(char const *str, char separator);
+
 #endif

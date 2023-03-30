@@ -7,14 +7,15 @@
 
 SRC			=	src/commands/auth.c \
 				src/commands/user.c \
-				src/clients.c \
-				src/commands.c \
-				src/fdsets.c \
-				src/loop.c \
-				src/messages.c \
-				src/server.c \
-				src/util.c \
-				src/str_to_word.c
+				src/core/commands.c \
+				src/core/fdsets.c \
+				src/core/loop.c \
+				src/util/arrays.c \
+				src/util/clients.c \
+				src/util/data.c \
+				src/util/messages.c \
+				src/util/util.c \
+				src/server.c
 
 MAIN		=	src/main.c
 
@@ -28,12 +29,14 @@ OBJ_M 		=	$(MAIN:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC) -iquote ../lib/myteams
+CPPFLAGS	=	-iquote $(INC) -iquote ../libs/myteams
+LDLIBS		=	-lmyteams
+LDFLAGS		=	-L../libs/myteams
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJ_M)
-	$(CC) -o $(NAME) $(OBJ) $(OBJ_M)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDLIBS) $(LDFLAGS)
 	cp $(NAME) ../
 
 clean:
