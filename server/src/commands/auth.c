@@ -7,22 +7,19 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "commands.h"
+#include "logging_server.h"
 #include "server.h"
 
-static
-void add_user(server_t **server, client_t **client, char **data, user_t *node)
+static void logged_in_event(client_t *client, bool new)
 {
-    node = malloc(sizeof(user_t));
-    if (node == NULL)
-        fatal_error("Malloc failed");
-    node->username = strdup(data[1]);
-    SLIST_INSERT_HEAD((*server)->data->users, node, next);
-    send_basic_message((*client)->fd, "220");
-    for (int i = 0; data[i] != NULL; i++)
-        free(data[i]);
-    free(data);
+    dprintf(client->fd, "200 Logged in as %s (%s)%s", \
+        client->user->username, client->user->uuid, CRLF);
+    if (new) {
+        server_event_user_created(client->user->uuid, client->user->username);
+    } else {
+        server_event_user_loaded(client->user->uuid, client->user->username);
+    }
 }
 
 void login_command(server_t *server, client_t *client, char *input)
@@ -36,9 +33,13 @@ void login_command(server_t *server, client_t *client, char *input)
     }
     SLIST_FOREACH(node, server->data->users, next) {
         if (strcmp(node->username, data[1]) == 0) {
-            send_basic_message(client->fd, "220");
+            client->user = node;
+            logged_in_event(client, false);
             return;
         }
     }
-    add_user(&server, &client, data, node);
+    node = new_user(data[1]);
+    SLIST_INSERT_HEAD(server->data->users, node, next);
+    client->user = node;
+    logged_in_event(client, true);
 }
