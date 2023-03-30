@@ -16,6 +16,9 @@
     #define FAILURE 84
     #define BUFFER_SIZE 1024
     #define MAX_CONNECTIONS 50
+    #define MAX_NAME_LENGTH 32
+    #define MAX_DESCRIPTION_LENGTH 255
+    #define MAX_BODY_LENGTH 512
 
     #define CRLF "\r\n"
 
@@ -37,6 +40,7 @@ void send_help_message(int fd);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
+char *generate_uuid(void);
 
 char **str_to_word(char const *str, char separator);
 #endif

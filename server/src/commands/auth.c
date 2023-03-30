@@ -17,9 +17,14 @@ void add_user(server_t **server, client_t **client, char **data, user_t *node)
     node = malloc(sizeof(user_t));
     if (node == NULL)
         fatal_error("Malloc failed");
-    node->username = strdup(data[1]);
-    SLIST_INSERT_HEAD((*server)->data->users, node, next);
-    send_basic_message((*client)->fd, "220");
+    if (strlen(data[1]) > MAX_NAME_LENGTH) {
+        send_basic_message((*client)->fd, "420");
+    } else {
+        node->username = strdup(data[1]);
+        node->uuid = generate_uuid();
+        SLIST_INSERT_HEAD((*server)->data->users, node, next);
+        send_basic_message((*client)->fd, "220");
+    }
     for (int i = 0; data[i] != NULL; i++)
         free(data[i]);
     free(data);
@@ -37,6 +42,9 @@ void login_command(server_t *server, client_t *client, char *input)
     SLIST_FOREACH(node, server->data->users, next) {
         if (strcmp(node->username, data[1]) == 0) {
             send_basic_message(client->fd, "220");
+            for (int i = 0; data[i] != NULL; i++)
+                free(data[i]);
+            free(data);
             return;
         }
     }
