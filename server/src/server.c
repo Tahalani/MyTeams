@@ -45,5 +45,5 @@ int teams_server(int argc, char **argv)
     } else if (!check_arguments(argv)) {
         return FAILURE;
     }
-    return start_server(atoi(argv[1])) ? SUCCESS : FAILURE;;
+    return start_server(atoi(argv[1])) ? SUCCESS : FAILURE;
 }

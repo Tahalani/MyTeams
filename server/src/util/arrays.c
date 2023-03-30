@@ -7,12 +7,10 @@
 
 #include <stdlib.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <stdint.h>
 
 void free_array(char **array)
 {
-    for (uint32_t i = 0; array[i] != NULL; i++)
+    for (unsigned int i = 0; array[i] != NULL; i++)
         free(array[i]);
     free(array);
 }
