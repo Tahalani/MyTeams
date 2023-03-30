@@ -7,24 +7,19 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
 #include "commands.h"
+#include "logging_server.h"
 #include "server.h"
 
-static
-void add_user(server_t **server, client_t **client, char **data, user_t *node)
+static void logged_in_event(client_t *client, bool new)
 {
-    node = malloc(sizeof(user_t));
-    if (node == NULL)
-        fatal_error("Malloc failed");
-    node->username = strdup(data[1]);
-    SLIST_INSERT_HEAD((*server)->data->users, node, next);
-    send_basic_message((*client)->fd, "220");
-    for (uint32_t i = 0; data[i] != NULL; i++)
-        free(data[i]);
-    free(data);
+    dprintf(client->fd, "200 Logged in as %s (%s)%s", \
+        client->user->username, client->user->uuid, CRLF);
+    if (new) {
+        server_event_user_created(client->user->uuid, client->user->username);
+    } else {
+        server_event_user_loaded(client->user->uuid, client->user->username);
+    }
 }
 
 void login_command(server_t *server, client_t *client, char *input)
@@ -32,31 +27,29 @@ void login_command(server_t *server, client_t *client, char *input)
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 
-    if (data[1] == NULL) {
+    if (data[1] == NULL || data[2] != NULL) {
         send_basic_message(client->fd, "400");
         return;
     }
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (strcmp(node->username, data[1]) == 0) {
-            send_basic_message(client->fd, "220");
-            return;
-        }
+    node = find_user_by_name(server, data[1]);
+    if (strlen(data[1]) > MAX_NAME_LENGTH) {
+        send_basic_message(client->fd, "420");
+        return;
+    } else if (node != NULL) {
+        client->user = node;
+        logged_in_event(client, false);
+        return;
     }
-    add_user(&server, &client, data, node);
+    node = new_user(data[1]);
+    SLIST_INSERT_HEAD(server->data->users, node, next);
+    client->user = node;
+    logged_in_event(client, true);
 }
 
-void logout_command
-(UNUSED server_t *server, client_t *client, UNUSED char *input)
+void logout_command (UNUSED server_t *server, client_t *client, \
+    UNUSED char *input)
 {
-    user_t *node = NULL;
-
     send_basic_message(client->fd, "221");
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (client->fd == node->fd) {
-            free(node->username);
-            free(node->uuid);
-            free(node);
-            node = NULL;
-        }
-    }
+    client->user->fd = -1;
+    client->user = NULL;
 }
