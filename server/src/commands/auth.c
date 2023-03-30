@@ -48,8 +48,15 @@ void login_command(server_t *server, client_t *client, char *input)
 void logout_command
 (UNUSED server_t *server, client_t *client, UNUSED char *input)
 {
+    user_t *node = NULL;
+
     send_basic_message(client->fd, "221");
-    free(client->user->username);
-    free(client->user->uuid);
-    client->user = NULL;
+    SLIST_FOREACH(node, server->data->users, next) {
+        if (client->fd == node->fd) {
+            free(node->username);
+            free(node->uuid);
+            free(node);
+            node = NULL;
+        }
+    }
 }
