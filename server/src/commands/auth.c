@@ -33,6 +33,7 @@ static void connect_user(server_t *server, client_t *client, \
     user = new_user(name);
     SLIST_INSERT_HEAD(server->data->users, user, next);
     client->user = user;
+    client->user->fd = client->fd;
     logged_in_event(client, true);
 }
 

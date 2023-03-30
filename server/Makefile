@@ -6,6 +6,7 @@
 ##
 
 SRC			=	src/commands/auth.c \
+				src/commands/talk.c \
 				src/commands/user.c \
 				src/core/commands.c \
 				src/core/fdsets.c \
@@ -37,7 +38,7 @@ LDFLAGS		=	-L../libs/myteams
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJ_M)
-	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDLIBS) $(LDFLAGS)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDFLAGS) $(LDLIBS)
 	cp $(NAME) ../
 
 clean:

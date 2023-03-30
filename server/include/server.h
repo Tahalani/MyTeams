@@ -32,6 +32,7 @@ void close_connection(client_t *connection);
 void free_connection(client_t *connection);
 
 user_t *new_user(char *username);
+user_t *find_user_by_uuid(server_t *server, char *uuid);
 user_t *find_user_by_name(server_t *server, char *name);
 
 void handle_incoming(server_t *server);
@@ -45,6 +46,8 @@ void send_help_message(int fd);
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
+char *get_username_client(server_t *server, client_t *client);
+time_t get_time(void);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
