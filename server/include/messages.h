@@ -10,10 +10,12 @@
 
     #include <stddef.h>
 
-static const char *MESSAGES[6] = {
+static const char *MESSAGES[8] = {
         "200 Command okay.",
         "220 Service ready for new user.",
         "400 Invalid number of arguments.",
+        "410 User not found.",
+        "420 Username too long.",
         "500 Unknown command.",
         "530 Please login with /login.",
         NULL,

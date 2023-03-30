@@ -6,12 +6,14 @@
 ##
 
 SRC			=	src/commands/auth.c \
+				src/commands/user.c \
 				src/core/commands.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
 				src/util/arrays.c \
 				src/util/clients.c \
 				src/util/data.c \
+				src/util/getters.c \
 				src/util/messages.c \
 				src/util/util.c \
 				src/server.c
