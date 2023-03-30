@@ -19,6 +19,7 @@
     #define MAX_NAME_LENGTH 32
     #define MAX_DESCRIPTION_LENGTH 255
     #define MAX_BODY_LENGTH 512
+    #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"
 
@@ -46,5 +47,6 @@ struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 
 char **str_to_word(char const *str, char separator);
+void free_array(char **array);
 
 #endif
