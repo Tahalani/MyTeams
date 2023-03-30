@@ -7,6 +7,7 @@
 
 SRC			=	src/commands/auth.c \
 				src/commands/user.c \
+				src/commands/talk.c \
 				src/clients.c \
 				src/commands.c \
 				src/fdsets.c \

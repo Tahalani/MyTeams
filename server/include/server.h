@@ -41,6 +41,7 @@ void send_help_message(int fd);
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
+char *get_username_client(server_t *server, client_t *client);
 
 char **str_to_word(char const *str, char separator);
 #endif

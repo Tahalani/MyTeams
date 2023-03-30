@@ -22,6 +22,7 @@ void add_user(server_t **server, client_t **client, char **data, user_t *node)
     } else {
         node->username = strdup(data[1]);
         node->uuid = generate_uuid();
+        node->fd = (*client)->fd;
         SLIST_INSERT_HEAD((*server)->data->users, node, next);
         send_basic_message((*client)->fd, "220");
     }
