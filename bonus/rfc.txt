@@ -4,7 +4,7 @@ CODE / MESSAGE
 
 200 Command okay.
 220 Service ready for new user.
-230 Logged in as %s (%s).
+230 Logged in as {user} ({uuid}).
 400 Invalid arguments.
 500 Unknown command.
 530 Please login with /login.
