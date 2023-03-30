@@ -43,8 +43,7 @@ void user_command(server_t *server, client_t *client, char *input)
         return;
     }
     SLIST_FOREACH(node, server->data->users, next) {
-        if (strcmp(node->username, data[1]) == 0
-        || strcmp(node->uuid, data[1]) == 0) {
+        if (strcmp(node->uuid, data[1]) == 0) {
             display_user_info(client, node);
             free_array(data);
             send_basic_message(client->fd, "200");

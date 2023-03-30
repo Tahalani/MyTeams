@@ -53,6 +53,6 @@ void send_command(server_t *server, client_t *client, char *input)
         return;
     }
     fill_message_struct(server, client, data);
-    dprintf(node->fd, "%ld - %s: %s%s", time(NULL), \
+    dprintf(node->fd, "%s: %s%s",
         get_username_client(server, client), data[2], CRLF);
 }
