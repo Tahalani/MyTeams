@@ -31,6 +31,7 @@ void close_connection(client_t *connection);
 void free_connection(client_t *connection);
 
 user_t *new_user(char *username);
+user_t *find_user_by_name(server_t *server, char *name);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);

@@ -24,20 +24,21 @@ static void logged_in_event(client_t *client, bool new)
 
 void login_command(server_t *server, client_t *client, char *input)
 {
-    // TODO: Free str word array / 420 MAX_NAME_LENGTH
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 
-    if (data[1] == NULL) {
+    if (data[1] == NULL || data[2] != NULL) {
         send_basic_message(client->fd, "400");
         return;
     }
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (strcmp(node->username, data[1]) == 0) {
-            client->user = node;
-            logged_in_event(client, false);
-            return;
-        }
+    node = find_user_by_name(server, data[1]);
+    if (strlen(data[1]) > MAX_NAME_LENGTH) {
+        send_basic_message(client->fd, "420");
+        return;
+    } else if (node != NULL) {
+        client->user = node;
+        logged_in_event(client, false);
+        return;
     }
     node = new_user(data[1]);
     SLIST_INSERT_HEAD(server->data->users, node, next);
