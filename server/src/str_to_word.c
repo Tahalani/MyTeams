@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdint.h>
 
 void free_array(char **array)
 {
