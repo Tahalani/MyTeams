@@ -30,10 +30,9 @@ static void connect_user(server_t *server, client_t *client, \
         logged_in_event(client, false);
         return;
     }
-    user = new_user(name);
+    user = new_user(name, client->fd);
     SLIST_INSERT_HEAD(server->data->users, user, next);
     client->user = user;
-    client->user->fd = client->fd;
     logged_in_event(client, true);
 }
 
@@ -60,7 +59,12 @@ void login_command(server_t *server, client_t *client, char *input)
 void logout_command (UNUSED server_t *server, client_t *client, \
     UNUSED char *input)
 {
+    user_t *tmp = NULL;
+
     send_basic_message(client->fd, "221");
-    client->user->fd = -1;
+    SLIST_FOREACH(tmp, server->data->users, next) {
+        if (strcmp(tmp->uuid, client->user->uuid) == 0)
+            SLIST_REMOVE(server->data->users, tmp, user_s, next);
+    }
     client->user = NULL;
 }
