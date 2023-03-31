@@ -31,3 +31,14 @@ user_t *find_user_by_name(server_t *server, char *name)
     }
     return NULL;
 }
+
+team_t *find_team_by_uuid(server_t *server, char *uuid)
+{
+    team_t *team = NULL;
+
+    SLIST_FOREACH(team, server->data->teams, next) {
+        if (strcmp(team->uuid, uuid) == 0)
+            return team;
+    }
+    return NULL;
+}

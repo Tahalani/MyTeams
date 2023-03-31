@@ -8,7 +8,7 @@
 #ifndef COMMAND_H_
     #define COMMAND_H_
 
-    #define COMMANDS_COUNT 5
+    #define COMMANDS_COUNT (sizeof(COMMANDS) / sizeof(command_t))
 
     #include <stdbool.h>
     #include "types.h"
@@ -20,6 +20,7 @@ void logout_command(server_t *server, client_t *client, char *input);
 void users_command(server_t *server, client_t *client, char *input);
 void user_command(server_t *server, client_t *client, char *input);
 void send_command(server_t *server, client_t *client, char *input);
+void subscribe_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -27,12 +28,13 @@ typedef struct command_s {
     bool auth;
 } command_t;
 
-static const command_t COMMANDS[COMMANDS_COUNT] = {
+static const command_t COMMANDS[] = {
         { "/login", &login_command, false, },
         { "/logout", &logout_command, true, },
         { "/users", &users_command, true },
         { "/user", &user_command, true },
         { "/send", &send_command, true },
+        { "/subscribe", &subscribe_command, true },
 };
 
 #endif
