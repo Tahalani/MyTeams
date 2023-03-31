@@ -56,3 +56,23 @@ void subscribe_command(server_t *server, client_t *client, char *input)
     free_array(data);
     display_team(client->user);
 }
+
+void unsubscribe_command(server_t *server, client_t *client, char *input)
+{
+    char **data = str_to_word(input, ' ');
+    team_t *team = NULL;
+
+    if (data[1] == NULL || data[2] not_eq NULL) {
+        send_basic_message(client->fd, "400");
+        free_array(data);
+        return;
+    }
+    team = find_team_by_uuid(server, data[1]);
+    if (team == NULL)
+        send_basic_message(client->fd, "421");
+    else {
+        send_basic_message(client->fd, "200");
+        SLIST_REMOVE(client->user->teams, team, team_s, next);
+    }
+    free_array(data);
+}

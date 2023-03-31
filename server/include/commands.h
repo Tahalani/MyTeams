@@ -21,6 +21,7 @@ void users_command(server_t *server, client_t *client, char *input);
 void user_command(server_t *server, client_t *client, char *input);
 void send_command(server_t *server, client_t *client, char *input);
 void subscribe_command(server_t *server, client_t *client, char *input);
+void unsubscribe_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -35,6 +36,7 @@ static const command_t COMMANDS[] = {
         { "/user", &user_command, true },
         { "/send", &send_command, true },
         { "/subscribe", &subscribe_command, true },
+        { "/unsubscribe", &unsubscribe_command, true },
 };
 
 #endif
