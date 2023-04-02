@@ -23,8 +23,8 @@ team_t *copy_team(team_t *team)
     team_cpy->name = NULL;
     team_cpy->description = NULL;
     team_cpy->users = malloc(sizeof(user_t));
-    SLIST_INIT(team_cpy->users);
     team_cpy->channels = malloc(sizeof(channel_t));
+    SLIST_INIT(team_cpy->users);
     SLIST_INIT(team_cpy->channels);
     if (team_cpy->users == NULL or team_cpy->channels == NULL)
         fatal_error("malloc failed");
@@ -57,12 +57,15 @@ void subscribe_command(server_t *server, client_t *client, char *input)
 {
     char **data = str_to_word(input, ' ');
     team_t *team = NULL;
+    team_t *fakeTeam = malloc(sizeof(team_t));
 
     if (data[1] == NULL || data[2] not_eq NULL) {
         send_basic_message(client->fd, "400");
         free_array(data);
         return;
     }
+    fakeTeam->uuid = strdup(data[1]);
+    SLIST_INSERT_HEAD(server->data->teams, fakeTeam, next);
     team = find_team_by_uuid(server, data[1]);
     join_team(server, client, team);
     free_array(data);
@@ -92,20 +95,17 @@ void unsubscribe_command(server_t *server, client_t *client, char *input)
 
 void subscribed_command(server_t *server, client_t *client, char *input)
 {
+    char **data = str_to_word(input, ' ');
     team_t *team = NULL;
     user_t *user = NULL;
-    char **data = str_to_word(input, ' ');
 
     if (data[1] == NULL) {
-        printf("\n\nteam user:\n");
         SLIST_FOREACH(team, client->user->teams, next)
-            printf("Team uuid: %s\n", team->uuid);
+            dprintf(client->fd, "%s\n", team->uuid);
     } else {
         team = find_team_by_uuid(server, data[1]);
-        printf("\n\n%s user: \n", team->uuid);
-        SLIST_FOREACH(user, team->users, next) {
-            printf ("%s\n", user->uuid);
-        }
+        SLIST_FOREACH(user, team->users, next)
+            dprintf(client->fd, "%s\n", user->uuid);
     }
     send_basic_message(client->fd, "200");
 }
