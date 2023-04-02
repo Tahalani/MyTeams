@@ -46,6 +46,9 @@ int refresh_fdsets(server_t *server, fd_set *set);
 void send_basic_message(int fd, char *code);
 void send_help_message(int fd);
 
+void send_message_packet(int fd, int code);
+void send_user_packet(int fd, user_t *user);
+
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);

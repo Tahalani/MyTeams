@@ -20,7 +20,7 @@ void send_basic_message(int fd, char *code)
             msg = MESSAGES[i];
     }
     if (msg != NULL) {
-        dprintf(fd, "%s%s", msg, CRLF);
+        //dprintf(fd, "%s%s", msg, CRLF);
     }
 }
 

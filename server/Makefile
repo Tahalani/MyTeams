@@ -18,6 +18,7 @@ SRC			=	src/commands/auth.c \
 				src/core/commands.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
+				src/core/packets.c \
 				src/util/arrays.c \
 				src/util/clients.c \
 				src/util/data.c \

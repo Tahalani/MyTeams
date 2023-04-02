@@ -18,6 +18,6 @@ int teams_cli(int argc, char **argv);
 bool start_client(char *address, int port);
 
 bool handle_input(int socket_fd);
-bool handle_message(int socket_fd);
+bool handle_packet(int socket_fd);
 
 #endif

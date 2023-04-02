@@ -38,7 +38,7 @@ static void client_loop(int socket_fd)
             handle_input(socket_fd);
         }
         if (FD_ISSET(socket_fd, &set)) {
-            exit = handle_message(socket_fd);
+            exit = handle_packet(socket_fd);
         }
     }
 }

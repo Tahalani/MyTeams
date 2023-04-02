@@ -7,7 +7,8 @@
 
 SRC			=	src/cli.c \
 				src/client.c \
-				src/command.c
+				src/command.c \
+				src/packets.c
 
 MAIN		=	src/main.c
 
@@ -21,12 +22,14 @@ OBJ_M 		=	$(MAIN:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC) -iquote ../lib/myteams
+CPPFLAGS	=	-iquote $(INC) -iquote ../libs/myteams
+LDLIBS		=	-lmyteams
+LDFLAGS		=	-L../libs/myteams
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJ_M)
-	$(CC) -o $(NAME) $(OBJ) $(OBJ_M)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDFLAGS) $(LDLIBS)
 	cp $(NAME) ../
 
 clean:

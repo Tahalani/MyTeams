@@ -10,6 +10,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "handler.h"
+
+static void process_packet(int socket_fd, char opcode)
+{
+    const char *format = "Unknown packet sent by server with opcode %d\n";
+
+    for (size_t i = 0; i < HANDLER_COUNT; i++) {
+        if (HANDLERS[i].opcode == opcode) {
+            HANDLERS[i].function(socket_fd);
+            return;
+        }
+    }
+    fprintf(stderr, format, opcode);
+}
 
 bool handle_input(int socket_fd)
 {
@@ -26,10 +40,10 @@ bool handle_input(int socket_fd)
     return false;
 }
 
-bool handle_message(int socket_fd)
+bool handle_packet(int socket_fd)
 {
-    char buffer[1024];
-    ssize_t re = read(socket_fd, buffer, 1024);
+    char opcode;
+    ssize_t re = read(socket_fd, &opcode, 1);
 
     if (re == -1) {
         return false;
@@ -37,6 +51,6 @@ bool handle_message(int socket_fd)
     if (re == 0) {
         return true;
     }
-    write(1, buffer, re);
+    process_packet(socket_fd, opcode);
     return false;
 }
