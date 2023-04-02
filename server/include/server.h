@@ -64,7 +64,7 @@ void free_array(char **array);
 void create_team(server_t *server, client_t *client, char **data);
 void create_channel(server_t *server, client_t *client, char **data);
 void create_thread(server_t *server, client_t *client, char **data);
-void create_reply(server_t *server, client_t *client, char **data);
+void create_reply(server_t *server, client_t *client, char *comment);
 
 void list_team(server_t *server, client_t *client);
 void list_channel(server_t *server, client_t *client);

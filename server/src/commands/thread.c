@@ -26,7 +26,6 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     new_thread->message = strdup(message);
     new_thread->messages = malloc(sizeof(struct message_l));
     SLIST_INIT(new_thread->messages);
-    new_thread->messages = NULL;
     uuid->uuid = strdup(new_thread->uuid);
     SLIST_INSERT_HEAD(server->data->threads, new_thread, next);
     SLIST_INSERT_HEAD(channel_node->threads, uuid, next);
