@@ -61,7 +61,7 @@ typedef struct team_s {
     char *name;
     char *description;
     SLIST_HEAD(, uuid_s) *channels;
-    SLIST_HEAD(, uuid_s) *users;
+    SLIST_HEAD(, user_s) *users;
     SLIST_ENTRY(team_s) next;
 } team_t;
 

@@ -71,7 +71,7 @@ void init_data(data_t *data)
     data->messages = malloc(sizeof(struct message_list));
     if (data->users == NULL || data->teams == NULL || data->channels == NULL
     || data->threads == NULL || data->messages == NULL)
-        return;
+        fatal_error("malloc failed");
     SLIST_INIT(data->users);
     SLIST_INIT(data->teams);
     SLIST_INIT(data->channels);
