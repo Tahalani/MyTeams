@@ -32,28 +32,6 @@ user_t *find_user_by_name(server_t *server, char *name)
     return NULL;
 }
 
-team_t *find_user_team(user_t *user, char *uuid)
-{
-    team_t *team = NULL;
-
-    SLIST_FOREACH(team, user->teams, next) {
-        if (strcmp(team->uuid, uuid) == 0)
-            return team;
-    }
-    return (NULL);
-}
-
-user_t *find_user_in_team(team_t *team, char *uuid)
-{
-    user_t *user = NULL;
-
-    SLIST_FOREACH(user, team->users, next) {
-        if (strcmp(user->uuid, uuid) == 0)
-            return user;
-    }
-    return (NULL);
-}
-
 team_t *find_team_by_uuid(server_t *server, char *uuid)
 {
     team_t *team = NULL;

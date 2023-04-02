@@ -19,6 +19,7 @@ user_t *new_user(char *username, int fd)
     new->username = strdup(username);
     new->fd = fd;
     new->fd = -1;
-    new->teams = NULL;
-    return new;
+    new->teams = malloc(sizeof(team_t));
+    SLIST_INIT(new->teams);
+    return (new);
 }
