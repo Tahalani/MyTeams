@@ -103,8 +103,7 @@ void subscribed_command(server_t *server, client_t *client, char *input)
         printf("\n\nteam user:\n");
         SLIST_FOREACH(team, client->user->teams, next)
             printf("Team uuid: %s\n", team->uuid);
-    }
-    else {
+    } else {
         team = find_team_by_uuid(server, data[1]);
         printf("\n\n%s user: \n", team->uuid);
         SLIST_FOREACH(user, team->users, next) {
