@@ -16,9 +16,6 @@
     #define FAILURE 84
     #define BUFFER_SIZE 1024
     #define MAX_CONNECTIONS 50
-    #define MAX_NAME_LENGTH 32
-    #define MAX_DESCRIPTION_LENGTH 255
-    #define MAX_BODY_LENGTH 512
     #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"

@@ -9,6 +9,7 @@
     #define PACKETS_H
 
     #include <stdbool.h>
+    #include "constants.h"
 
 typedef char packet_header_t;
 
@@ -22,8 +23,8 @@ typedef struct message_packet_s {
 } message_packet_t;
 
 typedef struct user_packet_s {
-    char uuid[37];
-    char username[33];
+    char uuid[UUID_LENGTH + 1];
+    char username[MAX_NAME_LENGTH + 1];
     bool status;
 } user_packet_t;
 

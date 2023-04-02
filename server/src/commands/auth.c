@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "commands.h"
+#include "constants.h"
 #include "logging_server.h"
 #include "server.h"
 
