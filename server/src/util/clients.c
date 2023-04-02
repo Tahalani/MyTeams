@@ -20,6 +20,10 @@ client_t *new_client(int fd)
     new->fd = fd;
     new->file = NULL;
     new->user = NULL;
+    new->use = calloc(sizeof(use_t), 1);
+    new->use->team = NULL;
+    new->use->channel = NULL;
+    new->use->thread = NULL;
     return new;
 }
 
@@ -32,5 +36,6 @@ void close_connection(client_t *client)
 
 void free_connection(client_t *client)
 {
+    free(client->use);
     free(client);
 }

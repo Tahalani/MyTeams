@@ -28,7 +28,7 @@ static void fill_message_struct(server_t *server, client_t *client, char **data)
 
     if (message == NULL)
         fatal_error("Malloc failed");
-    message->sender = get_sender(server, client);
+    message->sender = client->user;
     message->content = strdup(data[2]);
     message->time = get_time();
     SLIST_INSERT_HEAD(server->data->messages, message, next);
@@ -45,9 +45,7 @@ void send_command(server_t *server, client_t *client, char *input)
         return;
     }
     node = find_user_by_uuid(server, data[1]);
-    if (node == NULL)
-        node = find_user_by_name(server, data[1]);
-    if (node == NULL) {
+    if (node == NULL || node->fd == -1) {
         send_basic_message(client->fd, "410");
         free_array(data);
         return;

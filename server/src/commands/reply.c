@@ -7,11 +7,11 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "commands.h"
 #include "server.h"
 
-static void add_new_reply(server_t *server, client_t *client, char *title, char *message)
+static void add_new_reply(server_t *server, client_t *client, \
+    char *title, char *message)
 {
     (void) title;
     (void) message;

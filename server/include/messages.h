@@ -13,6 +13,7 @@
 static const char *MESSAGES[] = {
         "200 Command okay.",
         "220 Service ready for new user.",
+        "221 Logged out.",
         "400 Invalid number of arguments.",
         "410 User not found.",
         "420 Username too long.",

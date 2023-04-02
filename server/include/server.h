@@ -54,8 +54,13 @@ time_t get_time(void);
 team_t *find_team_by_uuid(server_t *server, char *uuid);
 channel_t *find_channel_by_uuid(server_t *server, char *uuid);
 thread_t *find_thread_by_uuid(server_t *server, char *uuid);
+channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
+    char *channel_uuid);
+thread_t *find_thread_in_specified_channel(server_t *server, \
+    char *channel_uuid, char *thread_uuid);
 
 char **str_to_word(char const *str, char separator);
+size_t array_len(char **array);
 void free_array(char **array);
 
 void create_team(server_t *server, client_t *client, char **data);
