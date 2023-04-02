@@ -12,7 +12,7 @@
 
 static void handle_unknown(client_t *client)
 {
-    if (client->user == NULL) {
+    if (client->user != NULL) {
         send_basic_message(client->fd, "500");
     } else {
         send_basic_message(client->fd, "530");

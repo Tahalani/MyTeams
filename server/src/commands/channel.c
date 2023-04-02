@@ -11,10 +11,10 @@
 #include "commands.h"
 #include "server.h"
 
-static void add_new_channel(server_t *server, char *name, char *description)
+static void add_new_channel(server_t *server, team_t *team, \
+    char *name, char *description)
 {
     uuid_t *uuid = malloc(sizeof(uuid_t));
-    team_t *team_node = find_team_by_uuid(server, server->use->team_uuid);
     channel_t *new_channel = malloc(sizeof(channel_t));
 
     if (new_channel == NULL)
@@ -26,37 +26,30 @@ static void add_new_channel(server_t *server, char *name, char *description)
     SLIST_INIT(new_channel->threads);
     uuid->uuid = strdup(new_channel->uuid);
     SLIST_INSERT_HEAD(server->data->channels, new_channel, next);
-    SLIST_INSERT_HEAD(team_node->channels, uuid, next);
+    SLIST_INSERT_HEAD(team->channels, uuid, next);
 }
 
 void create_channel(server_t *server, client_t *client, char **data)
 {
-    team_t *team = NULL;
+    team_t *team = client->use->team;
 
     if (data[1] == NULL || data[2] == NULL) {
         send_basic_message(client->fd, "400");
         return;
     }
-    team = find_team_by_uuid(server, server->use->team_uuid);
     if (team == NULL) {
         send_basic_message(client->fd, "570");
         return;
     }
-    add_new_channel(server, data[1], data[2]);
+    add_new_channel(server, client->use->team, data[1], data[2]);
     send_basic_message(client->fd, "200");
 }
 
-void list_channel(server_t *server, client_t *client)
+static void send_list(server_t *server, client_t *client, team_t *team)
 {
-    team_t *team = NULL;
     uuid_t *uuid = NULL;
     unsigned int nbr_channel = 0;
 
-    team = find_team_by_uuid(server, server->use->team_uuid);
-    if (team == NULL) {
-        send_basic_message(client->fd, "570");
-        return;
-    }
     SLIST_FOREACH(uuid, team->channels, next)
         nbr_channel++;
     uuid = NULL;
@@ -66,7 +59,19 @@ void list_channel(server_t *server, client_t *client)
     }
     dprintf(client->fd, "%d channel(s) available%s", nbr_channel, CRLF);
     SLIST_FOREACH(uuid, team->channels, next) {
-        dprintf(client->fd, "%s (%s)%s", find_channel_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
+        dprintf(client->fd, "%s (%s)%s", \
+        find_channel_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
     }
+}
+
+void list_channel(server_t *server, client_t *client)
+{
+    team_t *team = client->use->team;
+
+    if (team == NULL) {
+        send_basic_message(client->fd, "570");
+        return;
+    }
+    send_list(server, client, team);
     send_basic_message(client->fd, "200");
 }

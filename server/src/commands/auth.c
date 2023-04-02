@@ -30,10 +30,10 @@ static void connect_user(server_t *server, client_t *client, \
         logged_in_event(client, false);
         return;
     }
-    user = new_user(name);
+    user = new_user(name, client->fd);
     SLIST_INSERT_HEAD(server->data->users, user, next);
     client->user = user;
-    client->user->fd = client->fd;
+    user->fd = client->fd;
     logged_in_event(client, true);
 }
 

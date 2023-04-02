@@ -11,11 +11,12 @@
 #include "commands.h"
 #include "server.h"
 
-static void add_new_thread(server_t *server, char *title, char *message)
+static void add_new_thread(server_t *server, client_t *client, char *title, \
+    char *message)
 {
     uuid_t *uuid = malloc(sizeof(uuid_t));
     channel_t *channel_node =
-        find_channel_by_uuid(server, server->use->channel_uuid);
+        find_channel_by_uuid(server, client->use->channel->uuid);
     thread_t *new_thread = malloc(sizeof(thread_t));
 
     if (new_thread == NULL)
@@ -40,21 +41,22 @@ void create_thread(server_t *server, client_t *client, char **data)
         send_basic_message(client->fd, "400");
         return;
     }
-    team = find_team_by_uuid(server, server->use->team_uuid);
+    team = find_team_by_uuid(server, client->use->team->uuid);
     if (team == NULL) {
         send_basic_message(client->fd, "570");
         return;
     }
-    channel = find_channel_by_uuid(server, server->use->channel_uuid);
+    channel = find_channel_by_uuid(server, client->use->channel->uuid);
     if (channel == NULL) {
         send_basic_message(client->fd, "580");
         return;
     }
-    add_new_thread(server, data[1], data[2]);
+    add_new_thread(server, client, data[1], data[2]);
     send_basic_message(client->fd, "200");
 }
 
-channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, char *channel_uuid)
+channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
+    char *channel_uuid)
 {
     team_t *team = NULL;
     uuid_t *uuid = NULL;
@@ -69,12 +71,28 @@ channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, cha
     return NULL;
 }
 
+thread_t *find_thread_in_specified_channel(server_t *server, \
+    char *channel_uuid, char *thread_uuid)
+{
+    channel_t *channel = NULL;
+    uuid_t *uuid = NULL;
+
+    channel = find_channel_by_uuid(server, channel_uuid);
+    if (channel == NULL)
+        return NULL;
+    SLIST_FOREACH(uuid, channel->threads, next) {
+        if (strcmp(uuid->uuid, thread_uuid) == 0)
+            return find_thread_by_uuid(server, thread_uuid);
+    }
+    return NULL;
+}
+
 void list_thread(server_t *server, client_t *client)
 {
     uuid_t *uuid = NULL;
     unsigned int nbr_thread = 0;
     channel_t *channel = find_channel_in_specified_team(server,
-        server->use->team_uuid, server->use->channel_uuid);
+        client->use->team->uuid, client->use->channel->uuid);
 
     if (channel == NULL) {
         send_basic_message(client->fd, "580");
@@ -85,6 +103,7 @@ void list_thread(server_t *server, client_t *client)
     uuid = NULL;
     dprintf(client->fd, "%d thread(s) available%s", nbr_thread, CRLF);
     SLIST_FOREACH(uuid, channel->threads, next) {
-        dprintf(client->fd, "%s (%s)%s", find_thread_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
+        dprintf(client->fd, "%s (%s)%s", \
+            find_thread_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
     }
 }

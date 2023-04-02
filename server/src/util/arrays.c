@@ -6,7 +6,6 @@
 */
 
 #include <stdlib.h>
-#include <stddef.h>
 
 void free_array(char **array)
 {
@@ -15,33 +14,32 @@ void free_array(char **array)
     free(array);
 }
 
-int verif_char(char x, char separator)
+size_t array_len(char **array)
 {
-    if (x == separator)
-        return 0;
-    return 1;
+    size_t len = 0;
+
+    for (; array[len] != NULL; len++);
+    return len;
 }
 
-int count_word(char const *str, char separator)
+static size_t count_word(char const *str, char sep)
 {
-    int i = 0;
     int count = 1;
 
-    for (; str[i] != '\0'; i++) {
-        if (verif_char(str[i], separator) == 1 && verif_char(str[i + 1],
-            separator) == 0)
+    for (size_t i = 0; str[i] != '\0'; i++) {
+        if (str[i] == sep && str[i + 1] != sep)
             count++;
     }
-    return (count);
+    return count;
 }
 
-int size_word(char const *str, int i, char separator)
+static int size_word(char const *str, int i, char separator)
 {
     int count = 0;
 
     for (; str[i] != separator && str[i] != '\0'; i++)
         count++;
-    return (count);
+    return count;
 }
 
 char **str_to_word(char const *str, char separator)
@@ -49,11 +47,11 @@ char **str_to_word(char const *str, char separator)
     char **tab = NULL;
     int i = 0;
     int size = 0;
-    int count = count_word(str, separator);
+    size_t count = count_word(str, separator);
 
     tab = malloc(sizeof(char *) * (count + 1));
     tab[count] = NULL;
-    for (int y = 0; y != count; y++) {
+    for (size_t y = 0; y != count; y++) {
         for (; str[i] == separator; i++);
         size = size_word(str, i, separator);
         tab[y] = malloc(sizeof(char) * (size + 1));

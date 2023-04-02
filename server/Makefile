@@ -8,6 +8,7 @@
 SRC			=	src/commands/auth.c \
 				src/commands/talk.c \
 				src/commands/user.c \
+				src/commands/subscribe.c \
 				src/commands/use.c \
 				src/commands/interaction.c \
 				src/commands/team.c \
@@ -21,9 +22,10 @@ SRC			=	src/commands/auth.c \
 				src/util/clients.c \
 				src/util/data.c \
 				src/util/getters.c \
+				src/util/getters2.c \
 				src/util/messages.c \
 				src/util/util.c \
-				src/server.c
+				src/server.c \
 
 MAIN		=	src/main.c
 
