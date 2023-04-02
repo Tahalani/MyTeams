@@ -9,7 +9,7 @@
 #include <string.h>
 #include "server.h"
 
-user_t *new_user(char *username)
+user_t *new_user(char *username, int fd)
 {
     user_t *new = malloc(sizeof(user_t));
     if (new == NULL) {
@@ -17,6 +17,7 @@ user_t *new_user(char *username)
     }
     new->uuid = generate_uuid();
     new->username = strdup(username);
+    new->fd = fd;
     new->fd = -1;
     new->teams = NULL;
     return new;
