@@ -10,10 +10,12 @@
 
     #include <stdbool.h>
 
-    #define PACKET_MESSAGE 0
-    #define PACKET_USER 1
-
 typedef char packet_header_t;
+
+typedef enum packet_type_e {
+    PACKET_MESSAGE,
+    PACKET_USER,
+} packet_type_t;
 
 typedef struct message_packet_s {
     int code;
