@@ -21,7 +21,7 @@ typedef struct user_s {
     char *uuid;
     char *username;
     int fd;
-    SLIST_HEAD(, team_s) *teams;
+    SLIST_HEAD(team_l, uuid_s) *teams;
     SLIST_ENTRY(user_s) next;
 } user_t;
 
@@ -46,7 +46,7 @@ typedef struct team_s {
     char *name;
     char *description;
     SLIST_HEAD(, uuid_s) *channels;
-    SLIST_HEAD(, user_s) *users;
+    SLIST_HEAD(user_l, uuid_s) *users;
     SLIST_ENTRY(team_s) next;
 } team_t;
 
