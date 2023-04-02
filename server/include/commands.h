@@ -8,7 +8,7 @@
 #ifndef COMMAND_H_
     #define COMMAND_H_
 
-    #define COMMANDS_COUNT 6
+    #define COMMANDS_COUNT 9
 
     #include <stdbool.h>
     #include "types.h"
@@ -21,6 +21,9 @@ void users_command(server_t *server, client_t *client, char *input);
 void user_command(server_t *server, client_t *client, char *input);
 void send_command(server_t *server, client_t *client, char *input);
 void messages_command(server_t *server, client_t *client, char *input);
+void use_command(server_t *server, client_t *client, char *input);
+void create_command(server_t *server, client_t *client, char *input);
+void list_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -35,6 +38,9 @@ static const command_t COMMANDS[COMMANDS_COUNT] = {
         { "/user", &user_command, true },
         { "/send", &send_command, true },
         { "/messages", &messages_command, true },
+        { "/use", &use_command, true },
+        { "/create", &create_command, true },
+        { "/list", &list_command, true },
 };
 
 #endif
