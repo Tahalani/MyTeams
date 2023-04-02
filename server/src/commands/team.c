@@ -20,6 +20,8 @@ static void add_new_team(server_t *server, char *name, char *description)
     new_team->uuid = generate_uuid();
     new_team->name = name;
     new_team->description = description;
+    new_team->users = malloc(sizeof(struct user_l));
+    SLIST_INIT(new_team->users);
     new_team->channels = malloc(sizeof(struct thread_l));
     SLIST_INIT(new_team->channels);
     SLIST_INSERT_HEAD(server->data->teams, new_team, next);
