@@ -9,6 +9,12 @@ SRC			=	src/commands/auth.c \
 				src/commands/talk.c \
 				src/commands/user.c \
 				src/commands/subscribe.c \
+				src/commands/use.c \
+				src/commands/interaction.c \
+				src/commands/team.c \
+				src/commands/channel.c \
+				src/commands/thread.c \
+				src/commands/reply.c \
 				src/core/commands.c \
 				src/core/fdsets.c \
 				src/core/loop.c \

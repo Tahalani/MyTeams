@@ -16,9 +16,12 @@ static const char *MESSAGES[] = {
         "400 Invalid number of arguments.",
         "410 User not found.",
         "420 Username too long.",
+        "421 Team does not exist.",
         "500 Unknown command.",
         "530 Please login with /login.",
-        "421 Team does not exist.",
+        "570 Team not found.",
+        "580 Channel not found.",
+        "590 Thread not found.",
         NULL,
 };
 

@@ -44,7 +44,8 @@ typedef struct message_s {
 typedef struct thread_s {
     char *uuid;
     char *name;
-    SLIST_HEAD(, uuid_s) *messages;
+    char *message;
+    SLIST_HEAD(message_l, uuid_s) *messages;
     SLIST_ENTRY(thread_s) next;
 } thread_t;
 
@@ -52,7 +53,7 @@ typedef struct channel_s {
     char *uuid;
     char *name;
     char *description;
-    SLIST_HEAD(, uuid_s) *threads;
+    SLIST_HEAD(thread_l, uuid_s) *threads;
     SLIST_ENTRY(channel_s) next;
 } channel_t;
 
@@ -65,6 +66,12 @@ typedef struct team_s {
     SLIST_ENTRY(team_s) next;
 } team_t;
 
+typedef struct use_s {
+    char *team_uuid;
+    char *channel_uuid;
+    char *thread_uuid;
+} use_t;
+
 typedef struct data_s {
     SLIST_HEAD(user_list, user_s) *users;
     SLIST_HEAD(team_list, team_s) *teams;
@@ -76,6 +83,7 @@ typedef struct data_s {
 typedef struct server_s {
     int socket_fd;
     data_t *data;
+    use_t *use;
     SLIST_HEAD(client_list, client_s) *clients;
 } server_t;
 

@@ -84,9 +84,10 @@ bool start_server(int port)
     struct sockaddr *address = generate_address(port, NULL);
     int socket_fd = init_ftp(address);
     data_t *data = calloc(sizeof(data_t), 1);
+    use_t *use = calloc(sizeof(use_t), 1);
     struct client_list clients;
     SLIST_INIT(&clients);
-    server_t server = { socket_fd, data, &clients };
+    server_t server = { socket_fd, data, use, &clients};
     setsockopt(port, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
     if (socket_fd == -1 || data == NULL) {
         return false;

@@ -53,6 +53,25 @@ void send_command(server_t *server, client_t *client, char *input)
         return;
     }
     fill_message_struct(server, client, data);
-    dprintf(node->fd, "%ld - %s: %s%s", time(NULL), \
+    dprintf(node->fd, "%s: %s%s",
         get_username_client(server, client), data[2], CRLF);
+}
+
+void messages_command(server_t *server, client_t *client, char *input)
+{
+    message_t *node = NULL;
+    char **data = str_to_word(input, ' ');
+
+    if (data[1] == NULL && data[2] != NULL) {
+        send_basic_message(client->fd, "400");
+        free_array(data);
+        return;
+    }
+    SLIST_FOREACH(node, server->data->messages, next) {
+        if (strcmp(node->sender->uuid, data[1]) == 0)
+            dprintf(client->fd, "%s: %s%s",
+                node->sender->username, node->content, CRLF);
+    }
+    send_basic_message(client->fd, "200");
+    free_array(data);
 }

@@ -20,6 +20,10 @@ void logout_command(server_t *server, client_t *client, char *input);
 void users_command(server_t *server, client_t *client, char *input);
 void user_command(server_t *server, client_t *client, char *input);
 void send_command(server_t *server, client_t *client, char *input);
+void messages_command(server_t *server, client_t *client, char *input);
+void use_command(server_t *server, client_t *client, char *input);
+void create_command(server_t *server, client_t *client, char *input);
+void list_command(server_t *server, client_t *client, char *input);
 void subscribe_command(server_t *server, client_t *client, char *input);
 void unsubscribe_command(server_t *server, client_t *client, char *input);
 void subscribed_command(server_t *server, client_t *client, char *input);
@@ -36,6 +40,10 @@ static const command_t COMMANDS[] = {
         { "/users", &users_command, true },
         { "/user", &user_command, true },
         { "/send", &send_command, true },
+        { "/messages", &messages_command, true },
+        { "/use", &use_command, true },
+        { "/create", &create_command, true },
+        { "/list", &list_command, true },
         { "/subscribe", &subscribe_command, true },
         { "/unsubscribe", &unsubscribe_command, true },
         { "/subscribed", &subscribed_command, true },

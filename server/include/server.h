@@ -51,8 +51,21 @@ struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 char *get_username_client(server_t *server, client_t *client);
 time_t get_time(void);
+team_t *find_team_by_uuid(server_t *server, char *uuid);
+channel_t *find_channel_by_uuid(server_t *server, char *uuid);
+thread_t *find_thread_by_uuid(server_t *server, char *uuid);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
+
+void create_team(server_t *server, client_t *client, char **data);
+void create_channel(server_t *server, client_t *client, char **data);
+void create_thread(server_t *server, client_t *client, char **data);
+void create_reply(server_t *server, client_t *client, char **data);
+
+void list_team(server_t *server, client_t *client);
+void list_channel(server_t *server, client_t *client);
+void list_thread(server_t *server, client_t *client);
+void list_reply(server_t *server, client_t *client);
 
 #endif
