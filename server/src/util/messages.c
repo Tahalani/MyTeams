@@ -9,6 +9,7 @@
 #include "messages.h"
 #include "server.h"
 
+// This file will disappear as soon as the packet handling is done
 void send_basic_message(int fd, char *code)
 {
     const char *msg = NULL;
@@ -18,7 +19,7 @@ void send_basic_message(int fd, char *code)
             msg = MESSAGES[i];
     }
     if (msg != NULL) {
-        //dprintf(fd, "%s%s", msg, CRLF);
+
     }
 }
 
