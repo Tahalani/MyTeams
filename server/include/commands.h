@@ -28,6 +28,7 @@ void list_command(server_t *server, client_t *client, char *input);
 void subscribe_command(server_t *server, client_t *client, char *input);
 void unsubscribe_command(server_t *server, client_t *client, char *input);
 void subscribed_command(server_t *server, client_t *client, char *input);
+void info_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
     packet_command_t id;
@@ -48,6 +49,7 @@ static const command_t COMMANDS[] = {
         { COMMAND_SUBSCRIBE, &subscribe_command, true },
         { COMMAND_UNSUBSCRIBE, &unsubscribe_command, true },
         { COMMAND_SUBSCRIBED, &subscribed_command, true },
+        { COMMAND_INFO, &info_command, true },
 };
 
 #endif

@@ -17,7 +17,7 @@ void create_command(server_t *server, client_t *client, char *input)
     if (data == NULL)
         fatal_error("Malloc failed");
     if (client->use->thread != NULL) {
-        create_reply(server, client, data);
+        create_reply(server, client, input);
         return;
     }
     if (client->use->channel != NULL) {

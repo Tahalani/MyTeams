@@ -30,6 +30,7 @@ user_t *new_user(char *username, int fd);
 user_t *find_user_by_uuid(server_t *server, char *uuid);
 user_t *find_user_by_name(server_t *server, char *name);
 team_t *find_team_by_uuid(server_t *server, char *uuid);
+message_t *find_message_by_uuid(server_t *server, char *uuid);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
@@ -63,7 +64,7 @@ void free_array(char **array);
 void create_team(server_t *server, client_t *client, char **data);
 void create_channel(server_t *server, client_t *client, char **data);
 void create_thread(server_t *server, client_t *client, char **data);
-void create_reply(server_t *server, client_t *client, char **data);
+void create_reply(server_t *server, client_t *client, char *comment);
 
 void list_team(server_t *server, client_t *client);
 void list_channel(server_t *server, client_t *client);
