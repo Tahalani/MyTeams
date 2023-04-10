@@ -5,17 +5,14 @@
 ** auth.c
 */
 
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include "commands.h"
-#include "constants.h"
 #include "logging_server.h"
 #include "server.h"
 
 static void logged_in_event(client_t *client, bool new)
 {
-    send_user_packet(client->fd, client->user);
+    send_user_packet(client->fd, client->user, COMMAND_LOGIN);
     if (new) {
         server_event_user_created(client->user->uuid, client->user->username);
     }
@@ -52,10 +49,14 @@ void login_command(server_t *server, client_t *client, char *input)
     connect_user(server, client, buffer);
 }
 
-void logout_command (UNUSED server_t *server, client_t *client, \
+void logout_command(UNUSED server_t *server, client_t *client, \
     UNUSED char *input)
 {
-    send_message_packet(client->fd, 221);
+    if (client->user == NULL) {
+        send_message_packet(client->fd, 500);
+        return;
+    }
+    send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;
     client->user = NULL;

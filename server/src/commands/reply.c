@@ -68,7 +68,8 @@ static void send_list(server_t *server, client_t *client, thread_t *thread)
     }
     dprintf(client->fd, "%d channel(s) available%s", nbr_reply, CRLF);
     SLIST_FOREACH(uuid, thread->messages, next) {
-        dprintf(client->fd, "%s (%s)%s", find_message_by_uuid(server, uuid->uuid)->content, \
+        dprintf(client->fd, "%s (%s)%s", \
+            find_message_by_uuid(server, uuid->uuid)->content, \
             find_message_by_uuid(server, uuid->uuid)->sender->username, CRLF);
     }
 }

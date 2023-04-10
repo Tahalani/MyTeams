@@ -42,7 +42,7 @@ void send_basic_message(int fd, char *code);
 void send_help_message(int fd);
 
 void send_message_packet(int fd, int code);
-void send_user_packet(int fd, user_t *user);
+void send_user_packet(int fd, user_t *user, packet_command_t context);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);

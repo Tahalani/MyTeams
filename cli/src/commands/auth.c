@@ -25,5 +25,9 @@ void login_command(client_t *client, char *args)
 
 void logout_command(client_t *client, char *args)
 {
-
+    if (strlen(args) != 0) {
+        send_rfc_message(400);
+    } else {
+        send_packet(client->fd, COMMAND_LOGOUT, 0, NULL);
+    }
 }

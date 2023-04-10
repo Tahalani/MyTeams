@@ -40,14 +40,15 @@ typedef struct __attribute__((packed)) command_packet_s {
     size_t data_size;
 } command_packet_t;
 
-typedef struct message_packet_s {
+typedef struct __attribute__((packed)) message_packet_s {
     int code;
 } message_packet_t;
 
-typedef struct user_packet_s {
+typedef struct __attribute__((packed)) user_packet_s {
     char uuid[UUID_LENGTH + 1];
     char username[MAX_NAME_LENGTH + 1];
     bool status;
+    packet_command_t context;
 } user_packet_t;
 
 #endif

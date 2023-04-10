@@ -17,7 +17,7 @@ static void execute_command(const command_t *command, client_t *client, \
     char *input)
 {
     if (command->auth && client->user_name == NULL) {
-        send_rfc_message(530);
+        send_rfc_message(430);
         return;
     }
     command->function(client, input);
@@ -40,13 +40,13 @@ static void handle_command(client_t *client, char *input)
     send_rfc_message(client->user_name == NULL ? 430 : 401);
 }
 
-static void process_packet(int socket_fd, char opcode)
+static void process_packet(client_t *client, char opcode)
 {
     const char *format = "Unknown packet sent by server with opcode %d\n";
 
     for (size_t i = 0; i < HANDLER_COUNT; i++) {
         if (HANDLERS[i].opcode == opcode) {
-            HANDLERS[i].function(socket_fd);
+            HANDLERS[i].function(client);
             return;
         }
     }
@@ -80,6 +80,6 @@ bool handle_packet(client_t *client)
     if (re == 0) {
         return true;
     }
-    process_packet(client->fd, opcode);
+    process_packet(client, opcode);
     return false;
 }

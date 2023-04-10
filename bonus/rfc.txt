@@ -4,7 +4,8 @@ CODE / MESSAGE
 
 200 Command okay.
 220 Service ready for new user.
-230 Logged in as {user} ({uuid}).
 400 Invalid arguments.
-500 Unknown command.
-530 Please login with /login.
+401 Unknown command.
+420 Too long username.
+430 Please login with /login.
+500 An internal error occured.

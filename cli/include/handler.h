@@ -10,10 +10,10 @@
 
     #define HANDLER_COUNT (sizeof(HANDLERS) / sizeof(handler_t))
 
-typedef void (*packet_handler_t)(int socket_fd);
+typedef void (*packet_handler_t)(client_t *client);
 
-void message_packet_handler(int socket_fd);
-void user_packet_handler(int socket_fd);
+void message_packet_handler(client_t *client);
+void user_packet_handler(client_t *client);
 
 typedef struct handler_s {
     char opcode;

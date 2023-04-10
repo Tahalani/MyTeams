@@ -21,7 +21,7 @@ OBJ_T		=	$(TESTS:.c=.o)
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Wextra --coverage
+CFLAGS		=	-Wall -Wextra -Wpedantic --coverage
 CPPFLAGS	=	-iquote ../cli/include/ -iquote ../server/include/
 TESTFLAGS	=	--coverage -lcriterion $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 
