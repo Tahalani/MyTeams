@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "commands.h"
 #include "messages.h"
 #include "packets.h"
 
@@ -29,5 +30,18 @@ void send_packet(int fd, packet_command_t type, size_t data_size, char *data)
     write(fd, &packet, sizeof(command_packet_t));
     if (data != NULL) {
         write(fd, data, data_size);
+    }
+}
+
+void send_help_message(void)
+{
+    char space = '\0';
+
+    printf("The following commands are recognized.\n");
+    for (size_t i = 0; i < COMMANDS_COUNT; i++) {
+        space = ' ';
+        if ((i % 5 == 0 && i != 0) || (i == COMMANDS_COUNT - 1))
+            space = '\n';
+        printf( "%s%c", COMMANDS[i].name, space);
     }
 }

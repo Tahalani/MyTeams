@@ -21,5 +21,6 @@ bool handle_packet(client_t *client);
 
 void send_rfc_message(int code);
 void send_packet(int fd, packet_command_t type, size_t data_size, char *data);
+void send_help_message(void);
 
 #endif

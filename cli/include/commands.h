@@ -28,6 +28,7 @@ void subscribe_command(client_t *client, char *input);
 void unsubscribe_command(client_t *client, char *input);
 void subscribed_command(client_t *client, char *input);
 void info_command(client_t *client, char *input);
+void help_command(client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -36,19 +37,20 @@ typedef struct command_s {
 } command_t;
 
 static const command_t COMMANDS[] = {
+        { "/create", &create_command, true },
+        { "/help", &help_command, true },
+        { "/info", &info_command, true },
         { "/login", &login_command, false, },
         { "/logout", &logout_command, true, },
-        { "/users", &users_command, true },
-        { "/user", &user_command, true },
-        { "/send", &send_command, true },
-        { "/messages", &messages_command, true },
-        { "/use", &use_command, true },
-        { "/create", &create_command, true },
         { "/list", &list_command, true },
+        { "/messages", &messages_command, true },
+        { "/send", &send_command, true },
         { "/subscribe", &subscribe_command, true },
-        { "/unsubscribe", &unsubscribe_command, true },
         { "/subscribed", &subscribed_command, true },
-        { "/info", &info_command, true },
+        { "/unsubscribe", &unsubscribe_command, true },
+        { "/use", &use_command, true },
+        { "/user", &user_command, true },
+        { "/users", &users_command, true },
 };
 
 #endif

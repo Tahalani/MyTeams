@@ -15,7 +15,6 @@
     #include "types.h"
 
     #define MAX_CONNECTIONS 50
-    #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"
 
