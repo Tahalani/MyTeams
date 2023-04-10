@@ -8,6 +8,7 @@
 SRC			=	src/commands/auth.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
+				src/commands/fixme3.c \
 				src/cli.c \
 				src/client.c \
 				src/command.c \

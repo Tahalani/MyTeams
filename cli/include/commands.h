@@ -27,6 +27,7 @@ void list_command(client_t *client, char *input);
 void subscribe_command(client_t *client, char *input);
 void unsubscribe_command(client_t *client, char *input);
 void subscribed_command(client_t *client, char *input);
+void info_command(client_t *client, char *input);
 
 typedef struct command_s {
     char *name;
@@ -47,6 +48,7 @@ static const command_t COMMANDS[] = {
         { "/subscribe", &subscribe_command, true },
         { "/unsubscribe", &unsubscribe_command, true },
         { "/subscribed", &subscribed_command, true },
+        { "/info", &info_command, true },
 };
 
 #endif
