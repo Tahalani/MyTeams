@@ -39,7 +39,7 @@ OBJ_M 		=	$(MAIN:.c=.o)
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Wextra -Wpedantic
+CFLAGS		=	-Wall -Wextra
 CPPFLAGS	=	-iquote $(INC) -iquote ../include -iquote ../libs/myteams
 LDLIBS		=	-lmyteams
 LDFLAGS		=	-L../libs/myteams

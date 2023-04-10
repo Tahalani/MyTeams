@@ -10,11 +10,9 @@
 
     #include <stdbool.h>
     #include <sys/socket.h>
+    #include "packets.h"
     #include "types.h"
 
-    #define SUCCESS 0
-    #define FAILURE 84
-    #define BUFFER_SIZE 1024
     #define MAX_CONNECTIONS 50
     #define UNUSED __attribute__((unused))
 
@@ -35,7 +33,8 @@ team_t *find_team_by_uuid(server_t *server, char *uuid);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
-void handle_input(server_t *server, client_t *client, char *input);
+void handle_input(server_t *server, client_t *client, \
+    command_packet_t *packet);
 int refresh_fdsets(server_t *server, fd_set *set);
 
 void send_basic_message(int fd, char *code);

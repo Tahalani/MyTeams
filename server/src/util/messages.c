@@ -5,9 +5,7 @@
 ** messages.c
 */
 
-#include <stdio.h>
 #include <string.h>
-#include "commands.h"
 #include "messages.h"
 #include "server.h"
 
@@ -24,6 +22,7 @@ void send_basic_message(int fd, char *code)
     }
 }
 
+/*
 void send_help_message(int fd)
 {
     char space = '\0';
@@ -37,3 +36,4 @@ void send_help_message(int fd)
     }
     dprintf(fd, "214 Help okay.%s", CRLF);
 }
+*/

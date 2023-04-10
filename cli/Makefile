@@ -5,10 +5,13 @@
 ## Makefile
 ##
 
-SRC			=	src/cli.c \
+SRC			=	src/commands/auth.c \
+				src/commands/fixme.c \
+				src/cli.c \
 				src/client.c \
 				src/command.c \
-				src/packets.c
+				src/handler.c \
+				src/send.c
 
 MAIN		=	src/main.c
 
@@ -21,7 +24,7 @@ OBJ_M 		=	$(MAIN:.c=.o)
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Wextra -Wpedantic
+CFLAGS		=	-Wall -Wextra
 CPPFLAGS	=	-iquote $(INC) -iquote ../include -iquote ../libs/myteams
 LDLIBS		=	-lmyteams
 LDFLAGS		=	-L../libs/myteams

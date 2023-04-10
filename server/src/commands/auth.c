@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "commands.h"
 #include "constants.h"
 #include "logging_server.h"
@@ -39,20 +40,16 @@ static void connect_user(server_t *server, client_t *client, char *name)
 
 void login_command(server_t *server, client_t *client, char *input)
 {
-    char **data = str_to_word(input, ' ');
+    char buffer[MAX_NAME_LENGTH + 1];
+    ssize_t re = 0;
 
-    if (array_len(data) != 2) {
-        send_message_packet(client->fd, 400);
-        free_array(data);
+    memset(buffer, 0, MAX_NAME_LENGTH + 1);
+    re = read(client->fd, &buffer, MAX_NAME_LENGTH);
+    if (re != MAX_NAME_LENGTH) {
+        send_message_packet(client->fd, 500);
         return;
     }
-    if (strlen(data[1]) > MAX_NAME_LENGTH) {
-        send_message_packet(client->fd, 420);
-        free_array(data);
-        return;
-    }
-    connect_user(server, client, data[1]);
-    free_array(data);
+    connect_user(server, client, buffer);
 }
 
 void logout_command (UNUSED server_t *server, client_t *client, \

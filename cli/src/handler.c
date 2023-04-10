@@ -7,9 +7,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include "cli.h"
 #include "logging_client.h"
-#include "messages.h"
-#include "packets.h"
 
 void message_packet_handler(int socket_fd)
 {
@@ -19,13 +18,7 @@ void message_packet_handler(int socket_fd)
     if (re != sizeof(message_packet_t)) {
         return;
     }
-    for (size_t i = 0; i < MESSAGES_COUNT; i++) {
-        if (MESSAGES[i].code == packet.code) {
-            printf("%s\n", MESSAGES[i].message);
-            return;
-        }
-    }
-    fprintf(stderr, "Unknown RFC message code: %d\n", packet.code);
+    send_rfc_message(packet.code);
 }
 
 void user_packet_handler(int socket_fd)

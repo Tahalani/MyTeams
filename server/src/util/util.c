@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "constants.h"
 #include "server.h"
 
 void fatal_error(const char *error)
