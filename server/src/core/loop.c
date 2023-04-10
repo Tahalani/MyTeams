@@ -8,7 +8,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <sys/queue.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+
 #include "server.h"
+#include "types.h"
 
 static void end_server(server_t *server)
 {

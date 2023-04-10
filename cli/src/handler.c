@@ -8,8 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
+
 #include "cli.h"
 #include "logging_client.h"
+#include "packets.h"
+#include "types.h"
 
 static void update_user(client_t *client, user_packet_t *packet, bool login)
 {

@@ -9,7 +9,13 @@
 #include <stdio.h>
 #include <sys/param.h>
 #include <unistd.h>
+#include <netinet/in.h>
+#include <stdbool.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+
 #include "cli.h"
+#include "types.h"
 
 static int refresh_fdsets(int socket_fd, fd_set *set)
 {

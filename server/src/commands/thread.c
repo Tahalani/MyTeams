@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "commands.h"
+#include <sys/queue.h>
+
 #include "server.h"
+#include "types.h"
 
 static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)

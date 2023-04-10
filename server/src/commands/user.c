@@ -7,8 +7,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/queue.h>
+
 #include "commands.h"
 #include "server.h"
+#include "types.h"
 
 static void display_user_info(client_t *client, user_t *node)
 {

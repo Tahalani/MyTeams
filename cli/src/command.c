@@ -10,8 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "commands.h"
 #include "handler.h"
+#include "cli.h"
+#include "types.h"
 
 static void execute_command(const command_t *command, client_t *client, \
     char *input)

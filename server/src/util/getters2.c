@@ -6,7 +6,10 @@
 */
 
 #include <string.h>
+#include <sys/queue.h>
+
 #include "server.h"
+#include "types.h"
 
 channel_t *find_channel_by_uuid(server_t *server, char *uuid)
 {

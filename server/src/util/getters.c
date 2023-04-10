@@ -6,7 +6,10 @@
 */
 
 #include <string.h>
+#include <sys/queue.h>
+
 #include "server.h"
+#include "types.h"
 
 user_t *find_user_by_uuid(server_t *server, char *uuid)
 {

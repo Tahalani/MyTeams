@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "commands.h"
+#include <sys/queue.h>
+
 #include "server.h"
+#include "types.h"
 
 static void add_new_channel(server_t *server, team_t *team, \
     char *name, char *description)

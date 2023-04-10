@@ -6,11 +6,15 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/param.h>
 #include <unistd.h>
+#include <sys/queue.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+
 #include "packets.h"
 #include "server.h"
+#include "types.h"
 
 static void handle_client(server_t *server, client_t *client)
 {

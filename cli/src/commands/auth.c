@@ -6,7 +6,11 @@
 */
 
 #include <string.h>
+
 #include "cli.h"
+#include "constants.h"
+#include "packets.h"
+#include "types.h"
 
 void login_command(client_t *client, char *args)
 {

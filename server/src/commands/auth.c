@@ -7,8 +7,14 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <sys/queue.h>
+
 #include "logging_server.h"
 #include "server.h"
+#include "constants.h"
+#include "packets.h"
+#include "types.h"
 
 static void logged_in_event(client_t *client, bool new)
 {

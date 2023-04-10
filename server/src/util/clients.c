@@ -5,10 +5,11 @@
 ** clients.c
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include "server.h"
+#include "types.h"
 
 client_t *new_client(int fd)
 {
