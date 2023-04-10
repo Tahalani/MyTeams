@@ -11,6 +11,7 @@
     #define COMMANDS_COUNT (sizeof(COMMANDS) / sizeof(command_t))
 
     #include <stdbool.h>
+
     #include "packets.h"
     #include "types.h"
 

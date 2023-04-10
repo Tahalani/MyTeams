@@ -8,8 +8,8 @@
 #include <unistd.h>
 
 #include "commands.h"
-#include "server.h"
 #include "packets.h"
+#include "server.h"
 #include "types.h"
 
 static void clear_buffer(int fd, command_packet_t *packet)

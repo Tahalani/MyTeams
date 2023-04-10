@@ -7,10 +7,10 @@
 
 #include <stdio.h>
 #include <sys/param.h>
-#include <unistd.h>
 #include <sys/queue.h>
 #include <sys/select.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include "packets.h"
 #include "server.h"

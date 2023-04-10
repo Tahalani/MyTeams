@@ -6,13 +6,13 @@
 */
 
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <sys/param.h>
-#include <unistd.h>
 #include <netinet/in.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <sys/param.h>
 #include <sys/select.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include "cli.h"
 #include "types.h"
