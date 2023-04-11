@@ -9,15 +9,17 @@
     #define CLI_H_
 
     #include <stdbool.h>
-
-    #define SUCCESS 0
-    #define FAILURE 84
+    #include "packets.h"
+    #include "types.h"
 
 int teams_cli(int argc, char **argv);
 
 bool start_client(char *address, int port);
 
-bool handle_input(int socket_fd);
-bool handle_message(int socket_fd);
+bool handle_input(client_t *client);
+bool handle_packet(client_t *client);
+
+void send_rfc_message(int code);
+void send_packet(int fd, packet_command_t type, size_t data_size, char *data);
 
 #endif

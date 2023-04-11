@@ -5,62 +5,41 @@
 ** commands.c
 */
 
-#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "commands.h"
 #include "server.h"
 
-static void handle_unknown(client_t *client)
+static void clear_buffer(int fd, command_packet_t *packet)
 {
-    if (client->user != NULL) {
-        send_basic_message(client->fd, "500");
-    } else {
-        send_basic_message(client->fd, "530");
+    char buffer[packet->data_size];
+    ssize_t re = read(fd, buffer, packet->data_size);
+
+    if (re != (ssize_t) packet->data_size) {
+        send_message_packet(fd, 500);
     }
 }
 
-static void run_command(const command_t *command, server_t *ftp,
-    client_t *client, char *input)
+static void run_command(const command_t *command, server_t *server, \
+    client_t *client, command_packet_t *packet)
 {
     if (command->auth && client->user == NULL) {
-        send_basic_message(client->fd, "530");
+        send_message_packet(client->fd, 430);
+        clear_buffer(client->fd, packet);
         return;
     }
-    command->function(ftp, client, input);
+    command->function(server, client, "");
 }
 
-static void handle_command(server_t *server, client_t *client, char *input)
+void handle_input(server_t *server, client_t *client, \
+    command_packet_t *packet)
 {
-    char *identifier = strdup(input);
-    char *name = NULL;
-
-    if (identifier == NULL)
-        return;
-    name = strtok(identifier, " ");
-    if (name == NULL) {
-        handle_unknown(client);
-        free(identifier);
-        return;
-    }
     for (size_t i = 0; i < COMMANDS_COUNT; i++) {
-        if (strcmp(name, COMMANDS[i].name) == 0) {
-            run_command(&COMMANDS[i], server, client, input);
+        if (COMMANDS[i].id == packet->command) {
+            run_command(&COMMANDS[i], server, client, packet);
             return;
         }
     }
-    handle_unknown(client);
-    free(identifier);
-}
-
-void handle_input(server_t *server, client_t *client, char *input)
-{
-    char *save_ptr = input;
-    char *current = strtok_r(input, "\r\n", &save_ptr);
-
-    if (current == NULL)
-        return;
-    while (current != NULL) {
-        handle_command(server, client, current);
-        current = strtok_r(NULL, "\r\n", &save_ptr);
-    }
+    send_message_packet(client->fd, 500);
+    clear_buffer(client->fd, packet);
 }

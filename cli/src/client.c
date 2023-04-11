@@ -22,23 +22,23 @@ static int refresh_fdsets(int socket_fd, fd_set *set)
     return max_fd;
 }
 
-static void client_loop(int socket_fd)
+static void client_loop(client_t *client)
 {
     fd_set set;
     bool exit = false;
     int max_fd = 0;
 
     while (!exit) {
-        max_fd = refresh_fdsets(socket_fd, &set);
+        max_fd = refresh_fdsets(client->fd, &set);
         if (select(max_fd + 1, &set, NULL, NULL, NULL) == -1) {
             perror("select failed");
             return;
         }
         if (FD_ISSET(0, &set)) {
-            handle_input(socket_fd);
+            exit = handle_input(client);
         }
-        if (FD_ISSET(socket_fd, &set)) {
-            exit = handle_message(socket_fd);
+        if (FD_ISSET(client->fd, &set)) {
+            exit = handle_packet(client);
         }
     }
 }
@@ -68,13 +68,14 @@ bool start_client(char *address, int port)
             .sin_addr = { inet_addr(address) },
     };
     struct sockaddr *addr_ptr = (struct sockaddr *)&addr;
-    int socket_fd = 0;
+    client_t client = { 0, NULL, NULL };
 
-    socket_fd = init_client(addr_ptr);
-    if (socket_fd == -1) {
+    client.fd = init_client(addr_ptr);
+    if (client.fd == -1) {
         return false;
     }
-    client_loop(socket_fd);
-    close(socket_fd);
+    send_rfc_message(220);
+    client_loop(&client);
+    close(client.fd);
     return true;
 }

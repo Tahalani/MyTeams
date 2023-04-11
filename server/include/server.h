@@ -10,15 +10,10 @@
 
     #include <stdbool.h>
     #include <sys/socket.h>
+    #include "packets.h"
     #include "types.h"
 
-    #define SUCCESS 0
-    #define FAILURE 84
-    #define BUFFER_SIZE 1024
     #define MAX_CONNECTIONS 50
-    #define MAX_NAME_LENGTH 32
-    #define MAX_DESCRIPTION_LENGTH 255
-    #define MAX_BODY_LENGTH 512
     #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"
@@ -39,11 +34,15 @@ message_t *find_message_by_uuid(server_t *server, char *uuid);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
-void handle_input(server_t *server, client_t *client, char *input);
+void handle_input(server_t *server, client_t *client, \
+    command_packet_t *packet);
 int refresh_fdsets(server_t *server, fd_set *set);
 
 void send_basic_message(int fd, char *code);
 void send_help_message(int fd);
+
+void send_message_packet(int fd, int code);
+void send_user_packet(int fd, user_t *user, packet_command_t context);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);

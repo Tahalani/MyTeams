@@ -11,6 +11,7 @@
     #define COMMANDS_COUNT (sizeof(COMMANDS) / sizeof(command_t))
 
     #include <stdbool.h>
+    #include "packets.h"
     #include "types.h"
 
 typedef void (*command_func_t)(server_t *server, client_t *client, char *input);
@@ -30,25 +31,25 @@ void subscribed_command(server_t *server, client_t *client, char *input);
 void info_command(server_t *server, client_t *client, char *input);
 
 typedef struct command_s {
-    char *name;
+    packet_command_t id;
     command_func_t function;
     bool auth;
 } command_t;
 
 static const command_t COMMANDS[] = {
-        { "/login", &login_command, false, },
-        { "/logout", &logout_command, true, },
-        { "/users", &users_command, true },
-        { "/user", &user_command, true },
-        { "/send", &send_command, true },
-        { "/messages", &messages_command, true },
-        { "/use", &use_command, true },
-        { "/create", &create_command, true },
-        { "/list", &list_command, true },
-        { "/subscribe", &subscribe_command, true },
-        { "/unsubscribe", &unsubscribe_command, true },
-        { "/subscribed", &subscribed_command, true },
-        { "/info", &info_command, true },
+        { COMMAND_LOGIN, &login_command, false, },
+        { COMMAND_LOGOUT, &logout_command, true, },
+        { COMMAND_USER, &user_command, true },
+        { COMMAND_USERS, &users_command, true },
+        { COMMAND_SEND, &send_command, true },
+        { COMMAND_MESSAGES, &messages_command, true },
+        { COMMAND_USE, &use_command, true },
+        { COMMAND_CREATE, &create_command, true },
+        { COMMAND_LIST, &list_command, true },
+        { COMMAND_SUBSCRIBE, &subscribe_command, true },
+        { COMMAND_UNSUBSCRIBE, &unsubscribe_command, true },
+        { COMMAND_SUBSCRIBED, &subscribed_command, true },
+        { COMMAND_INFO, &info_command, true },
 };
 
 #endif

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cli.h"
+#include "constants.h"
 
 static bool check_arguments(char **argv)
 {

@@ -5,12 +5,11 @@
 ** messages.c
 */
 
-#include <stdio.h>
 #include <string.h>
-#include "commands.h"
 #include "messages.h"
 #include "server.h"
 
+// This file will disappear as soon as the packet handling is done
 void send_basic_message(int fd, char *code)
 {
     const char *msg = NULL;
@@ -20,10 +19,11 @@ void send_basic_message(int fd, char *code)
             msg = MESSAGES[i];
     }
     if (msg != NULL) {
-        dprintf(fd, "%s%s", msg, CRLF);
+
     }
 }
 
+/*
 void send_help_message(int fd)
 {
     char space = '\0';
@@ -37,3 +37,4 @@ void send_help_message(int fd)
     }
     dprintf(fd, "214 Help okay.%s", CRLF);
 }
+*/
