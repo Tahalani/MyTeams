@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/signalfd.h>
 #include "server.h"
 
 static void end_server(server_t *server)
@@ -24,18 +27,27 @@ static void server_loop(server_t *server)
     fd_set set;
     int max_fd = 0;
     int current = 0;
+    sigset_t mask;
+    int sig_fd = 0;
 
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT);
+    sig_fd = signalfd(-1, &mask, 0);
+    if (sig_fd == -1)
+        fatal_error("signalfd failed");
+    sigprocmask(SIG_BLOCK, &mask, NULL);
     while (1) {
-        max_fd = refresh_fdsets(server, &set);
+        max_fd = refresh_fdsets(server, &set, sig_fd);
         current = select(max_fd + 1, &set, NULL, NULL, NULL);
-        if (current == -1) {
-            perror("select failed");
-        }
-        if (FD_ISSET(server->socket_fd, &set)) {
+        if (current == -1)
+            fatal_error("select failed");
+        if (FD_ISSET(sig_fd, &set))
+            break;
+        if (FD_ISSET(server->socket_fd, &set))
             handle_incoming(server);
-        }
         handle_clients(server, &set);
     }
+    display_all_teams(server);
 }
 
 static int init_ftp(struct sockaddr *addr)
@@ -62,7 +74,7 @@ static int init_ftp(struct sockaddr *addr)
     return socket_fd;
 }
 
-void init_data(data_t *data)
+void init_data(data_t *data, server_t *server)
 {
     data->users = malloc(sizeof(struct user_list));
     data->teams = malloc(sizeof(struct team_list));
@@ -77,6 +89,7 @@ void init_data(data_t *data)
     SLIST_INIT(data->channels);
     SLIST_INIT(data->threads);
     SLIST_INIT(data->messages);
+    load_all_teams(data, server);
 }
 
 bool start_server(int port)
@@ -91,8 +104,8 @@ bool start_server(int port)
     if (socket_fd == -1 || data == NULL) {
         return false;
     }
-    srand((unsigned long) &server);
-    init_data(data);
+    srand((unsigned long) &server + time(NULL));
+    init_data(data, &server);
     server_loop(&server);
     end_server(&server);
     free(address);

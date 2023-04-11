@@ -10,15 +10,12 @@
 
     #include <stdbool.h>
     #include <sys/socket.h>
+    #include <string.h>
     #include "types.h"
 
     #define SUCCESS 0
     #define FAILURE 84
     #define BUFFER_SIZE 1024
-    #define MAX_CONNECTIONS 50
-    #define MAX_NAME_LENGTH 32
-    #define MAX_DESCRIPTION_LENGTH 255
-    #define MAX_BODY_LENGTH 512
     #define UNUSED __attribute__((unused))
 
     #define CRLF "\r\n"
@@ -39,7 +36,7 @@ team_t *find_team_by_uuid(server_t *server, char *uuid);
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
 void handle_input(server_t *server, client_t *client, char *input);
-int refresh_fdsets(server_t *server, fd_set *set);
+int refresh_fdsets(server_t *server, fd_set *set, int sig_fd);
 
 void send_basic_message(int fd, char *code);
 void send_help_message(int fd);
@@ -70,5 +67,17 @@ void list_team(server_t *server, client_t *client);
 void list_channel(server_t *server, client_t *client);
 void list_thread(server_t *server, client_t *client);
 void list_reply(server_t *server, client_t *client);
+
+int create_team_file(char *name, char *description, char *uuid);
+int get_fd_file(char *name);
+message_t *find_message_by_uuid(server_t *server, char *uuid);
+void save_team(team_t *team, int fd);
+team_t *load_team(int fd);
+void display_all_teams(server_t *server);
+
+thread_t *load_thread(int fd);
+channel_t *load_channel(int fd);
+team_t *load_team(int fd);
+void load_all_teams(data_t *data, server_t *server);
 
 #endif

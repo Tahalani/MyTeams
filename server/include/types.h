@@ -8,6 +8,12 @@
 #ifndef TYPES_H_
     #define TYPES_H_
 
+    #define MAX_CONNECTIONS 50
+    #define MAX_NAME_LENGTH 32
+    #define MAX_DESCRIPTION_LENGTH 255
+    #define MAX_BODY_LENGTH 512
+    #define UUID_SIZE 36
+
     #include <bits/types/FILE.h>
     #include <sys/queue.h>
     #include <time.h>
@@ -45,10 +51,38 @@ typedef struct team_s {
     char *uuid;
     char *name;
     char *description;
+    int fd_file;
     SLIST_HEAD(, uuid_s) *channels;
     SLIST_HEAD(user_l, uuid_s) *users;
     SLIST_ENTRY(team_s) next;
 } team_t;
+
+typedef struct parsed_team_s {
+    char uuid[UUID_SIZE + 1];
+    char name[MAX_NAME_LENGTH + 1];
+    char description[MAX_DESCRIPTION_LENGTH + 1];
+} parsed_team_t;
+
+typedef struct parsed_channel_s {
+    char uuid[UUID_SIZE + 1];
+    char name[MAX_NAME_LENGTH + 1];
+    char description[MAX_DESCRIPTION_LENGTH + 1];
+    char uuid_team[UUID_SIZE + 1];
+} parsed_channel_t;
+
+typedef struct parsed_thread_s {
+    char uuid[UUID_SIZE + 1];
+    char name[MAX_NAME_LENGTH + 1];
+    char description[MAX_DESCRIPTION_LENGTH + 1];
+    char uuid_channel[UUID_SIZE + 1];
+} parsed_thread_t;
+
+typedef struct parsed_message_s {
+    char uuid[UUID_SIZE + 1];
+    char body[MAX_BODY_LENGTH + 1];
+    char uuid_thread[UUID_SIZE + 1];
+    char uuid_user[UUID_SIZE + 1];
+} parsed_message_t;
 
 typedef struct use_s {
     team_t *team;
