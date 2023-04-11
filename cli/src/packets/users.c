@@ -48,6 +48,17 @@ void user_packet_handler(client_t *client)
     }
 }
 
+void context_packet_handler(client_t *client)
+{
+    context_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(context_packet_t));
+
+    if (re != sizeof(context_packet_t)) {
+        return;
+    }
+    client->context = packet.context;
+}
+
 void message_packet_handler(client_t *client)
 {
     message_packet_t packet;

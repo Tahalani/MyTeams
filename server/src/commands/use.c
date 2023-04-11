@@ -52,6 +52,8 @@ void use_command(server_t *server, client_t *client, command_packet_t *packet)
         done = fill_channel_use(server, client, data);
     else if (len == 3)
         done = fill_thread_use(server, client, data);
-    if (done)
+    if (done) {
+        send_context_packet(client->fd, len);
         send_message_packet(client->fd, 200);
+    }
 }

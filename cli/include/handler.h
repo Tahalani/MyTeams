@@ -13,6 +13,7 @@
 typedef void (*packet_handler_t)(client_t *client);
 
 void message_packet_handler(client_t *client);
+void context_packet_handler(client_t *client);
 void user_packet_handler(client_t *client);
 
 typedef struct handler_s {
@@ -21,8 +22,9 @@ typedef struct handler_s {
 } handler_t;
 
 static const handler_t HANDLERS[] = {
-        { 0, &message_packet_handler, },
-        { 1, &user_packet_handler },
+        { PACKET_MESSAGE, &message_packet_handler, },
+        { PACKET_CONTEXT, &context_packet_handler, },
+        { PACKET_USER, &user_packet_handler },
 };
 
 #endif

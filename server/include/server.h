@@ -43,6 +43,7 @@ void clear_buffer(int fd, command_packet_t *packet);
 void send_basic_message(int fd, char *code);
 
 void send_message_packet(int fd, int code);
+void send_context_packet(int fd, packet_context_t context);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
 
 void fatal_error(const char *message);

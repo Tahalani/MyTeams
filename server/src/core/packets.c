@@ -21,6 +21,16 @@ void send_message_packet(int fd, int code)
     write(fd, &packet, sizeof(message_packet_t));
 }
 
+void send_context_packet(int fd, packet_context_t context)
+{
+    packet_header_t opcode = PACKET_CONTEXT;
+    context_packet_t packet;
+
+    packet.context = context;
+    write(fd, &opcode, sizeof(packet_header_t));
+    write(fd, &packet, sizeof(context_packet_t));
+}
+
 void send_user_packet(int fd, user_t *user, packet_command_t context)
 {
     packet_header_t opcode = PACKET_USER;
