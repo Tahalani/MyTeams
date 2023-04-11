@@ -6,9 +6,12 @@
 */
 
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "cli.h"
 #include "constants.h"
 

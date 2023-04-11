@@ -5,10 +5,12 @@
 ** use
 */
 
+#include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
+
 #include "commands.h"
 #include "server.h"
+#include "types.h"
 
 static bool fill_default_use(client_t *client)
 {

@@ -5,10 +5,16 @@
 ** auth.c
 */
 
+#include <stdbool.h>
 #include <string.h>
+#include <sys/queue.h>
 #include <unistd.h>
+
+#include "constants.h"
+#include "packets.h"
 #include "logging_server.h"
 #include "server.h"
+#include "types.h"
 
 static void logged_in_event(client_t *client, bool new)
 {
@@ -35,7 +41,7 @@ static void connect_user(server_t *server, client_t *client, char *name)
     logged_in_event(client, true);
 }
 
-void login_command(server_t *server, client_t *client, char *input)
+void login_command(server_t *server, client_t *client, UNUSED char *input)
 {
     char buffer[MAX_NAME_LENGTH + 1];
     ssize_t re = 0;
@@ -52,10 +58,6 @@ void login_command(server_t *server, client_t *client, char *input)
 void logout_command(UNUSED server_t *server, client_t *client, \
     UNUSED char *input)
 {
-    if (client->user == NULL) {
-        send_message_packet(client->fd, 500);
-        return;
-    }
     send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;

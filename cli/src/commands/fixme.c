@@ -5,29 +5,30 @@
 ** fixme.c
 */
 
+#include "constants.h"
 #include "types.h"
 
-void users_command(client_t *client, char *input)
+void user_command(UNUSED client_t *client, UNUSED char *input)
 {
 
 }
 
-void user_command(client_t *client, char *input)
+void send_command(UNUSED client_t *client, UNUSED char *input)
 {
 
 }
 
-void send_command(client_t *client, char *input)
+void messages_command(UNUSED client_t *client, UNUSED char *input)
 {
 
 }
 
-void messages_command(client_t *client, char *input)
+void create_command(UNUSED client_t *client, UNUSED char *args)
 {
 
 }
 
-void use_command(client_t *client, char *input)
+void subscribed_command(UNUSED client_t *client, UNUSED char *input)
 {
 
 }
