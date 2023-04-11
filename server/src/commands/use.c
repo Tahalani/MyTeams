@@ -32,7 +32,7 @@ static int read_args(client_t *client, char **data, command_packet_t *packet)
     }
     if (count > 3)
         send_message_packet(client->fd, 500);
-    return count > 3 ? -1 : 3;
+    return count > 3 ? -1 : count;
 }
 
 void use_command(server_t *server, client_t *client, command_packet_t *packet)
