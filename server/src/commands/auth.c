@@ -58,10 +58,6 @@ void login_command(server_t *server, client_t *client, UNUSED char *input)
 void logout_command(UNUSED server_t *server, client_t *client, \
     UNUSED char *input)
 {
-    if (client->user == NULL) {
-        send_message_packet(client->fd, 500);
-        return;
-    }
     send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;
