@@ -12,16 +12,6 @@
 #include "server.h"
 #include "types.h"
 
-static void clear_buffer(int fd, command_packet_t *packet)
-{
-    char buffer[packet->data_size];
-    ssize_t re = read(fd, buffer, packet->data_size);
-
-    if (re != (ssize_t) packet->data_size) {
-        send_message_packet(fd, 500);
-    }
-}
-
 static void run_command(const command_t *command, server_t *server, \
     client_t *client, command_packet_t *packet)
 {
@@ -30,7 +20,17 @@ static void run_command(const command_t *command, server_t *server, \
         clear_buffer(client->fd, packet);
         return;
     }
-    command->function(server, client, "");
+    command->function(server, client, packet);
+}
+
+void clear_buffer(int fd, command_packet_t *packet)
+{
+    char buffer[packet->data_size];
+    ssize_t re = read(fd, buffer, packet->data_size);
+
+    if (re != (ssize_t) packet->data_size) {
+        send_message_packet(fd, 500);
+    }
 }
 
 void handle_input(server_t *server, client_t *client, \

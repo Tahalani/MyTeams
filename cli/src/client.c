@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -80,8 +81,9 @@ bool start_client(char *address, int port)
     if (client.fd == -1) {
         return false;
     }
-    send_rfc_message(220);
     client_loop(&client);
     close(client.fd);
+    free(client.user_uuid);
+    free(client.user_name);
     return true;
 }

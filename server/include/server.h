@@ -32,14 +32,15 @@ user_t *find_user_by_name(server_t *server, char *name);
 team_t *find_team_by_uuid(server_t *server, char *uuid);
 message_t *find_message_by_uuid(server_t *server, char *uuid);
 
+bool handle_stdin(void);
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
 void handle_input(server_t *server, client_t *client, \
     command_packet_t *packet);
 int refresh_fdsets(server_t *server, fd_set *set);
+void clear_buffer(int fd, command_packet_t *packet);
 
 void send_basic_message(int fd, char *code);
-void send_help_message(int fd);
 
 void send_message_packet(int fd, int code);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
@@ -58,7 +59,6 @@ thread_t *find_thread_in_specified_channel(server_t *server, \
     char *channel_uuid, char *thread_uuid);
 
 char **str_to_word(char const *str, char separator);
-size_t array_len(char **array);
 void free_array(char **array);
 
 void create_team(server_t *server, client_t *client, char **data);
@@ -70,5 +70,10 @@ void list_team(server_t *server, client_t *client);
 void list_channel(server_t *server, client_t *client);
 void list_thread(server_t *server, client_t *client);
 void list_reply(server_t *server, client_t *client);
+
+bool fill_default_use(client_t *client);
+bool fill_team_use(server_t *server, client_t *client, char **data);
+bool fill_channel_use(server_t *server, client_t *client, char **data);
+bool fill_thread_use(server_t *server, client_t *client, char **data);
 
 #endif

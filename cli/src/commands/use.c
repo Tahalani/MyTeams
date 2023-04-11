@@ -28,7 +28,7 @@ static int check_context(char *args, char *array)
         }
         uuid = strtok(NULL, " ");
     }
-    if (res < 1 || res > 3) {
+    if (res > 3) {
         send_rfc_message(400);
         return -1;
     }

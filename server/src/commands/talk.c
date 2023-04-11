@@ -37,8 +37,9 @@ static void fill_message_struct(server_t *server, client_t *client, char **data)
     SLIST_INSERT_HEAD(server->data->messages, message, next);
 }
 
-void send_command(server_t *server, client_t *client, char *input)
+void send_command(server_t *server, client_t *client, command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 
@@ -58,8 +59,10 @@ void send_command(server_t *server, client_t *client, char *input)
         get_username_client(server, client), data[2], CRLF);
 }
 
-void messages_command(server_t *server, client_t *client, char *input)
+void messages_command(server_t *server, client_t *client, \
+    command_packet_t *packet)
 {
+    char *input = "";
     message_t *node = NULL;
     char **data = str_to_word(input, ' ');
 

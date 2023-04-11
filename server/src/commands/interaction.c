@@ -11,8 +11,10 @@
 #include "server.h"
 #include "types.h"
 
-void create_command(server_t *server, client_t *client, char *input)
+void create_command(server_t *server, client_t *client, \
+    command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     if (data == NULL)
         fatal_error("Malloc failed");
@@ -35,8 +37,9 @@ void create_command(server_t *server, client_t *client, char *input)
     send_basic_message(client->fd, "400");
 }
 
-void list_command(server_t *server, client_t *client, char *input)
+void list_command(server_t *server, client_t *client, command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     if (data == NULL)
         fatal_error("Malloc failed");

@@ -29,7 +29,7 @@ void send_packet(int fd, packet_command_t type, size_t data_size, char *data)
     command_packet_t packet = { type, data_size };
 
     write(fd, &packet, sizeof(command_packet_t));
-    if (data != NULL) {
+    if (data_size > 0 && data != NULL) {
         write(fd, data, data_size);
     }
 }

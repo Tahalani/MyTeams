@@ -6,83 +6,52 @@
 */
 
 #include <stdbool.h>
-#include <stdio.h>
+#include <unistd.h>
 
-#include "commands.h"
 #include "server.h"
 #include "types.h"
 
-static bool fill_default_use(client_t *client)
+static int read_args(client_t *client, char **data, command_packet_t *packet)
 {
-    client->use->team = NULL;
-    client->use->channel = NULL;
-    client->use->thread = NULL;
-    return true;
+    int count = 0;
+    int times = (int) packet->data_size / UUID_LENGTH;
+    size_t max = UUID_LENGTH * 3;
+    ssize_t re = 0;
+
+    if (packet->data_size % UUID_LENGTH != 0 || packet->data_size > max) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
+        return -1;
+    }
+    for (count = 0; count < times; count++) {
+        re = read(client->fd, data[count], UUID_LENGTH);
+        if (re != UUID_LENGTH) {
+            send_message_packet(client->fd, 500);
+            return -1;
+        }
+    }
+    if (count > 3)
+        send_message_packet(client->fd, 500);
+    return count > 3 ? -1 : 3;
 }
 
-static bool fill_team_use(server_t *server, client_t *client, char **data)
+void use_command(server_t *server, client_t *client, command_packet_t *packet)
 {
-    team_t *obj = find_team_by_uuid(server, data[1]);
-
-    fill_default_use(client);
-    if (obj == NULL) {
-        send_basic_message(client->fd, "570");
-        return false;
-    }
-    client->use->team = obj;
-    return true;
-}
-
-static bool fill_channel_use(server_t *server, client_t *client, char **data)
-{
-    channel_t *obj = NULL;
-
-    if (!fill_team_use(server, client, data)) {
-        return false;
-    }
-    obj = find_channel_in_specified_team(server, data[1], data[2]);
-    if (obj == NULL) {
-        send_basic_message(client->fd, "570");
-        return false;
-    }
-    client->use->channel = obj;
-    client->use->thread = NULL;
-    return true;
-}
-
-static bool fill_thread_use(server_t *server, client_t *client, char **data)
-{
-    thread_t *obj = NULL;
-
-    if (!fill_channel_use(server, client, data)) {
-        return false;
-    }
-    obj = find_thread_in_specified_channel(server, data[2], data[3]);
-    if (obj == NULL) {
-        send_basic_message(client->fd, "570");
-        return false;
-    }
-    client->use->thread = obj;
-    return true;
-}
-
-void use_command(server_t *server, client_t *client, char *input)
-{
-    char **data = str_to_word(input, ' ');
-    size_t len = array_len(data);
+    char uuid1[UUID_LENGTH + 1];
+    char uuid2[UUID_LENGTH + 1];
+    char uuid3[UUID_LENGTH + 1];
+    char *data[3] = { uuid1, uuid2, uuid3 };
+    int len = read_args(client, data, packet);
     bool done = false;
 
-    if (len > 4)
-        send_basic_message(client->fd, "400");
-    if (len == 1)
+    if (len == 0)
         done = fill_default_use(client);
-    else if (len == 2)
+    else if (len == 1)
         done = fill_team_use(server, client, data);
-    if (len == 3)
+    if (len == 2)
         done = fill_channel_use(server, client, data);
-    else if (len == 4)
+    else if (len == 3)
         done = fill_thread_use(server, client, data);
     if (done)
-        send_basic_message(client->fd, "200");
-    free_array(data);
+        send_message_packet(client->fd, 200);
 }

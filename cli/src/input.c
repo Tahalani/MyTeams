@@ -58,18 +58,19 @@ static void process_packet(client_t *client, char opcode)
 
 bool handle_input(client_t *client)
 {
+    bool exit = false;
     char *line = NULL;
     size_t size = 0;
     ssize_t len = getline(&line, &size, stdin);
 
     if (len < 1) {
-        return true;
+        exit = true;
     } else {
         line[len - 1] = '\0';
         handle_command(client, line);
     }
     free(line);
-    return false;
+    return exit;
 }
 
 bool handle_packet(client_t *client)

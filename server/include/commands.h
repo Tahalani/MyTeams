@@ -15,22 +15,35 @@
     #include "packets.h"
     #include "types.h"
 
-// TODO: Remove input when packet handling is done
-typedef void (*command_func_t)(server_t *server, client_t *client, char *input);
+typedef void (*command_func_t)(server_t *server, client_t *client, \
+    command_packet_t *packet);
 
-void login_command(server_t *server, client_t *client, char *input);
-void logout_command(server_t *server, client_t *client, char *input);
-void users_command(server_t *server, client_t *client, char *input);
-void user_command(server_t *server, client_t *client, char *input);
-void send_command(server_t *server, client_t *client, char *input);
-void messages_command(server_t *server, client_t *client, char *input);
-void use_command(server_t *server, client_t *client, char *input);
-void create_command(server_t *server, client_t *client, char *input);
-void list_command(server_t *server, client_t *client, char *input);
-void subscribe_command(server_t *server, client_t *client, char *input);
-void unsubscribe_command(server_t *server, client_t *client, char *input);
-void subscribed_command(server_t *server, client_t *client, char *input);
-void info_command(server_t *server, client_t *client, char *input);
+void login_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void logout_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void users_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void user_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void send_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void messages_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void use_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void create_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void list_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void subscribe_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void unsubscribe_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void subscribed_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
+void info_command(server_t *server, client_t *client, \
+    command_packet_t *packet);
 
 typedef struct command_s {
     packet_command_t id;

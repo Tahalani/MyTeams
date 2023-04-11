@@ -14,14 +14,6 @@ void free_array(char **array)
     free(array);
 }
 
-size_t array_len(char **array)
-{
-    size_t len = 0;
-
-    for (; array[len] != NULL; len++);
-    return len;
-}
-
 static size_t count_word(char const *str, char sep)
 {
     int count = 1;

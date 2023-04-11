@@ -41,11 +41,16 @@ static void connect_user(server_t *server, client_t *client, char *name)
     logged_in_event(client, true);
 }
 
-void login_command(server_t *server, client_t *client, UNUSED char *input)
+void login_command(server_t *server, client_t *client, command_packet_t *packet)
 {
     char buffer[MAX_NAME_LENGTH + 1];
     ssize_t re = 0;
 
+    if (packet->data_size != MAX_NAME_LENGTH) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
+        return;
+    }
     memset(buffer, 0, MAX_NAME_LENGTH + 1);
     re = read(client->fd, &buffer, MAX_NAME_LENGTH);
     if (re != MAX_NAME_LENGTH) {
@@ -56,8 +61,13 @@ void login_command(server_t *server, client_t *client, UNUSED char *input)
 }
 
 void logout_command(UNUSED server_t *server, client_t *client, \
-    UNUSED char *input)
+    command_packet_t *packet)
 {
+    if (packet->data_size != 0) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
+        return;
+    }
     send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;

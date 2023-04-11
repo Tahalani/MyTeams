@@ -25,6 +25,9 @@ static const message_t MESSAGES[] = {
         { 402, "Argument must be a UUID." },
         { 420, "Too long username." },
         { 430, "Please login with /login." },
+        { 440, "Unknown team." },
+        { 441, "Unknown channel." },
+        { 442, "Unknown thread." },
         { 500, "An internal error occured." },
 };
 

@@ -22,6 +22,7 @@ SRC			=	src/commands/auth.c \
 				src/core/packets.c \
 				src/util/arrays.c \
 				src/util/clients.c \
+				src/util/context.c \
 				src/util/data.c \
 				src/util/getters.c \
 				src/util/getters2.c \
