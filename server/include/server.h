@@ -9,6 +9,7 @@
     #define SERVER_H_
 
     #include <stdbool.h>
+    #include <sys/socket.h>
 
     #include "packets.h"
     #include "types.h"

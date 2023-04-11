@@ -6,10 +6,11 @@
 */
 
 #define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+
 #include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "server.h"
 
 int get_fd_file(char *name)
