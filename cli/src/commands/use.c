@@ -8,6 +8,8 @@
 #include <string.h>
 
 #include "cli.h"
+#include "constants.h"
+#include "packets.h"
 #include "types.h"
 
 static int check_context(char *args)

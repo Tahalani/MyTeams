@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "cli.h"
 #include "commands.h"
 #include "messages.h"
 #include "packets.h"

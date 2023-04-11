@@ -9,6 +9,7 @@
 #include <sys/queue.h>
 
 #include "commands.h"
+#include "constants.h"
 #include "server.h"
 #include "types.h"
 

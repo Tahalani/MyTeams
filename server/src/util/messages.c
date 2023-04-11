@@ -7,6 +7,7 @@
 
 #include <string.h>
 
+#include "constants.h"
 #include "messages.h"
 #include "server.h"
 
