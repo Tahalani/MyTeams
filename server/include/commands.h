@@ -15,6 +15,7 @@
     #include "packets.h"
     #include "types.h"
 
+// TODO: Remove input when packet handling is done
 typedef void (*command_func_t)(server_t *server, client_t *client, char *input);
 
 void login_command(server_t *server, client_t *client, char *input);

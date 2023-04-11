@@ -2,10 +2,9 @@
 ** EPITECH PROJECT, 2023
 ** MyTeams
 ** File description:
-** packets.c
+** users.c
 */
 
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -31,17 +30,6 @@ static void update_user(client_t *client, user_packet_t *packet, bool login)
     }
 }
 
-void message_packet_handler(client_t *client)
-{
-    message_packet_t packet;
-    ssize_t re = read(client->fd, &packet, sizeof(message_packet_t));
-
-    if (re != sizeof(message_packet_t)) {
-        return;
-    }
-    send_rfc_message(packet.code);
-}
-
 void user_packet_handler(client_t *client)
 {
     user_packet_t packet;
@@ -57,4 +45,15 @@ void user_packet_handler(client_t *client)
         client_event_logged_out(packet.uuid, packet.username);
         update_user(client, &packet, false);
     }
+}
+
+void message_packet_handler(client_t *client)
+{
+    message_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(message_packet_t));
+
+    if (re != sizeof(message_packet_t)) {
+        return;
+    }
+    send_rfc_message(packet.code);
 }

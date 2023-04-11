@@ -41,7 +41,7 @@ static void connect_user(server_t *server, client_t *client, char *name)
     logged_in_event(client, true);
 }
 
-void login_command(server_t *server, client_t *client, char *input)
+void login_command(server_t *server, client_t *client, UNUSED char *input)
 {
     char buffer[MAX_NAME_LENGTH + 1];
     ssize_t re = 0;

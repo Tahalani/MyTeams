@@ -6,15 +6,16 @@
 ##
 
 SRC			=	src/commands/auth.c \
+				src/commands/basic.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
-				src/commands/fixme3.c \
-				src/commands/help.c \
+				src/commands/use.c \
+				src/packets/users.c \
+				src/packets/send.c \
 				src/cli.c \
 				src/client.c \
-				src/command.c \
-				src/handler.c \
-				src/send.c
+				src/input.c \
+				src/util.c
 
 MAIN		=	src/main.c
 
