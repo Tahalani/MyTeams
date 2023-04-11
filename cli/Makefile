@@ -5,9 +5,17 @@
 ## Makefile
 ##
 
-SRC			=	src/cli.c \
+SRC			=	src/commands/auth.c \
+				src/commands/basic.c \
+				src/commands/fixme.c \
+				src/commands/fixme2.c \
+				src/commands/use.c \
+				src/packets/users.c \
+				src/packets/send.c \
+				src/cli.c \
 				src/client.c \
-				src/command.c
+				src/input.c \
+				src/util.c
 
 MAIN		=	src/main.c
 
@@ -21,12 +29,14 @@ OBJ_M 		=	$(MAIN:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC) -iquote ../lib/myteams
+CPPFLAGS	=	-iquote $(INC) -iquote ../include -iquote ../libs/myteams
+LDLIBS		=	-lmyteams
+LDFLAGS		=	-L../libs/myteams
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJ_M)
-	$(CC) -o $(NAME) $(OBJ) $(OBJ_M)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDFLAGS) $(LDLIBS)
 	cp $(NAME) ../
 
 clean:

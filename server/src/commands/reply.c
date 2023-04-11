@@ -6,10 +6,12 @@
 */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include "commands.h"
+#include <string.h>
+#include <sys/queue.h>
+
 #include "server.h"
+#include "types.h"
 
 static void add_new_reply(server_t *server, client_t *client, char *message)
 {
@@ -68,7 +70,8 @@ static void send_list(server_t *server, client_t *client, thread_t *thread)
     }
     dprintf(client->fd, "%d channel(s) available%s", nbr_reply, CRLF);
     SLIST_FOREACH(uuid, thread->messages, next) {
-        dprintf(client->fd, "%s (%s)%s", find_message_by_uuid(server, uuid->uuid)->content, \
+        dprintf(client->fd, "%s (%s)%s", \
+            find_message_by_uuid(server, uuid->uuid)->content, \
             find_message_by_uuid(server, uuid->uuid)->sender->username, CRLF);
     }
 }

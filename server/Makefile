@@ -15,13 +15,15 @@ SRC			=	src/commands/auth.c \
 				src/commands/channel.c \
 				src/commands/thread.c \
 				src/commands/reply.c \
+				src/commands/info.c \
+				src/database/display.c	\
 				src/database/message.c	\
 				src/database/team.c	\
 				src/database/user.c	\
-				src/database/display.c	\
 				src/core/commands.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
+				src/core/packets.c \
 				src/util/arrays.c \
 				src/util/clients.c \
 				src/util/data.c \
@@ -43,7 +45,7 @@ OBJ_M 		=	$(MAIN:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC) -iquote ../libs/myteams
+CPPFLAGS	=	-iquote $(INC) -iquote ../include -iquote ../libs/myteams
 LDLIBS		=	-lmyteams
 LDFLAGS		=	-L../libs/myteams
 

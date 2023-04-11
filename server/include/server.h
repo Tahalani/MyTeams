@@ -9,14 +9,11 @@
     #define SERVER_H_
 
     #include <stdbool.h>
-    #include <sys/socket.h>
-    #include <string.h>
+
+    #include "packets.h"
     #include "types.h"
 
-    #define SUCCESS 0
-    #define FAILURE 84
-    #define BUFFER_SIZE 1024
-    #define UNUSED __attribute__((unused))
+    #define MAX_CONNECTIONS 50
 
     #define CRLF "\r\n"
 
@@ -32,14 +29,19 @@ user_t *new_user(char *username, int fd);
 user_t *find_user_by_uuid(server_t *server, char *uuid);
 user_t *find_user_by_name(server_t *server, char *name);
 team_t *find_team_by_uuid(server_t *server, char *uuid);
+message_t *find_message_by_uuid(server_t *server, char *uuid);
 
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
-void handle_input(server_t *server, client_t *client, char *input);
+void handle_input(server_t *server, client_t *client, \
+    command_packet_t *packet);
 int refresh_fdsets(server_t *server, fd_set *set, int sig_fd);
 
 void send_basic_message(int fd, char *code);
 void send_help_message(int fd);
+
+void send_message_packet(int fd, int code);
+void send_user_packet(int fd, user_t *user, packet_command_t context);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);

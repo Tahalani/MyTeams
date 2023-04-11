@@ -6,9 +6,16 @@
 */
 
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/queue.h>
+#include <sys/socket.h>
+#include <time.h>
+
+#include "constants.h"
 #include "server.h"
+#include "types.h"
 
 void fatal_error(const char *error)
 {

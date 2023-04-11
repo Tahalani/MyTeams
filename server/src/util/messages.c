@@ -5,13 +5,14 @@
 ** messages.c
 */
 
-#include <stdio.h>
 #include <string.h>
-#include "commands.h"
+
+#include "constants.h"
 #include "messages.h"
 #include "server.h"
 
-void send_basic_message(int fd, char *code)
+// TODO: Delete this file will disappear when packet handling is done
+void send_basic_message(UNUSED int fd, char *code)
 {
     const char *msg = NULL;
 
@@ -20,20 +21,6 @@ void send_basic_message(int fd, char *code)
             msg = MESSAGES[i];
     }
     if (msg != NULL) {
-        dprintf(fd, "%s%s", msg, CRLF);
-    }
-}
 
-void send_help_message(int fd)
-{
-    char space = '\0';
-
-    dprintf(fd, "214 The following commands are recognized.%s", CRLF);
-    for (size_t i = 0; i < COMMANDS_COUNT; i++) {
-        space = ' ';
-        if ((i % 10 == 0 && i != 0) || (i == COMMANDS_COUNT - 1))
-            space = '\n';
-        dprintf(fd, "%s%c", COMMANDS[i].name, space);
     }
-    dprintf(fd, "214 Help okay.%s", CRLF);
 }

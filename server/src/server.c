@@ -5,9 +5,12 @@
 ** server.c
 */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "constants.h"
 #include "server.h"
 
 static void display_help_server(char *binary)

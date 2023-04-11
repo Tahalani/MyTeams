@@ -6,10 +6,10 @@
 */
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
 #include "commands.h"
 #include "server.h"
+#include "types.h"
 
 void create_command(server_t *server, client_t *client, char *input)
 {

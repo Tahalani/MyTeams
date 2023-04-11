@@ -5,13 +5,18 @@
 ** socket.c
 */
 
+#include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <signal.h>
+#include <sys/queue.h>
+#include <sys/select.h>
 #include <sys/signalfd.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include "server.h"
+#include "types.h"
 
 static void end_server(server_t *server)
 {
@@ -27,8 +32,8 @@ static void server_loop(server_t *server)
     fd_set set;
     int max_fd = 0;
     int current = 0;
-    sigset_t mask;
     int sig_fd = 0;
+    sigset_t mask;
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGINT);

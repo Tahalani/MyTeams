@@ -6,29 +6,30 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/param.h>
+#include <sys/queue.h>
+#include <sys/select.h>
+#include <sys/socket.h>
 #include <unistd.h>
+
+#include "packets.h"
 #include "server.h"
+#include "types.h"
 
 static void handle_client(server_t *server, client_t *client)
 {
-    char *line = NULL;
-    size_t size = 0;
-    ssize_t r = getline(&line, &size, client->file);
-    bool close = r < 0 || r >= BUFFER_SIZE;
+    command_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(command_packet_t));
 
-    if (r >= BUFFER_SIZE) {
-        return;
-    }
-    if (close) {
+    if (re == 0) {
         close_connection(client);
         SLIST_REMOVE(server->clients, client, client_s, next);
         free_connection(client);
+    } else if (re != sizeof(command_packet_t)) {
+        send_message_packet(client->fd, 500);
     } else {
-        handle_input(server, client, line);
+        handle_input(server, client, &packet);
     }
-    free(line);
 }
 
 int refresh_fdsets(server_t *server, fd_set *set, int sig_fd)
