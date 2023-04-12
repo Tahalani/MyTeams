@@ -59,6 +59,7 @@ static void process_packet(client_t *client, char opcode)
 bool handle_input(client_t *client)
 {
     char *line = NULL;
+    char **array = NULL;
     size_t size = 0;
     ssize_t len = getline(&line, &size, stdin);
 
@@ -66,6 +67,7 @@ bool handle_input(client_t *client)
         return true;
     } else {
         line[len - 1] = '\0';
+        array = parsing_input(line);
         handle_command(client, line);
     }
     free(line);

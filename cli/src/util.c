@@ -7,6 +7,41 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+char **str_to_word(char const *str, char separator);
+
+void display_array(char **array)
+{
+    for (int i = 0; array[i] != NULL; i++) {
+        printf("%s\n", array[i]);
+    }
+}
+
+char **parsing_input(char *input)
+{
+    char **args = NULL;
+    char *param = NULL;
+    int post_command = 0;
+
+    for (int i = 0; input[i] != '\0'; i++) {
+        if (input[i] == '"' && post_command == 0)
+            post_command = i;
+        if (input[i] == '"')
+            input[i] = ' ';
+    }
+    if (post_command == 0) {
+        printf("bad\n");
+        exit(84);
+    }
+    param = strdup(input + (post_command + 1));
+    printf("test:%s:param\n", param);
+    args = str_to_word(param, ' ');
+    free(param);
+    display_array(args);
+    return (args);
+}
 
 static bool is_hexadecimal(char c)
 {

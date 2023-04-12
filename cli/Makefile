@@ -6,6 +6,7 @@
 ##
 
 SRC			=	src/commands/auth.c \
+				../server/src/util/arrays.c \
 				src/commands/basic.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
