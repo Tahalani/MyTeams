@@ -62,13 +62,17 @@ bool handle_input(client_t *client)
     char **array = NULL;
     size_t size = 0;
     ssize_t len = getline(&line, &size, stdin);
+    bool noArgs = false;
 
     if (len < 1) {
         return true;
     } else {
         line[len - 1] = '\0';
-        array = parsing_input(line);
-        handle_command(client, line);
+        array = parsing_input(line, &noArgs);
+        if (array == NULL && noArgs == false)
+            printf("Bad argument\n");
+        else
+            handle_command(client, line);
     }
     free(line);
     return false;

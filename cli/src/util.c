@@ -12,34 +12,37 @@
 
 char **str_to_word(char const *str, char separator);
 
-void display_array(char **array)
+static char **clear_args(char **args)
 {
-    for (int i = 0; array[i] != NULL; i++) {
-        printf("%s\n", array[i]);
+    for (size_t i = 0; args[i] != NULL; i++) {
+        if (args[i][0] != '"' || args[i][strlen(args[i]) - 1] != '"')
+            return (NULL);
+        args[i] = strdup(args[i] + 1);
+        args[i][strlen(args[i]) - 1] = '\0';
     }
+    return (args);
 }
 
-char **parsing_input(char *input)
+char **parsing_input(char *input, bool *noArgs)
 {
-    char **args = NULL;
+    char **args = str_to_word(input, ' ');
     char *param = NULL;
     int post_command = 0;
 
-    for (int i = 0; input[i] != '\0'; i++) {
-        if (input[i] == '"' && post_command == 0)
-            post_command = i;
-        if (input[i] == '"')
-            input[i] = ' ';
+    if (args[1] == NULL) {
+        printf("No arguments given\n");
+        *noArgs = true;
+        return (NULL);
     }
-    if (post_command == 0) {
-        printf("bad\n");
-        exit(84);
-    }
-    param = strdup(input + (post_command + 1));
-    printf("test:%s:param\n", param);
+    post_command = strchr(input, '"') - input;
+    if (post_command <= 0)
+        return (NULL);
+    param = strdup(input + post_command);
     args = str_to_word(param, ' ');
+    args = clear_args(args);
+    if (args == NULL)
+        return (NULL);
     free(param);
-    display_array(args);
     return (args);
 }
 
