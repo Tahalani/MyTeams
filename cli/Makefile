@@ -16,7 +16,8 @@ SRC			=	src/commands/auth.c \
 				src/cli.c \
 				src/client.c \
 				src/input.c \
-				src/util.c
+				src/util.c \
+				src/parsing.c \
 
 MAIN		=	src/main.c
 
