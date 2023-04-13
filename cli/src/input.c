@@ -17,30 +17,42 @@
 #include "types.h"
 
 static void execute_command(const command_t *command, client_t *client, \
-    char *input)
+    char **args)
 {
+    size_t args_size = array_len(args);
+
     if (command->auth && client->user_name == NULL) {
         send_rfc_message(430);
         return;
+    } else if (command->args != -1 && command->args != (int) args_size) {
+        send_rfc_message(400);
+        return;
     }
-    command->function(client, input);
+    command->function(client, args);
 }
 
 static void handle_command(client_t *client, char *input)
 {
-    char *args = NULL;
-    char *command = strtok_r(input, " ", &args);
+    bool done = false;
+    char **args = get_arguments(input);
+    char *command = strtok(input, " ");
 
-    if (command == NULL || args == NULL) {
+    if (command == NULL) {
+        return;
+    } else if (args == NULL) {
+        send_rfc_message(401);
         return;
     }
-    for (size_t i = 0; i < COMMANDS_COUNT; i++) {
+    for (size_t i = 0; i < COMMANDS_COUNT && !done; i++) {
         if (strcmp(command, COMMANDS[i].name) == 0) {
             execute_command(&COMMANDS[i], client, args);
-            return;
+            done = true;
         }
     }
-    send_rfc_message(client->user_name == NULL ? 430 : 401);
+    if (!done) {
+        send_rfc_message(client->user_name == NULL ? 430 : 404);
+    }
+    free_array(args);
 }
 
 static void process_packet(client_t *client, char opcode)

@@ -20,7 +20,7 @@ static int check_context(char *args, char *array)
     memset(array, 0, UUID_LENGTH * 3);
     for (res = 0; uuid != NULL; res++) {
         if (!is_uuid(uuid)) {
-            send_rfc_message(402);
+            send_rfc_message(420);
             return -1;
         }
         if (res < 3) {
