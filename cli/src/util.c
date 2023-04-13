@@ -6,9 +6,11 @@
 */
 
 #include <stdbool.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "constants.h"
 
 static bool is_hexadecimal(char c)
 {
@@ -36,4 +38,10 @@ bool is_uuid(char *str)
         }
     }
     return true;
+}
+
+void fatal_error(const char *error)
+{
+    fprintf(stderr, "%s\n", error);
+    exit(FAILURE);
 }

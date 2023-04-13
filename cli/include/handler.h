@@ -14,7 +14,7 @@ typedef void (*packet_handler_t)(client_t *client);
 
 void message_packet_handler(client_t *client);
 void user_packet_handler(client_t *client);
-char **parsing_input(char *input, bool *no_args);
+char **get_arguments(char *input);
 
 typedef struct handler_s {
     char opcode;

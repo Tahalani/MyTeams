@@ -5,12 +5,10 @@
 ** parsing.c
 */
 
-#include <stdbool.h>
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char **str_to_word(char *str, char c);
+#include "cli.h"
 
 static int count_quote(char const *str)
 {
@@ -48,7 +46,7 @@ static char **get_args(char const *input, const int quote)
     int k = 0;
 
     if (args == NULL)
-        return (NULL);
+        fatal_error("malloc failed");
     for (size_t i = 0; input[i] != '\0'; i++) {
         if (input[i] == '"') {
             is_quote = (is_quote == 0) ? 1 : 0;
@@ -67,22 +65,20 @@ static char **get_args(char const *input, const int quote)
     return (args);
 }
 
-char **parsing_input(char *input, bool *no_args)
+char **get_arguments(char *input)
 {
     char **args = str_to_word(input, ' ');
     int quote = count_quote(input);
-    int param = 0;
+    size_t param = 0;
 
     if (args[1] == NULL) {
-        printf("No arguments given\n");
-        *no_args = true;
-        return (NULL);
+        free(args[0]);
+        args[0] = NULL;
+        return args;
     }
     if (quote == -1)
         return (NULL);
     param = strchr(input, ' ') - input;
-    args = get_args(input + param, quote);
-    if (args == NULL)
-        return (NULL);
-    return (args);
+    free_array(args);
+    return get_args(input + param, quote);
 }
