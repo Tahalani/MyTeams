@@ -6,6 +6,7 @@
 ##
 
 SRC			=	src/commands/auth.c \
+				../server/src/util/arrays.c \
 				src/commands/basic.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
@@ -15,7 +16,8 @@ SRC			=	src/commands/auth.c \
 				src/cli.c \
 				src/client.c \
 				src/input.c \
-				src/util.c
+				src/util.c \
+				src/parsing.c \
 
 MAIN		=	src/main.c
 
