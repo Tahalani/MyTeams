@@ -50,12 +50,13 @@ static char **get_args(char const *input, const int quote)
     if (args == NULL)
         return (NULL);
     for (size_t i = 0; input[i] != '\0'; i++) {
-        if (input[i] == '"')
+        if (input[i] == '"') {
             is_quote = (is_quote == 0) ? 1 : 0;
-        // if (is_quote == 0 && input[i] != ' ') {
-        //     return (NULL);
-        // }
-        else if (is_quote == 1) {
+            continue;
+        }
+        if (is_quote == 0 && input[i] != ' ')
+            return (NULL);
+        if (is_quote == 1) {
             args[k] = cpy_args(input + i);
             k++;
             i += strlen(args[k - 1]);
@@ -66,25 +67,22 @@ static char **get_args(char const *input, const int quote)
     return (args);
 }
 
-void display_arg(char **array)
-{
-    for (int i = 0; array[i] != NULL; i++)
-        printf("array: %s\n", array[i]);
-}
-
-char **parsing_input(char *input, bool *noArgs)
+char **parsing_input(char *input, bool *no_args)
 {
     char **args = str_to_word(input, ' ');
     int quote = count_quote(input);
+    int param = 0;
 
     if (args[1] == NULL) {
         printf("No arguments given\n");
-        *noArgs = true;
+        *no_args = true;
         return (NULL);
     }
     if (quote == -1)
         return (NULL);
-    args = get_args(input, quote);
-    // display_arg(args);
+    param = strchr(input, ' ') - input;
+    args = get_args(input + param, quote);
+    if (args == NULL)
+        return (NULL);
     return (args);
 }
