@@ -23,7 +23,7 @@ static int count_quote(char const *str)
     return (count / 2);
 }
 
-static char *cpy_args(char const *input)
+static char *cpy_args(char const *input, size_t *index)
 {
     char *args = NULL;
     int size_arg = 0;
@@ -36,6 +36,7 @@ static char *cpy_args(char const *input)
     for (size_t i = 0; input[i] != '"'; i++, k++)
         args[k] = input[i];
     args[k] = '\0';
+    *index += strlen(args);
     return (args);
 }
 
@@ -52,12 +53,10 @@ static char **get_args(char const *input, const int quote)
             is_quote = (is_quote == 0) ? 1 : 0;
             continue;
         }
-        if (is_quote == 0 && input[i] != ' ')
+        if (is_quote == 0 && input[i] != ' ' && input[i] != '\t')
             return (NULL);
         if (is_quote == 1) {
-            args[k] = cpy_args(input + i);
-            k++;
-            i += strlen(args[k - 1]);
+            args[k++] = cpy_args(input + i, &i);
             is_quote = 0;
         }
     }
