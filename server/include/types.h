@@ -52,8 +52,11 @@ typedef struct team_s {
 
 typedef struct use_s {
     team_t *team;
+    char *team_uuid;
     channel_t *channel;
+    char *channel_uuid;
     thread_t *thread;
+    char *thread_uuid;
 } use_t;
 
 typedef struct client_s {

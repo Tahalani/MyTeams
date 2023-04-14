@@ -77,4 +77,8 @@ bool fill_team_use(server_t *server, client_t *client, char **data);
 bool fill_channel_use(server_t *server, client_t *client, char **data);
 bool fill_thread_use(server_t *server, client_t *client, char **data);
 
+team_t *get_context_team(server_t *server, use_t *use);
+channel_t *get_context_channel(server_t *server, use_t *use);
+thread_t *get_context_thread(server_t *server, use_t *use);
+
 #endif

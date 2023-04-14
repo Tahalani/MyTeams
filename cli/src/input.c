@@ -11,9 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "cli.h"
 #include "commands.h"
 #include "handler.h"
-#include "cli.h"
 #include "types.h"
 
 static void execute_command(const command_t *command, client_t *client, \
@@ -21,10 +21,7 @@ static void execute_command(const command_t *command, client_t *client, \
 {
     size_t args_size = array_len(args);
 
-    if (command->auth && client->user_name == NULL) {
-        send_rfc_message(430);
-        return;
-    } else if (command->args != -1 && command->args != (int) args_size) {
+    if (command->args != -1 && command->args != (int) args_size) {
         send_rfc_message(400);
         return;
     }

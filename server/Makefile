@@ -16,6 +16,7 @@ SRC			=	src/commands/auth.c \
 				src/commands/thread.c \
 				src/commands/reply.c \
 				src/commands/info.c \
+				src/core/cache.c \
 				src/core/commands.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
