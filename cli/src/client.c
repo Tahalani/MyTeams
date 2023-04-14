@@ -75,7 +75,7 @@ bool start_client(char *address, int port)
             .sin_addr = { inet_addr(address) },
     };
     struct sockaddr *addr_ptr = (struct sockaddr *)&addr;
-    client_t client = { 0, NULL, NULL };
+    client_t client = { 0, NULL, NULL, CONTEXT_NONE };
 
     client.fd = init_client(addr_ptr);
     if (client.fd == -1) {

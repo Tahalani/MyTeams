@@ -12,7 +12,7 @@
 #include "types.h"
 
 void create_command(server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');
@@ -37,7 +37,8 @@ void create_command(server_t *server, client_t *client, \
     send_basic_message(client->fd, "400");
 }
 
-void list_command(server_t *server, client_t *client, command_packet_t *packet)
+void list_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');

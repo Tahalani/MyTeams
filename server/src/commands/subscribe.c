@@ -31,7 +31,7 @@ static void join_team(client_t *client, team_t *team)
 }
 
 void subscribe_command(server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');
@@ -56,7 +56,7 @@ static void leave_team(client_t *client, team_t *userTeam, uuid_t *uuid)
 }
 
 void unsubscribe_command(server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');
@@ -82,7 +82,7 @@ void unsubscribe_command(server_t *server, client_t *client, \
 }
 
 void subscribed_command(server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');

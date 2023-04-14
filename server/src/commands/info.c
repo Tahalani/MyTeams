@@ -76,7 +76,7 @@ client_t *client)
 }
 
 void info_command(UNUSED server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     if (client->user == NULL) {
         send_basic_message(client->fd, "530");

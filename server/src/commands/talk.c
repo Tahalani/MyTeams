@@ -14,7 +14,7 @@
 #include "server.h"
 #include "types.h"
 
-user_t *get_sender(server_t *server, client_t *client)
+UNUSED user_t *get_sender(server_t *server, client_t *client)
 {
     user_t *node = NULL;
 
@@ -37,7 +37,8 @@ static void fill_message_struct(server_t *server, client_t *client, char **data)
     SLIST_INSERT_HEAD(server->data->messages, message, next);
 }
 
-void send_command(server_t *server, client_t *client, command_packet_t *packet)
+void send_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');
@@ -60,7 +61,7 @@ void send_command(server_t *server, client_t *client, command_packet_t *packet)
 }
 
 void messages_command(server_t *server, client_t *client, \
-    command_packet_t *packet)
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     message_t *node = NULL;

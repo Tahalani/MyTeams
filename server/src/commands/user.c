@@ -19,7 +19,8 @@ static void display_user_info(client_t *client, user_t *node)
     dprintf(client->fd, "Username: %s%s", node->username, CRLF);
 }
 
-void users_command(server_t *server, client_t *client, command_packet_t *packet)
+void users_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     user_t *node = NULL;
@@ -37,7 +38,8 @@ void users_command(server_t *server, client_t *client, command_packet_t *packet)
     free_array(data);
 }
 
-void user_command(server_t *server, client_t *client, command_packet_t *packet)
+void user_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
     char *input = "";
     char **data = str_to_word(input, ' ');
