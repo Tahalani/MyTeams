@@ -16,7 +16,7 @@ static void run_command(const command_t *command, server_t *server, \
     client_t *client, command_packet_t *packet)
 {
     if (command->auth && client->user == NULL) {
-        send_message_packet(client->fd, 430);
+        send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         clear_buffer(client->fd, packet);
         return;
     }

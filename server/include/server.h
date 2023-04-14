@@ -45,6 +45,7 @@ void send_basic_message(int fd, char *code);
 void send_message_packet(int fd, int code);
 void send_context_packet(int fd, packet_context_t context);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
+void send_error_packet(int fd, packet_error_t error, char *uuid);
 
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
@@ -72,10 +73,10 @@ void list_channel(server_t *server, client_t *client);
 void list_thread(server_t *server, client_t *client);
 void list_reply(server_t *server, client_t *client);
 
-bool fill_default_use(client_t *client);
-bool fill_team_use(server_t *server, client_t *client, char **data);
-bool fill_channel_use(server_t *server, client_t *client, char **data);
-bool fill_thread_use(server_t *server, client_t *client, char **data);
+void fill_default_use(client_t *client);
+void fill_team_use(client_t *client, char **data);
+void fill_channel_use(client_t *client, char **data);
+void fill_thread_use(client_t *client, char **data);
 
 team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);

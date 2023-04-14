@@ -11,6 +11,7 @@ SRC			=	src/commands/auth.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
 				src/commands/use.c \
+				src/packets/errors.c \
 				src/packets/users.c \
 				src/packets/send.c \
 				src/cli.c \

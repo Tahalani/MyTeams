@@ -44,3 +44,16 @@ void send_user_packet(int fd, user_t *user, packet_command_t context)
     write(fd, &opcode, sizeof(packet_header_t));
     write(fd, &packet, sizeof(user_packet_t));
 }
+
+void send_error_packet(int fd, packet_error_t error, char *uuid)
+{
+    packet_header_t opcode = PACKET_ERROR;
+    error_packet_t packet;
+
+    packet.error = error;
+    if (uuid != NULL) {
+        strcat(packet.uuid, uuid);
+    }
+    write(fd, &opcode, sizeof(packet_header_t));
+    write(fd, &packet, sizeof(error_packet_t));
+}

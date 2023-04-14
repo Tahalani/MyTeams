@@ -18,6 +18,7 @@ typedef enum packet_type_e {
     PACKET_MESSAGE,
     PACKET_CONTEXT,
     PACKET_USER,
+    PACKET_ERROR,
 } packet_type_t;
 
 typedef enum packet_command_e {
@@ -43,6 +44,15 @@ typedef enum packet_context_e {
     CONTEXT_THREAD,
 } packet_context_t;
 
+typedef enum packet_error_e {
+    ERROR_UNAUTHORIZED,
+    ERROR_ALREADY_EXIST,
+    ERROR_UNKNOWN_TEAM,
+    ERROR_UNKNOWN_CHANNEL,
+    ERROR_UNKNOWN_THREAD,
+    ERROR_UNKNOWN_USER,
+} packet_error_t;
+
 typedef struct PACKED command_packet_s {
     packet_command_t command;
     size_t data_size;
@@ -62,5 +72,10 @@ typedef struct PACKED user_packet_s {
     bool status;
     packet_command_t context;
 } user_packet_t;
+
+typedef struct PACKED error_packet_s {
+    packet_error_t error;
+    char uuid[UUID_LENGTH + 1];
+} error_packet_t;
 
 #endif

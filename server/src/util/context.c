@@ -5,61 +5,47 @@
 ** context.c
 */
 
-#include <stdbool.h>
+#include <string.h>
 
 #include "server.h"
 #include "types.h"
 
-bool fill_default_use(client_t *client)
+void fill_default_use(client_t *client)
 {
-    client->use->team = NULL;
-    client->use->channel = NULL;
-    client->use->thread = NULL;
-    return true;
+    client->use->team_uuid = NULL;
+    client->use->channel_uuid = NULL;
+    client->use->thread_uuid = NULL;
 }
 
-bool fill_team_use(server_t *server, client_t *client, char **data)
+void fill_team_use(client_t *client, char **data)
 {
-    team_t *obj = find_team_by_uuid(server, data[1]);
+    char *team_uuid = strdup(data[0]);
 
     fill_default_use(client);
-    if (obj == NULL) {
-        send_message_packet(client->fd, 440);
-        return false;
+    if (team_uuid == NULL) {
+        fatal_error("malloc failed");
     }
-    client->use->team = obj;
-    return true;
+    client->use->team_uuid = team_uuid;
 }
 
-bool fill_channel_use(server_t *server, client_t *client, char **data)
+void fill_channel_use(client_t *client, char **data)
 {
-    channel_t *obj = NULL;
+    char *channel_uuid = strdup(data[1]);
 
-    if (!fill_team_use(server, client, data)) {
-        return false;
+    fill_team_use(client, data);
+    if (channel_uuid == NULL) {
+        fatal_error("malloc failed");
     }
-    obj = find_channel_in_specified_team(server, data[1], data[2]);
-    if (obj == NULL) {
-        send_message_packet(client->fd, 441);
-        return false;
-    }
-    client->use->channel = obj;
-    client->use->thread = NULL;
-    return true;
+    client->use->channel_uuid = channel_uuid;
 }
 
-bool fill_thread_use(server_t *server, client_t *client, char **data)
+void fill_thread_use(client_t *client, char **data)
 {
-    thread_t *obj = NULL;
+    char *thread_uuid = strdup(data[2]);
 
-    if (!fill_channel_use(server, client, data)) {
-        return false;
+    fill_channel_use(client, data);
+    if (thread_uuid == NULL) {
+        fatal_error("malloc failed");
     }
-    obj = find_thread_in_specified_channel(server, data[2], data[3]);
-    if (obj == NULL) {
-        send_message_packet(client->fd, 442);
-        return false;
-    }
-    client->use->thread = obj;
-    return true;
+    client->use->thread_uuid = thread_uuid;
 }
