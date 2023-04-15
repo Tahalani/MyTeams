@@ -70,7 +70,7 @@ void list_channels(server_t *server, client_t *client)
     channel_t *channel = NULL;
 
     if (team == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM,\
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
             client->use->team_uuid);
         return;
     }
