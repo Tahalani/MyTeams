@@ -23,6 +23,11 @@ typedef struct uuid_s {
     SLIST_ENTRY(uuid_s) next;
 } uuid_t;
 
+typedef struct PACKED relation_s {
+    char first_uuid[UUID_SIZE + 1];
+    char second_uuid[UUID_SIZE + 1];
+} relation_t;
+
 typedef struct user_s {
     char *uuid;
     char *username;

@@ -12,6 +12,90 @@
 #include <unistd.h>
 
 #include "server.h"
+#include "logging_server.h"
+
+relation_t *load_relation(int fd)
+{
+    relation_t *relation = malloc(sizeof(relation_t));
+
+    memset(relation, 0, sizeof(relation_t));
+    ssize_t re = read(fd, relation, sizeof(relation_t));
+    if (re != sizeof(relation_t)) {
+        free(relation);
+        return NULL;
+    }
+    return relation;
+}
+
+void load_relation_team_user(server_t *server, int fd)
+{
+    relation_t *relation = NULL;
+
+    while ((relation = load_relation(fd))) {
+        user_t *user = find_user_by_uuid(server, relation->first_uuid);
+        team_t *team = find_team_by_uuid(server, relation->second_uuid);
+        if (user && team) {
+            uuid_t *uuid = malloc(sizeof(uuid_t));
+            strcpy(uuid->uuid, team->uuid);
+            SLIST_INSERT_HEAD(user->teams, uuid, next);
+            uuid = malloc(sizeof(uuid_t));
+            strcpy(uuid->uuid, user->uuid);
+            SLIST_INSERT_HEAD(team->users, uuid, next);
+        }
+        free(relation);
+    }
+}
+
+void load_relation_channel_team(server_t *server, int fd)
+{
+    relation_t *relation = NULL;
+
+    while ((relation = load_relation(fd))) {
+        team_t *team = find_team_by_uuid(server, relation->first_uuid);
+        channel_t *channel = find_channel_by_uuid(server, relation->second_uuid);
+        if (team && channel) {
+            uuid_t *uuid = malloc(sizeof(uuid_t));
+            strcpy(uuid->uuid, channel->uuid);
+            SLIST_INSERT_HEAD(team->channels, uuid, next);
+        }
+        free(relation);
+    }
+}
+
+void load_relation_thread_channel(server_t *server, int fd)
+{
+    relation_t *relation = NULL;
+
+    while ((relation = load_relation(fd))) {
+        channel_t *channel = find_channel_by_uuid(server, relation->first_uuid);
+        thread_t *thread = find_thread_by_uuid(server, relation->second_uuid);
+        if (channel && thread) {
+            uuid_t *uuid = malloc(sizeof(uuid_t));
+            strcpy(uuid->uuid, thread->uuid);
+            SLIST_INSERT_HEAD(channel->threads, uuid, next);
+        }
+        free(relation);
+    }
+}
+
+// void load_relation_message_thread(server_t *server, int fd)
+// {
+//     relation_t *relation = NULL;
+
+//     while ((relation = load_relation(fd))) {
+//         thread_t *thread = find_thread_by_uuid(server->data->threads, relation->first_uuid);
+//         message_t *message = find_message_by_uuid(server->data->messages, relation->second_uuid);
+//         if (thread && message) {
+//             uuid_t *uuid = malloc(sizeof(uuid_t));
+//             strcpy(uuid->uuid, message->uuid);
+//             SLIST_INSERT_HEAD(thread->messages, uuid, next);
+//             uuid = malloc(sizeof(uuid_t));
+//             strcpy(uuid->uuid, thread->uuid);
+//             SLIST_INSERT_HEAD(message->threads, uuid, next);
+//         }
+//         free(relation);
+//     }
+// }
 
 void load_data(data_t *data, server_t *server)
 {
@@ -32,6 +116,7 @@ void load_data(data_t *data, server_t *server)
     // uuid_t *uuid_thread = NULL;
     while (user != NULL) {
         SLIST_INSERT_HEAD(data->users, user, next);
+        server_event_user_loaded(user->uuid, user->username);
         user = load_user(fd_user);
     }
     while (team != NULL) {
@@ -42,6 +127,10 @@ void load_data(data_t *data, server_t *server)
         SLIST_INSERT_HEAD(data->channels, channel, next);
         channel = load_channel(fd_channel);
     }
+    load_relation_team_user(server, fd_user);
+    load_relation_channel_team(server, fd_team);
+    load_relation_thread_channel(server, fd_channel);
+    // load_relation_message_thread(server, fd_thread);
     // while (thread != NULL) {
     //     SLIST_INSERT_HEAD(data->threads, thread, next);
     //     thread = load_thread(fd_thread);
