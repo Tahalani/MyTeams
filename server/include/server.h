@@ -65,7 +65,6 @@ struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 char *get_username_client(server_t *server, client_t *client);
 time_t get_time(void);
-channel_t *find_channel_by_uuid(server_t *server, char *uuid);
 thread_t *find_thread_by_uuid(server_t *server, char *uuid);
 channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
     char *channel_uuid);
