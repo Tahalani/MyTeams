@@ -22,6 +22,7 @@ thread_t *new_thread(char *title, char *message, channel_t *channel)
     new->uuid = generate_uuid();
     new->name = strdup(title);
     new->message = strdup(message);
+    new->created_at = time(NULL);
     new->messages = malloc(sizeof(struct message_l));
     if (new->messages == NULL) {
         fatal_error("malloc failed");

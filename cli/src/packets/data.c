@@ -48,6 +48,20 @@ void thread_packet_handler(client_t *client)
     }
     if (packet.context == COMMAND_CREATE) {
         client_event_thread_created(packet.uuid, client->user_uuid, \
-        time(NULL),packet.name, packet.message);
+        packet.created_at,packet.name, packet.message);
+    }
+}
+
+void reply_packet_handler(client_t *client)
+{
+    reply_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(reply_packet_t));
+
+    if (re != sizeof(reply_packet_t)) {
+        return;
+    }
+    if (packet.context == COMMAND_CREATE) {
+        client_event_thread_reply_received("", "", client->user_uuid, \
+            packet.body);
     }
 }

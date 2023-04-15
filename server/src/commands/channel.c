@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
@@ -46,6 +47,8 @@ void create_channel(server_t *server, client_t *client, \
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
 
+    memset(name, 0, MAX_NAME_LENGTH + 1);
+    memset(description, 0, MAX_DESCRIPTION_LENGTH + 1);
     if (packet->data_size != size) {
         send_message_packet(client->fd, 500);
         clear_buffer(client->fd, packet);

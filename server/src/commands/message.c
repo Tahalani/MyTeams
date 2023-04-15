@@ -6,47 +6,50 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/queue.h>
+#include <unistd.h>
 
 #include "constants.h"
+#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
 
-static void add_new_reply(server_t *server, client_t *client, char *message)
+static void add_new_message(server_t *server, client_t *client, char *body)
 {
-    uuid_t *uuid = malloc(sizeof(uuid_t));
-    message_t *new_reply = malloc(sizeof(message_t));
+    thread_t *thread = get_context_thread(server, client->use);
+    message_t *message = NULL;
 
-    if (uuid == NULL || new_reply == NULL)
-        fatal_error("Malloc failed");
-    new_reply->uuid = generate_uuid();
-    new_reply->content = strdup(&message[8]);
-    new_reply->time = get_time();
-    new_reply->sender = client->user;
-    SLIST_INSERT_HEAD(server->data->messages, new_reply, next);
-    uuid->uuid = strdup(new_reply->uuid);
-    SLIST_INSERT_HEAD(client->use->thread->messages, uuid, next);
+    if (thread == NULL) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
+            client->use->thread_uuid);
+        return;
+    }
+    message = new_message(body, thread, client->user);
+    SLIST_INSERT_HEAD(server->data->messages, message, next);
+    server_event_reply_created(thread->uuid, client->user->uuid, body);
+    send_reply_packet(client->fd, message, COMMAND_CREATE);
 }
 
-void create_reply(server_t *server, client_t *client, \
-    UNUSED command_packet_t *packet)
+void create_message(server_t *server, client_t *client, \
+    command_packet_t *packet)
 {
-    char *comment = NULL;
-    thread_t *thread = client->use->thread;
+    ssize_t re = 0;
+    char body[MAX_BODY_LENGTH + 1];
 
-    if (comment == NULL) {
-        send_basic_message(client->fd, "400");
+    memset(body, 0, MAX_BODY_LENGTH + 1);
+    if (packet->data_size != MAX_BODY_LENGTH) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
         return;
     }
-    if (thread == NULL) {
-        send_basic_message(client->fd, "590");
-        return;
+    re = read(client->fd, body, MAX_BODY_LENGTH);
+    if (re != MAX_BODY_LENGTH) {
+        send_message_packet(client->fd, 500);
+    } else {
+        add_new_message(server, client, body);
     }
-    add_new_reply(server, client, comment);
-    send_basic_message(client->fd, "200");
 }
 
 message_t *find_message_by_uuid(server_t *server, char *uuid)
@@ -75,7 +78,7 @@ static void send_list(server_t *server, client_t *client, thread_t *thread)
     dprintf(client->fd, "%d channel(s) available%s", nbr_reply, CRLF);
     SLIST_FOREACH(uuid, thread->messages, next) {
         dprintf(client->fd, "%s (%s)%s", \
-            find_message_by_uuid(server, uuid->uuid)->content, \
+            find_message_by_uuid(server, uuid->uuid)->body, \
             find_message_by_uuid(server, uuid->uuid)->sender->username, CRLF);
     }
 }

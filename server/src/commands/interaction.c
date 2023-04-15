@@ -17,7 +17,7 @@ void create_command(server_t *server, client_t *client, \
     command_packet_t *packet)
 {
     if (client->use->thread_uuid != NULL) {
-        create_reply(server, client, packet);
+        create_message(server, client, packet);
         return;
     }
     if (client->use->channel_uuid != NULL) {

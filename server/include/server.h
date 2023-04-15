@@ -35,6 +35,7 @@ void send_context_packet(int fd, packet_context_t context);
 void send_team_packet(int fd, team_t *team, packet_command_t context);
 void send_channel_packet(int fd, channel_t *channel, packet_command_t context);
 void send_thread_packet(int fd, thread_t *thread, packet_command_t context);
+void send_reply_packet(int fd, message_t *message, packet_command_t context);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
 
@@ -65,6 +66,8 @@ thread_t *find_thread_in_channel_by_uuid(server_t *server, \
 thread_t *find_thread_in_channel_by_title(server_t *server, \
     channel_t *channel, char *title);
 
+message_t *new_message(char *body, thread_t *thread, user_t *user);
+
 message_t *find_message_by_uuid(server_t *server, char *uuid);
 
 void send_basic_message(int fd, char *code);
@@ -84,7 +87,8 @@ void create_channel(server_t *server, client_t *client, \
     command_packet_t *packet);
 void create_thread(server_t *server, client_t *client, \
     command_packet_t *packet);
-void create_reply(server_t *server, client_t *client, command_packet_t *packet);
+void create_message(server_t *server, client_t *client, \
+    command_packet_t *packet);
 
 void list_team(server_t *server, client_t *client);
 void list_channel(server_t *server, client_t *client);

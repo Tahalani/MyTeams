@@ -106,7 +106,7 @@ bool start_server(int port)
     if (socket_fd == -1 || data == NULL) {
         return false;
     }
-    srand((unsigned long) &server);
+    srand((unsigned long) &server + time(NULL));
     init_data(data);
     server_loop(&server);
     end_server(&server);
