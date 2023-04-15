@@ -37,3 +37,17 @@ void channel_packet_handler(client_t *client)
             packet.description);
     }
 }
+
+void thread_packet_handler(client_t *client)
+{
+    thread_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(thread_packet_t));
+
+    if (re != sizeof(thread_packet_t)) {
+        return;
+    }
+    if (packet.context == COMMAND_CREATE) {
+        client_event_thread_created(packet.uuid, client->user_uuid, \
+        time(NULL),packet.name, packet.message);
+    }
+}

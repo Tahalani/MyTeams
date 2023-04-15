@@ -21,6 +21,7 @@ void message_packet_handler(client_t *client);
 void context_packet_handler(client_t *client);
 void team_packet_handler(client_t *client);
 void channel_packet_handler(client_t *client);
+void thread_packet_handler(client_t *client);
 void user_packet_handler(client_t *client);
 void error_packet_handler(client_t *client);
 
@@ -42,6 +43,7 @@ static const handler_t HANDLERS[] = {
         { PACKET_CONTEXT, &context_packet_handler, },
         { PACKET_TEAM, &team_packet_handler },
         { PACKET_CHANNEL, &channel_packet_handler },
+        { PACKET_THREAD, &thread_packet_handler },
         { PACKET_USER, &user_packet_handler },
         { PACKET_ERROR, &error_packet_handler },
 };

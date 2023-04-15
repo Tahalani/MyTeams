@@ -27,7 +27,7 @@ channel_t *new_channel(char *name, char *description, team_t *team)
         fatal_error("malloc failed");
     }
     SLIST_INIT(new->threads);
-    channel_uuid->uuid = new->uuid;
+    channel_uuid->uuid = strdup(new->uuid);
     SLIST_INSERT_HEAD(team->channels, channel_uuid, next);
     return new;
 }
@@ -43,14 +43,29 @@ channel_t *find_channel_by_uuid(server_t *server, char *uuid)
     return NULL;
 }
 
+channel_t *find_channel_in_team_by_uuid(server_t *server, team_t *team, \
+    char *uuid)
+{
+    uuid_t *node = NULL;
+    channel_t *channel = NULL;
+
+    SLIST_FOREACH(node, team->channels, next) {
+        channel = find_channel_by_uuid(server, node->uuid);
+        if (channel != NULL && strcmp(channel->uuid, uuid) == 0) {
+            return channel;
+        }
+    }
+    return NULL;
+}
+
 channel_t *find_channel_in_team_by_name(server_t *server, team_t *team, \
     char *name)
 {
-    uuid_t *uuid = NULL;
+    uuid_t *node = NULL;
     channel_t *channel = NULL;
 
-    SLIST_FOREACH(uuid, team->channels, next) {
-        channel = find_channel_by_uuid(server, uuid->uuid);
+    SLIST_FOREACH(node, team->channels, next) {
+        channel = find_channel_by_uuid(server, node->uuid);
         if (channel != NULL && strcmp(channel->name, name) == 0) {
             return channel;
         }

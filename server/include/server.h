@@ -33,7 +33,8 @@ void clear_buffer(int fd, command_packet_t *packet);
 void send_message_packet(int fd, int code);
 void send_context_packet(int fd, packet_context_t context);
 void send_team_packet(int fd, team_t *team, packet_command_t context);
-void send_channel_packet(int fd, channel_t *team, packet_command_t context);
+void send_channel_packet(int fd, channel_t *channel, packet_command_t context);
+void send_thread_packet(int fd, thread_t *thread, packet_command_t context);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
 
@@ -52,8 +53,17 @@ team_t *find_team_by_name(server_t *server, char *name);
 
 channel_t *new_channel(char *name, char *description, team_t *team);
 channel_t *find_channel_by_uuid(server_t *server, char *uuid);
+channel_t *find_channel_in_team_by_uuid(server_t *server, team_t *team, \
+    char *uuid);
 channel_t *find_channel_in_team_by_name(server_t *server, team_t *team, \
     char *name);
+
+thread_t *new_thread(char *title, char *message, channel_t *channel);
+thread_t *find_thread_by_uuid(server_t *server, char *uuid);
+thread_t *find_thread_in_channel_by_uuid(server_t *server, \
+    channel_t *channel, char *uuid);
+thread_t *find_thread_in_channel_by_title(server_t *server, \
+    channel_t *channel, char *title);
 
 message_t *find_message_by_uuid(server_t *server, char *uuid);
 
@@ -65,11 +75,6 @@ struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 char *get_username_client(server_t *server, client_t *client);
 time_t get_time(void);
-thread_t *find_thread_by_uuid(server_t *server, char *uuid);
-channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
-    char *channel_uuid);
-thread_t *find_thread_in_specified_channel(server_t *server, \
-    char *channel_uuid, char *thread_uuid);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);

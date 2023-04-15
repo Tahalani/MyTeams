@@ -25,10 +25,10 @@ SRC			=	src/commands/auth.c \
 				src/objects/channels.c \
 				src/objects/clients.c \
 				src/objects/teams.c \
+				src/objects/threads.c \
 				src/objects/users.c \
 				src/util/arrays.c \
 				src/util/context.c \
-				src/util/getters.c \
 				src/util/messages.c \
 				src/util/util.c \
 				src/server.c \
