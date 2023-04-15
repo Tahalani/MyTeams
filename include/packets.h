@@ -18,6 +18,7 @@ typedef enum packet_type_e {
     PACKET_MESSAGE,
     PACKET_CONTEXT,
     PACKET_TEAM,
+    PACKET_CHANNEL,
     PACKET_USER,
     PACKET_ERROR,
 } packet_type_t;
@@ -73,6 +74,8 @@ typedef struct PACKED team_packet_s {
     char description[MAX_DESCRIPTION_LENGTH + 1];
     packet_command_t context;
 } team_packet_t;
+
+typedef team_packet_t channel_packet_t;
 
 typedef struct PACKED user_packet_s {
     char uuid[UUID_LENGTH + 1];

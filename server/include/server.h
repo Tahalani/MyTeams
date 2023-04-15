@@ -33,6 +33,7 @@ void clear_buffer(int fd, command_packet_t *packet);
 void send_message_packet(int fd, int code);
 void send_context_packet(int fd, packet_context_t context);
 void send_team_packet(int fd, team_t *team, packet_command_t context);
+void send_channel_packet(int fd, channel_t *team, packet_command_t context);
 void send_user_packet(int fd, user_t *user, packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
 
@@ -48,6 +49,11 @@ user_t *find_user_by_name(server_t *server, char *name);
 team_t *new_team(char *name, char *description);
 team_t *find_team_by_uuid(server_t *server, char *uuid);
 team_t *find_team_by_name(server_t *server, char *name);
+
+channel_t *new_channel(char *name, char *description, team_t *team);
+channel_t *find_channel_by_uuid(server_t *server, char *uuid);
+channel_t *find_channel_in_team_by_name(server_t *server, team_t *team, \
+    char *name);
 
 message_t *find_message_by_uuid(server_t *server, char *uuid);
 

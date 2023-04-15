@@ -5,12 +5,20 @@
 ** use
 */
 
+#include <string.h>
 #include <unistd.h>
 
 #include "constants.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
+
+static void init_data(char **data)
+{
+    memset(data[0], 0, UUID_LENGTH + 1);
+    memset(data[1], 0, UUID_LENGTH + 1);
+    memset(data[2], 0, UUID_LENGTH + 1);
+}
 
 static int read_args(client_t *client, char **data, command_packet_t *packet)
 {
@@ -43,8 +51,10 @@ void use_command(UNUSED server_t *server, client_t *client, \
     char uuid2[UUID_LENGTH + 1];
     char uuid3[UUID_LENGTH + 1];
     char *data[3] = { uuid1, uuid2, uuid3 };
-    int len = read_args(client, data, packet);
+    int len = 0;
 
+    init_data(data);
+    len = read_args(client, data, packet);
     if (len == -1)
         return;
     if (len == 0)

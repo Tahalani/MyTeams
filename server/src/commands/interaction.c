@@ -37,8 +37,7 @@ void create_command(server_t *server, client_t *client, \
 void list_command(server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
-    char *input = "";
-    char **data = str_to_word(input, ' ');
+    char **data = str_to_word("", ' ');
     if (data == NULL)
         fatal_error("Malloc failed");
     if (client->use->thread != NULL && data[1] == NULL) {

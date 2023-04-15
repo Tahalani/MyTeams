@@ -60,8 +60,7 @@ static void leave_team(client_t *client, team_t *userTeam, uuid_t *uuid)
 void unsubscribe_command(server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
-    char *input = "";
-    char **data = str_to_word(input, ' ');
+    char **data = str_to_word("", ' ');
     team_t *userTeam = NULL;
     uuid_t *uuid = NULL;
 

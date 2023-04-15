@@ -27,6 +27,7 @@ void use_command(client_t *client, char **args)
     char data[UUID_LENGTH * 3 + 1];
     size_t len = array_len(args);
 
+    memset(data, 0, UUID_LENGTH * 3 + 1);
     if (len > 3) {
         send_rfc_message(400);
         return;

@@ -35,6 +35,7 @@ void send_error_packet(int fd, packet_error_t error, char *uuid)
     packet_header_t opcode = PACKET_ERROR;
     error_packet_t packet;
 
+    memset(&packet, 0, sizeof(error_packet_t));
     packet.error = error;
     if (uuid != NULL) {
         strcat(packet.uuid, uuid);

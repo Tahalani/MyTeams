@@ -12,8 +12,11 @@
 
 void fill_default_use(client_t *client)
 {
+    client->use->team = NULL;
     client->use->team_uuid = NULL;
+    client->use->channel = NULL;
     client->use->channel_uuid = NULL;
+    client->use->thread = NULL;
     client->use->thread_uuid = NULL;
 }
 

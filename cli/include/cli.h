@@ -9,6 +9,7 @@
     #define CLI_H_
 
     #include <stdbool.h>
+
     #include "packets.h"
     #include "types.h"
 

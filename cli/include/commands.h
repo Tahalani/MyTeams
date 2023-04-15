@@ -11,6 +11,7 @@
     #define COMMANDS_COUNT (sizeof(COMMANDS) / sizeof(command_t))
 
     #include <stdbool.h>
+
     #include "cli.h"
 
 typedef void (*command_func_t)(client_t *client, char **args);

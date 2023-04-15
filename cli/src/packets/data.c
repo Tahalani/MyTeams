@@ -23,3 +23,17 @@ void team_packet_handler(client_t *client)
         client_event_team_created(packet.uuid, packet.name, packet.description);
     }
 }
+
+void channel_packet_handler(client_t *client)
+{
+    channel_packet_t packet;
+    ssize_t re = read(client->fd, &packet, sizeof(channel_packet_t));
+
+    if (re != sizeof(channel_packet_t)) {
+        return;
+    }
+    if (packet.context == COMMAND_CREATE) {
+        client_event_channel_created(packet.uuid, packet.name, \
+            packet.description);
+    }
+}
