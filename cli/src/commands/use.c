@@ -12,19 +12,19 @@
 #include "packets.h"
 #include "types.h"
 
-static int check_context(char *args)
+static int check_context(char *args, char *array)
 {
     int res = 0;
     char *uuid = strtok(args, " ");
 
-    if (strlen(args) == 0) {
-        send_rfc_message(400);
-        return -1;
-    }
+    memset(array, 0, UUID_LENGTH * 3);
     for (res = 0; uuid != NULL; res++) {
         if (!is_uuid(uuid)) {
-            send_rfc_message(402);
+            send_rfc_message(420);
             return -1;
+        }
+        if (res < 3) {
+            strcat(array, uuid);
         }
         uuid = strtok(NULL, " ");
     }
@@ -37,22 +37,11 @@ static int check_context(char *args)
 
 void use_command(client_t *client, char *args)
 {
-    int context = check_context(args);
     char data[UUID_LENGTH * 3 + 1];
-    char *uuid = NULL;
+    int context = check_context(args, data);
 
-    memset(data, 0, UUID_LENGTH * 3);
     if (context == -1) {
         return;
-    }
-    uuid = strtok(args, " ");
-    for (int i = 0; i < context; i++) {
-        if (uuid == NULL) {
-            send_rfc_message(500);
-            return;
-        }
-        strcat(data, uuid);
-        uuid = strtok(NULL, " ");
     }
     send_packet(client->fd, COMMAND_USE, UUID_LENGTH * context, data);
 }

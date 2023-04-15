@@ -24,5 +24,10 @@ void send_packet(int fd, packet_command_t type, size_t data_size, char *data);
 void send_help_message(void);
 
 bool is_uuid(char *str);
+char **str_to_word(char const *str, char separator);
+size_t array_len(char **array);
+void free_array(char **array);
+
+void fatal_error(const char *error);
 
 #endif
