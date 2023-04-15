@@ -10,6 +10,8 @@
 
     #include <stdbool.h>
     #include <stddef.h>
+    #include <time.h>
+
     #include "constants.h"
 
 typedef char packet_header_t;
@@ -19,6 +21,8 @@ typedef enum packet_type_e {
     PACKET_CONTEXT,
     PACKET_TEAM,
     PACKET_CHANNEL,
+    PACKET_THREAD,
+    PACKET_REPLY,
     PACKET_USER,
     PACKET_ERROR,
 } packet_type_t;
@@ -76,6 +80,20 @@ typedef struct PACKED team_packet_s {
 } team_packet_t;
 
 typedef team_packet_t channel_packet_t;
+
+typedef struct PACKED thread_packet_s {
+    char uuid[UUID_LENGTH + 1];
+    char name[MAX_NAME_LENGTH + 1];
+    char message[MAX_BODY_LENGTH + 1];
+    time_t created_at;
+    packet_command_t context;
+} thread_packet_t;
+
+typedef struct PACKED reply_packet_s {
+    char body[MAX_BODY_LENGTH + 1];
+    time_t created_at;
+    packet_command_t context;
+} reply_packet_t;
 
 typedef struct PACKED user_packet_s {
     char uuid[UUID_LENGTH + 1];

@@ -6,16 +6,16 @@
 ##
 
 SRC			=	src/commands/auth.c \
-				src/commands/talk.c \
-				src/commands/user.c \
-				src/commands/subscribe.c \
-				src/commands/use.c \
-				src/commands/interaction.c \
-				src/commands/team.c \
 				src/commands/channel.c \
-				src/commands/thread.c \
-				src/commands/reply.c \
 				src/commands/info.c \
+				src/commands/interaction.c \
+				src/commands/message.c \
+				src/commands/subscribe.c \
+				src/commands/talk.c \
+				src/commands/team.c \
+				src/commands/thread.c \
+				src/commands/use.c \
+				src/commands/user.c \
 				src/core/cache.c \
 				src/core/commands.c \
 				src/core/data.c \
@@ -32,11 +32,12 @@ SRC			=	src/commands/auth.c \
 				src/database/user.c	\
 				src/objects/channels.c \
 				src/objects/clients.c \
+				src/objects/messages.c \
 				src/objects/teams.c \
+				src/objects/threads.c \
 				src/objects/users.c \
 				src/util/arrays.c \
 				src/util/context.c \
-				src/util/getters.c \
 				src/util/messages.c \
 				src/util/util.c \
 				src/server.c \

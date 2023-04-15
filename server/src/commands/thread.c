@@ -6,11 +6,12 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/queue.h>
+#include <unistd.h>
 
 #include "constants.h"
+#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -18,46 +19,49 @@
 static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)
 {
-    uuid_t *uuid = malloc(sizeof(uuid_t));
-    channel_t *channel_node =
-        find_channel_by_uuid(server, client->use->channel->uuid);
-    thread_t *new_thread = malloc(sizeof(thread_t));
+    channel_t *channel = get_context_channel(server, client->use);
+    thread_t *thread = NULL;
 
-    if (new_thread == NULL)
-        fatal_error("Malloc failed");
-    new_thread->uuid = generate_uuid();
-    new_thread->name = strdup(title);
-    new_thread->message = strdup(message);
-    new_thread->messages = malloc(sizeof(struct message_l));
-    SLIST_INIT(new_thread->messages);
-    uuid->uuid = strdup(new_thread->uuid);
-    SLIST_INSERT_HEAD(server->data->threads, new_thread, next);
-    SLIST_INSERT_HEAD(channel_node->threads, uuid, next);
+    if (channel == NULL) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return;
+    }
+    thread = find_thread_in_channel_by_title(server, channel, title);
+    if (thread != NULL) {
+        send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
+        return;
+    }
+    thread = new_thread(title, message, channel);
+    SLIST_INSERT_HEAD(server->data->threads, thread, next);
+    server_event_thread_created(channel->uuid, thread->uuid, \
+        client->user->uuid, title, message);
+    send_thread_packet(client->fd, thread, COMMAND_CREATE);
 }
 
 void create_thread(server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
-    char **data = NULL;
-    team_t *team = NULL;
-    channel_t *channel = NULL;
+    size_t size = MAX_NAME_LENGTH + MAX_BODY_LENGTH;
+    ssize_t re = 0;
+    ssize_t re2 = 0;
+    char name[MAX_NAME_LENGTH + 1];
+    char body[MAX_BODY_LENGTH + 1];
 
-    if (data[1] == NULL || data[2] == NULL) {
-        send_basic_message(client->fd, "400");
+    memset(name, 0, MAX_NAME_LENGTH + 1);
+    memset(body, 0, MAX_BODY_LENGTH + 1);
+    if (packet->data_size != size) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
         return;
     }
-    team = find_team_by_uuid(server, client->use->team->uuid);
-    if (team == NULL) {
-        send_basic_message(client->fd, "570");
-        return;
+    re = read(client->fd, name, MAX_NAME_LENGTH);
+    re2 = read(client->fd, body, MAX_BODY_LENGTH);
+    if (re != MAX_NAME_LENGTH || re2 != MAX_BODY_LENGTH) {
+        send_message_packet(client->fd, 500);
+    } else {
+        add_new_thread(server, client, name, body);
     }
-    channel = find_channel_by_uuid(server, client->use->channel->uuid);
-    if (channel == NULL) {
-        send_basic_message(client->fd, "580");
-        return;
-    }
-    add_new_thread(server, client, data[1], data[2]);
-    send_basic_message(client->fd, "200");
 }
 
 channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
@@ -76,23 +80,7 @@ channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
     return NULL;
 }
 
-thread_t *find_thread_in_specified_channel(server_t *server, \
-    char *channel_uuid, char *thread_uuid)
-{
-    channel_t *channel = NULL;
-    uuid_t *uuid = NULL;
-
-    channel = find_channel_by_uuid(server, channel_uuid);
-    if (channel == NULL)
-        return NULL;
-    SLIST_FOREACH(uuid, channel->threads, next) {
-        if (strcmp(uuid->uuid, thread_uuid) == 0)
-            return find_thread_by_uuid(server, thread_uuid);
-    }
-    return NULL;
-}
-
-void list_thread(server_t *server, client_t *client)
+void list_threads(server_t *server, client_t *client)
 {
     uuid_t *uuid = NULL;
     unsigned int nbr_thread = 0;

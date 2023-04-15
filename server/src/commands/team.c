@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
@@ -38,6 +39,8 @@ void create_team(server_t *server, client_t *client, command_packet_t *packet)
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
 
+    memset(name, 0, MAX_NAME_LENGTH + 1);
+    memset(description, 0, MAX_DESCRIPTION_LENGTH + 1);
     if (packet->data_size != size) {
         send_message_packet(client->fd, 500);
         clear_buffer(client->fd, packet);
@@ -52,21 +55,12 @@ void create_team(server_t *server, client_t *client, command_packet_t *packet)
     }
 }
 
-void list_team(server_t *server, client_t *client)
+void list_teams(server_t *server, client_t *client)
 {
     team_t *team = NULL;
-    unsigned int nbr_teams = 0;
 
-    SLIST_FOREACH(team, server->data->teams, next)
-        nbr_teams++;
-    team = NULL;
-    if (nbr_teams == 0) {
-        send_basic_message(client->fd, "570");
-        return;
-    }
-    dprintf(client->fd, "%d team(s) available%s", nbr_teams, CRLF);
     SLIST_FOREACH(team, server->data->teams, next) {
-        dprintf(client->fd, "%s (%s)%s", team->name, team->uuid, CRLF);
+        send_team_packet(client->fd, team, COMMAND_LIST);
     }
-    send_basic_message(client->fd, "200");
+    send_message_packet(client->fd, 200);
 }

@@ -70,8 +70,8 @@ client_t *client)
     thread->name, thread->uuid, thread->message, CRLF);
     SLIST_FOREACH(uuid, thread->messages, next) {
         msg = find_message_by_uuid(server, uuid->uuid);
-        dprintf(client->fd, "%s (%s)", msg->uuid, msg->content);
-        dprintf(client->fd, " %ld%s", msg->time, CRLF);
+        dprintf(client->fd, "%s (%s)", msg->uuid, msg->body);
+        dprintf(client->fd, " %ld%s", msg->created_at, CRLF);
         display_user(server, msg->sender, client->fd);
     }
 }

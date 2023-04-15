@@ -13,6 +13,7 @@
 #include <sys/select.h>
 #include <sys/signalfd.h>
 #include <sys/socket.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "server.h"

@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
@@ -46,6 +47,8 @@ void create_channel(server_t *server, client_t *client, \
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
 
+    memset(name, 0, MAX_NAME_LENGTH + 1);
+    memset(description, 0, MAX_DESCRIPTION_LENGTH + 1);
     if (packet->data_size != size) {
         send_message_packet(client->fd, 500);
         clear_buffer(client->fd, packet);
@@ -60,33 +63,22 @@ void create_channel(server_t *server, client_t *client, \
     }
 }
 
-static void send_list(server_t *server, client_t *client, team_t *team)
+void list_channels(server_t *server, client_t *client)
 {
+    team_t *team = get_context_team(server, client->use);
     uuid_t *uuid = NULL;
-    unsigned int nbr_channel = 0;
-
-    SLIST_FOREACH(uuid, team->channels, next)
-        nbr_channel++;
-    uuid = NULL;
-    if (nbr_channel == 0) {
-        send_basic_message(client->fd, "580");
-        return;
-    }
-    dprintf(client->fd, "%d channel(s) available%s", nbr_channel, CRLF);
-    SLIST_FOREACH(uuid, team->channels, next) {
-        dprintf(client->fd, "%s (%s)%s", \
-        find_channel_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
-    }
-}
-
-void list_channel(server_t *server, client_t *client)
-{
-    team_t *team = client->use->team;
+    channel_t *channel = NULL;
 
     if (team == NULL) {
-        send_basic_message(client->fd, "570");
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->team_uuid);
         return;
     }
-    send_list(server, client, team);
-    send_basic_message(client->fd, "200");
+    SLIST_FOREACH(uuid, team->channels, next) {
+        channel = find_channel_in_team_by_uuid(server, team, uuid->uuid);
+        if (channel != NULL) {
+            send_channel_packet(client->fd, channel, COMMAND_LIST);
+        }
+    }
+    send_message_packet(client->fd, 200);
 }
