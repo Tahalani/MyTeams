@@ -57,6 +57,11 @@ typedef struct team_s {
     SLIST_ENTRY(team_s) next;
 } team_t;
 
+typedef struct parsed_user_s {
+    char uuid[UUID_SIZE + 1];
+    char username[MAX_NAME_LENGTH + 1];
+} parsed_user_t;
+
 typedef struct parsed_team_s {
     char uuid[UUID_SIZE + 1];
     char name[MAX_NAME_LENGTH + 1];
@@ -67,20 +72,17 @@ typedef struct parsed_channel_s {
     char uuid[UUID_SIZE + 1];
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
-    char uuid_team[UUID_SIZE + 1];
 } parsed_channel_t;
 
 typedef struct parsed_thread_s {
     char uuid[UUID_SIZE + 1];
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
-    char uuid_channel[UUID_SIZE + 1];
 } parsed_thread_t;
 
 typedef struct parsed_message_s {
     char uuid[UUID_SIZE + 1];
     char body[MAX_BODY_LENGTH + 1];
-    char uuid_thread[UUID_SIZE + 1];
     char uuid_user[UUID_SIZE + 1];
 } parsed_message_t;
 

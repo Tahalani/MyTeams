@@ -95,17 +95,19 @@ team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);
 thread_t *get_context_thread(server_t *server, use_t *use);
 
-int create_team_file(char *name, char *description, char *uuid);
 int get_fd_file(char *name);
-message_t *find_message_by_uuid(server_t *server, char *uuid);
-void save_team(team_t *team, int fd);
-team_t *load_team(int fd);
-void display_all_teams(server_t *server);
 
-thread_t *load_thread(int fd);
-channel_t *load_channel(int fd);
+void save_user(user_t *user, int fd);
+void save_team(team_t *team, int fd);
+void save_channel(channel_t *channel, int fd);
+void save_thread(thread_t *thread, int fd);
+void save_data(server_t *server);
+
+user_t *load_user(int fd);
 team_t *load_team(int fd);
-void load_all_teams(data_t *data, server_t *server);
+channel_t *load_channel(int fd);
+thread_t *load_thread(int fd);
+void load_data(data_t *data, server_t *server);
 
 
 #endif

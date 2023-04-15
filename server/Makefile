@@ -22,9 +22,13 @@ SRC			=	src/commands/auth.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
 				src/core/packets.c \
-				src/database/display.c	\
+				src/database/utils.c	\
+				src/database/loading.c	\
+				src/database/saving.c	\
 				src/database/message.c	\
 				src/database/team.c	\
+				src/database/channel.c	\
+				src/database/thread.c	\
 				src/database/user.c	\
 				src/objects/channels.c \
 				src/objects/clients.c \

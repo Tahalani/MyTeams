@@ -60,7 +60,7 @@ static void server_loop(server_t *server)
             handle_incoming(server);
         handle_clients(server, &set);
     }
-    display_all_teams(server);
+    save_data(server);
 }
 
 static int init_ftp(struct sockaddr *addr)
@@ -102,7 +102,7 @@ void init_data(data_t *data, server_t *server)
     SLIST_INIT(data->channels);
     SLIST_INIT(data->threads);
     SLIST_INIT(data->messages);
-    load_all_teams(data, server);
+    load_data(data, server);
 }
 
 bool start_server(int port)
