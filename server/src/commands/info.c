@@ -10,6 +10,7 @@
 
 #include "commands.h"
 #include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
@@ -76,7 +77,7 @@ client_t *client)
 }
 
 void info_command(UNUSED server_t *server, client_t *client, \
-UNUSED char *input)
+    UNUSED command_packet_t *packet)
 {
     if (client->user == NULL) {
         send_basic_message(client->fd, "530");

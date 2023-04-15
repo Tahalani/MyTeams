@@ -23,11 +23,6 @@ void messages_command(UNUSED client_t *client, UNUSED char *input)
 
 }
 
-void create_command(UNUSED client_t *client, UNUSED char *args)
-{
-
-}
-
 void subscribed_command(UNUSED client_t *client, UNUSED char *input)
 {
 

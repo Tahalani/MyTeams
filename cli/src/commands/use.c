@@ -6,42 +6,37 @@
 */
 
 #include <string.h>
+#include <stdbool.h>
 
 #include "cli.h"
 #include "constants.h"
 #include "packets.h"
 #include "types.h"
 
-static int check_context(char *args, char *array)
+static bool concat_uuid(char *uuid, char *data)
 {
-    int res = 0;
-    char *uuid = strtok(args, " ");
-
-    memset(array, 0, UUID_LENGTH * 3);
-    for (res = 0; uuid != NULL; res++) {
-        if (!is_uuid(uuid)) {
-            send_rfc_message(420);
-            return -1;
-        }
-        if (res < 3) {
-            strcat(array, uuid);
-        }
-        uuid = strtok(NULL, " ");
+    if (!is_uuid(uuid)) {
+        return false;
     }
-    if (res < 1 || res > 3) {
-        send_rfc_message(400);
-        return -1;
-    }
-    return res;
+    strcat(data, uuid);
+    return true;
 }
 
-void use_command(client_t *client, char *args)
+void use_command(client_t *client, char **args)
 {
     char data[UUID_LENGTH * 3 + 1];
-    int context = check_context(args, data);
+    size_t len = array_len(args);
 
-    if (context == -1) {
+    memset(data, 0, UUID_LENGTH * 3 + 1);
+    if (len > 3) {
+        send_rfc_message(400);
         return;
     }
-    send_packet(client->fd, COMMAND_USE, UUID_LENGTH * context, data);
+    for (size_t i = 0; i < len; i++) {
+        if (!concat_uuid(args[i], data)) {
+            send_rfc_message(420);
+            return;
+        }
+    }
+    send_packet(client->fd, COMMAND_USE, UUID_LENGTH * len, data);
 }

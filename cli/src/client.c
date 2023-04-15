@@ -9,12 +9,14 @@
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include "cli.h"
+#include "packets.h"
 #include "types.h"
 
 static int refresh_fdsets(int socket_fd, fd_set *set)
@@ -74,14 +76,15 @@ bool start_client(char *address, int port)
             .sin_addr = { inet_addr(address) },
     };
     struct sockaddr *addr_ptr = (struct sockaddr *)&addr;
-    client_t client = { 0, NULL, NULL };
+    client_t client = { 0, NULL, NULL, CONTEXT_NONE };
 
     client.fd = init_client(addr_ptr);
     if (client.fd == -1) {
         return false;
     }
-    send_rfc_message(220);
     client_loop(&client);
     close(client.fd);
+    free(client.user_uuid);
+    free(client.user_name);
     return true;
 }

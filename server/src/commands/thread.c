@@ -10,6 +10,8 @@
 #include <string.h>
 #include <sys/queue.h>
 
+#include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
@@ -33,8 +35,10 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     SLIST_INSERT_HEAD(channel_node->threads, uuid, next);
 }
 
-void create_thread(server_t *server, client_t *client, char **data)
+void create_thread(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char **data = NULL;
     team_t *team = NULL;
     channel_t *channel = NULL;
 

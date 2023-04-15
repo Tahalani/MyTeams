@@ -11,6 +11,8 @@
 #include <sys/queue.h>
 
 #include "commands.h"
+#include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
@@ -30,8 +32,10 @@ static void join_team(client_t *client, team_t *team)
     send_basic_message(client->fd, "200");
 }
 
-void subscribe_command(server_t *server, client_t *client, char *input)
+void subscribe_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     team_t *team = NULL;
 
@@ -53,9 +57,10 @@ static void leave_team(client_t *client, team_t *userTeam, uuid_t *uuid)
     }
 }
 
-void unsubscribe_command(server_t *server, client_t *client, char *input)
+void unsubscribe_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
-    char **data = str_to_word(input, ' ');
+    char **data = str_to_word("", ' ');
     team_t *userTeam = NULL;
     uuid_t *uuid = NULL;
 
@@ -77,8 +82,10 @@ void unsubscribe_command(server_t *server, client_t *client, char *input)
     free_array(data);
 }
 
-void subscribed_command(server_t *server, client_t *client, char *input)
+void subscribed_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     team_t *team = NULL;
     uuid_t *uuid = NULL;

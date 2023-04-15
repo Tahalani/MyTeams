@@ -14,17 +14,21 @@
 client_t *new_client(int fd)
 {
     client_t *new = malloc(sizeof(client_t));
+    use_t *use = malloc(sizeof(use_t));
 
-    if (new == NULL) {
+    if (new == NULL || use == NULL) {
         fatal_error("malloc failed");
     }
     new->fd = fd;
     new->file = NULL;
     new->user = NULL;
-    new->use = calloc(sizeof(use_t), 1);
+    new->use = use;
     new->use->team = NULL;
+    new->use->team_uuid = NULL;
     new->use->channel = NULL;
+    new->use->channel_uuid = NULL;
     new->use->thread = NULL;
+    new->use->thread_uuid = NULL;
     return new;
 }
 

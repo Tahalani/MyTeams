@@ -10,6 +10,8 @@
 #include <sys/queue.h>
 
 #include "commands.h"
+#include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
@@ -19,8 +21,10 @@ static void display_user_info(client_t *client, user_t *node)
     dprintf(client->fd, "Username: %s%s", node->username, CRLF);
 }
 
-void users_command(server_t *server, client_t *client, char *input)
+void users_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     user_t *node = NULL;
     char **data = str_to_word(input, ' ');
 
@@ -36,8 +40,10 @@ void users_command(server_t *server, client_t *client, char *input)
     free_array(data);
 }
 
-void user_command(server_t *server, client_t *client, char *input)
+void user_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 

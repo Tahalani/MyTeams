@@ -25,6 +25,11 @@ static void end_server(server_t *server)
     SLIST_FOREACH(current, server->clients, next) {
         close_connection(current);
     }
+    free(server->data->teams);
+    free(server->data->channels);
+    free(server->data->threads);
+    free(server->data->messages);
+    free(server->data->users);
 }
 
 static void server_loop(server_t *server)
@@ -32,6 +37,7 @@ static void server_loop(server_t *server)
     fd_set set;
     int max_fd = 0;
     int current = 0;
+    bool exit = false;
     int sig_fd = 0;
     sigset_t mask;
 
@@ -41,13 +47,15 @@ static void server_loop(server_t *server)
     if (sig_fd == -1)
         fatal_error("signalfd failed");
     sigprocmask(SIG_BLOCK, &mask, NULL);
-    while (1) {
+    while (!exit) {
         max_fd = refresh_fdsets(server, &set, sig_fd);
         current = select(max_fd + 1, &set, NULL, NULL, NULL);
         if (current == -1)
             fatal_error("select failed");
+        if (FD_ISSET(0, &set))
+            exit = handle_stdin();
         if (FD_ISSET(sig_fd, &set))
-            break;
+            exit = true;
         if (FD_ISSET(server->socket_fd, &set))
             handle_incoming(server);
         handle_clients(server, &set);

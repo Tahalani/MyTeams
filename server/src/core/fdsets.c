@@ -5,7 +5,9 @@
 ** fdsets.c
 */
 
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/queue.h>
 #include <sys/select.h>
@@ -38,6 +40,7 @@ int refresh_fdsets(server_t *server, fd_set *set, int sig_fd)
     client_t *node = NULL;
 
     FD_ZERO(set);
+    FD_SET(0, set);
     FD_SET(server->socket_fd, set);
     FD_SET(sig_fd, set);
     SLIST_FOREACH(node, server->clients, next) {
@@ -64,7 +67,7 @@ void handle_incoming(server_t *server)
         return;
     }
     SLIST_INSERT_HEAD(server->clients, client, next);
-    send_basic_message(new_fd, "220");
+    send_message_packet(new_fd, 220);
 }
 
 void handle_clients(server_t *server, fd_set *set)
@@ -79,4 +82,17 @@ void handle_clients(server_t *server, fd_set *set)
         }
         node = tmp;
     }
+}
+
+bool handle_stdin(void)
+{
+    bool exit = false;
+    size_t len = 0;
+    char *line = NULL;
+
+    if (getline(&line, &len, stdin) == -1) {
+        exit = true;
+    }
+    free(line);
+    return exit;
 }
