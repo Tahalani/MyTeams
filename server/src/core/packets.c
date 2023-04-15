@@ -9,7 +9,6 @@
 #include <unistd.h>
 
 #include "packets.h"
-#include "types.h"
 
 void send_message_packet(int fd, int code)
 {

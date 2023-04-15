@@ -6,6 +6,7 @@
 */
 
 #include <string.h>
+#include <stdbool.h>
 
 #include "cli.h"
 #include "constants.h"

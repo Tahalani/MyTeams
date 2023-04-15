@@ -5,6 +5,8 @@
 ** cache.c
 */
 
+#include <stddef.h>
+
 #include "server.h"
 #include "types.h"
 

@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "cli.h"
+#include "packets.h"
 #include "types.h"
 
 static int refresh_fdsets(int socket_fd, fd_set *set)

@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "logging_client.h"
+#include "packets.h"
 #include "types.h"
 
 void team_packet_handler(client_t *client)

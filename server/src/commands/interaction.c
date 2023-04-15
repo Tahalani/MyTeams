@@ -8,6 +8,8 @@
 #include <stdio.h>
 
 #include "commands.h"
+#include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 

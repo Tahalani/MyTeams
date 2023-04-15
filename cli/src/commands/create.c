@@ -8,6 +8,8 @@
 #include <string.h>
 
 #include "cli.h"
+#include "constants.h"
+#include "packets.h"
 #include "types.h"
 
 static void create_title_desc(client_t *client, char **args, \

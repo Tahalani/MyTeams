@@ -8,8 +8,10 @@
 #include <unistd.h>
 
 #include "cli.h"
+#include "constants.h"
 #include "handler.h"
 #include "logging_client.h"
+#include "packets.h"
 #include "types.h"
 
 int handle_unauthorized(UNUSED const char *uuid)
