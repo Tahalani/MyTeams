@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <sys/queue.h>
 #include <sys/socket.h>
-#include <time.h>
 
 #include "constants.h"
 #include "server.h"
@@ -64,12 +63,4 @@ char *generate_uuid(void)
     uuid[23] = '-';
     uuid[36] = '\0';
     return uuid;
-}
-
-time_t get_time(void)
-{
-    time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
-
-    return mktime(tm);
 }

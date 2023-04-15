@@ -54,6 +54,9 @@ void thread_packet_handler(client_t *client)
     if (packet.context == COMMAND_CREATE) {
         client_event_thread_created(packet.uuid, client->user_uuid, \
         packet.created_at,packet.name, packet.message);
+    } else if (packet.context == COMMAND_LIST) {
+        client_channel_print_threads(packet.uuid, client->user_uuid, \
+        packet.created_at, packet.name, packet.message);
     }
 }
 
@@ -68,5 +71,8 @@ void reply_packet_handler(client_t *client)
     if (packet.context == COMMAND_CREATE) {
         client_event_thread_reply_received("", "", client->user_uuid, \
             packet.body);
+    } else if (packet.context == COMMAND_LIST) {
+        client_thread_print_replies("", client->user_uuid, \
+            packet.created_at, packet.body);
     }
 }

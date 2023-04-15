@@ -67,8 +67,9 @@ thread_t *find_thread_in_channel_by_title(server_t *server, \
     channel_t *channel, char *title);
 
 message_t *new_message(char *body, thread_t *thread, user_t *user);
-
 message_t *find_message_by_uuid(server_t *server, char *uuid);
+message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
+    char *uuid);
 
 void send_basic_message(int fd, char *code);
 
@@ -77,7 +78,6 @@ void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 char *get_username_client(server_t *server, client_t *client);
-time_t get_time(void);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
