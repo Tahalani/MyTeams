@@ -83,7 +83,7 @@ static void send_list(server_t *server, client_t *client, thread_t *thread)
     }
 }
 
-void list_reply(server_t *server, client_t *client)
+void list_messages(server_t *server, client_t *client)
 {
     thread_t *thread = client->use->thread;
 

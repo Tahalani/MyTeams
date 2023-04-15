@@ -55,21 +55,12 @@ void create_team(server_t *server, client_t *client, command_packet_t *packet)
     }
 }
 
-void list_team(server_t *server, client_t *client)
+void list_teams(server_t *server, client_t *client)
 {
     team_t *team = NULL;
-    unsigned int nbr_teams = 0;
 
-    SLIST_FOREACH(team, server->data->teams, next)
-        nbr_teams++;
-    team = NULL;
-    if (nbr_teams == 0) {
-        send_basic_message(client->fd, "570");
-        return;
-    }
-    dprintf(client->fd, "%d team(s) available%s", nbr_teams, CRLF);
     SLIST_FOREACH(team, server->data->teams, next) {
-        dprintf(client->fd, "%s (%s)%s", team->name, team->uuid, CRLF);
+        send_team_packet(client->fd, team, COMMAND_LIST);
     }
-    send_basic_message(client->fd, "200");
+    send_message_packet(client->fd, 200);
 }

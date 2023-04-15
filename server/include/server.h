@@ -90,10 +90,10 @@ void create_thread(server_t *server, client_t *client, \
 void create_message(server_t *server, client_t *client, \
     command_packet_t *packet);
 
-void list_team(server_t *server, client_t *client);
-void list_channel(server_t *server, client_t *client);
-void list_thread(server_t *server, client_t *client);
-void list_reply(server_t *server, client_t *client);
+void list_teams(server_t *server, client_t *client);
+void list_channels(server_t *server, client_t *client);
+void list_threads(server_t *server, client_t *client);
+void list_messages(server_t *server, client_t *client);
 
 void fill_default_use(client_t *client);
 void fill_team_use(client_t *client, char **data);

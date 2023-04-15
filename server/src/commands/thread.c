@@ -80,7 +80,7 @@ channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
     return NULL;
 }
 
-void list_thread(server_t *server, client_t *client)
+void list_threads(server_t *server, client_t *client)
 {
     uuid_t *uuid = NULL;
     unsigned int nbr_thread = 0;

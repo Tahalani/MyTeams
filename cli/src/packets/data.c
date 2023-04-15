@@ -21,6 +21,8 @@ void team_packet_handler(client_t *client)
     }
     if (packet.context == COMMAND_CREATE) {
         client_event_team_created(packet.uuid, packet.name, packet.description);
+    } else if (packet.context == COMMAND_LIST) {
+        client_print_teams(packet.uuid, packet.name, packet.description);
     }
 }
 
@@ -34,6 +36,9 @@ void channel_packet_handler(client_t *client)
     }
     if (packet.context == COMMAND_CREATE) {
         client_event_channel_created(packet.uuid, packet.name, \
+            packet.description);
+    } else if (packet.context == COMMAND_LIST) {
+        client_team_print_channels(packet.uuid, packet.name, \
             packet.description);
     }
 }

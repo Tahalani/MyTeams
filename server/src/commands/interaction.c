@@ -28,33 +28,23 @@ void create_command(server_t *server, client_t *client, \
         create_channel(server, client, packet);
         return;
     }
-    if (client->use->team == NULL) {
-        create_team(server, client, packet);
-        return;
-    }
+    create_team(server, client, packet);
 }
 
 void list_command(server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
-    char **data = str_to_word("", ' ');
-    if (data == NULL)
-        fatal_error("Malloc failed");
-    if (client->use->thread != NULL && data[1] == NULL) {
-        list_reply(server, client);
+    if (client->use->thread_uuid != NULL) {
+        list_messages(server, client);
         return;
     }
-    if (client->use->channel != NULL && data[1] == NULL) {
-        list_thread(server, client);
+    if (client->use->channel_uuid != NULL) {
+        list_threads(server, client);
         return;
     }
-    if (client->use->team != NULL && data[1] == NULL) {
-        list_channel(server, client);
+    if (client->use->team_uuid != NULL) {
+        list_channels(server, client);
         return;
     }
-    if (client->use->team == NULL && data[1] == NULL) {
-        list_team(server, client);
-        return;
-    }
-    send_basic_message(client->fd, "400");
+    list_teams(server, client);
 }
