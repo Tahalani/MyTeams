@@ -27,9 +27,10 @@ user_t *load_user(int fd)
 {
     user_t *user = malloc(sizeof(user_t));
     parsed_user_t parsed;
+    ssize_t re = 0;
 
     memset(&parsed, 0, sizeof(parsed_user_t));
-    ssize_t re = read(fd, &parsed, sizeof(parsed_user_t));
+    re = read(fd, &parsed, sizeof(parsed_user_t));
     if (re != sizeof(parsed_user_t))
         return (NULL);
     user->username = strdup(parsed.username);

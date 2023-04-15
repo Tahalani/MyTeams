@@ -28,9 +28,10 @@ team_t *load_team(int fd)
 {
     team_t *team = malloc(sizeof(team_t));
     parsed_team_t parsed;
+    ssize_t re = 0;
 
     memset(&parsed, 0, sizeof(parsed_team_t));
-    ssize_t re = read(fd, &parsed, sizeof(parsed_team_t));
+    re = read(fd, &parsed, sizeof(parsed_team_t));
     if (re != sizeof(parsed_team_t))
         return (NULL);
     team->name = strdup(parsed.name);
@@ -62,12 +63,15 @@ void relation_team_user(server_t *server, int fd)
 void load_relation_team_user(server_t *server, int fd)
 {
     relation_t *relation = NULL;
+    user_t *user = NULL;
+    team_t *team = NULL;
+    uuid_t *uuid = NULL;
 
     while ((relation = load_relation(fd))) {
-        user_t *user = find_user_by_uuid(server, relation->first_uuid);
-        team_t *team = find_team_by_uuid(server, relation->second_uuid);
+        user = find_user_by_uuid(server, relation->first_uuid);
+        team = find_team_by_uuid(server, relation->second_uuid);
         if (user && team) {
-            uuid_t *uuid = malloc(sizeof(uuid_t));
+            uuid = malloc(sizeof(uuid_t));
             uuid->uuid = strdup(team->uuid);
             SLIST_INSERT_HEAD(user->teams, uuid, next);
             uuid = malloc(sizeof(uuid_t));

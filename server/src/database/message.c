@@ -28,9 +28,10 @@ message_t *load_message(int fd)
 {
     message_t *message = malloc(sizeof(message_t));
     parsed_message_t parsed;
+    ssize_t re = 0;
 
     memset(&parsed, 0, sizeof(parsed_message_t));
-    ssize_t re = read(fd, &parsed, sizeof(parsed_message_t));
+    re = read(fd, &parsed, sizeof(parsed_message_t));
     if (re != sizeof(parsed_message_t))
         return (NULL);
     message->uuid = strdup(parsed.uuid);
@@ -58,14 +59,15 @@ void relation_message_thread(server_t *server, int fd)
 void load_relation_message_thread(server_t *server, int fd)
 {
     relation_t *relation = NULL;
+    thread_t *thread = NULL;
+    message_t *message = NULL;
+    uuid_t *uuid = NULL;
 
     while ((relation = load_relation(fd))) {
-        thread_t *thread = find_thread_by_uuid
-            (server, relation->first_uuid);
-        message_t *message = find_message_by_uuid
-            (server, relation->second_uuid);
+        thread = find_thread_by_uuid(server, relation->first_uuid);
+        message = find_message_by_uuid(server, relation->second_uuid);
         if (thread && message) {
-            uuid_t *uuid = malloc(sizeof(uuid_t));
+            uuid = malloc(sizeof(uuid_t));
             uuid->uuid = strdup(message->uuid);
             SLIST_INSERT_HEAD(thread->messages, uuid, next);
         }

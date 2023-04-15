@@ -28,17 +28,18 @@ channel_t *load_channel(int fd)
 {
     channel_t *channel = malloc(sizeof(channel_t));
     parsed_channel_t parsed;
+    ssize_t re = 0;
 
     memset(&parsed, 0, sizeof(parsed_channel_t));
-    ssize_t re = read(fd, &parsed, sizeof(parsed_channel_t));
+    re = read(fd, &parsed, sizeof(parsed_channel_t));
     if (re != sizeof(parsed_channel_t))
-        return (NULL);
+        return NULL;
     channel->name = strdup(parsed.name);
     channel->uuid = strdup(parsed.uuid);
     channel->description = strdup(parsed.description);
     channel->threads = malloc(sizeof(struct thread_l));
     SLIST_INIT(channel->threads);
-    return (channel);
+    return channel;
 }
 
 void relation_channel_team(server_t *server, int fd)
@@ -60,12 +61,15 @@ void relation_channel_team(server_t *server, int fd)
 void load_relation_channel_team(server_t *server, int fd)
 {
     relation_t *relation = NULL;
+    team_t *team = NULL;
+    channel_t *channel = NULL;
+    uuid_t *uuid = NULL;
 
     while ((relation = load_relation(fd))) {
-        team_t *team = find_team_by_uuid(server, relation->first_uuid);
-        channel_t *channel = find_channel_by_uuid(server, relation->second_uuid);
+        team = find_team_by_uuid(server, relation->first_uuid);
+        channel = find_channel_by_uuid(server, relation->second_uuid);
         if (team && channel) {
-            uuid_t *uuid = malloc(sizeof(uuid_t));
+            uuid = malloc(sizeof(uuid_t));
             uuid->uuid = strdup(channel->uuid);
             SLIST_INSERT_HEAD(team->channels, uuid, next);
         }

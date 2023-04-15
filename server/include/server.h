@@ -8,6 +8,7 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
+    #define _GNU_SOURCE
     #include <stdbool.h>
     #include <sys/socket.h>
 
@@ -129,6 +130,6 @@ channel_t *load_channel(int fd);
 thread_t *load_thread(int fd);
 message_t *load_message(int fd);
 relation_t *load_relation(int fd);
-void load_data(data_t *data, server_t *server);
+void load_data(server_t *server);
 
 #endif

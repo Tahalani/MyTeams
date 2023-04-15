@@ -103,7 +103,7 @@ void init_data(data_t *data, server_t *server)
     SLIST_INIT(data->channels);
     SLIST_INIT(data->threads);
     SLIST_INIT(data->messages);
-    load_data(data, server);
+    load_data(server);
 }
 
 bool start_server(int port)
