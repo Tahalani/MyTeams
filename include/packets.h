@@ -17,6 +17,7 @@ typedef char packet_header_t;
 typedef enum packet_type_e {
     PACKET_MESSAGE,
     PACKET_CONTEXT,
+    PACKET_TEAM,
     PACKET_USER,
     PACKET_ERROR,
 } packet_type_t;
@@ -65,6 +66,13 @@ typedef struct PACKED message_packet_s {
 typedef struct PACKED context_packet_s {
     packet_context_t context;
 } context_packet_t;
+
+typedef struct PACKED team_packet_s {
+    char uuid[UUID_LENGTH + 1];
+    char name[MAX_NAME_LENGTH + 1];
+    char description[MAX_DESCRIPTION_LENGTH + 1];
+    packet_command_t context;
+} team_packet_t;
 
 typedef struct PACKED user_packet_s {
     char uuid[UUID_LENGTH + 1];

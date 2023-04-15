@@ -11,8 +11,8 @@
 #include <unistd.h>
 
 #include "constants.h"
-#include "packets.h"
 #include "logging_server.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 

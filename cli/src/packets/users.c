@@ -45,6 +45,7 @@ void user_packet_handler(client_t *client)
     } else if (packet.context == COMMAND_LOGOUT) {
         client_event_logged_out(packet.uuid, packet.username);
         update_user(client, &packet, false);
+        client->context = CONTEXT_NONE;
     }
 }
 

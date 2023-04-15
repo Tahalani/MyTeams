@@ -31,8 +31,10 @@ static void add_new_channel(server_t *server, team_t *team, \
     SLIST_INSERT_HEAD(team->channels, uuid, next);
 }
 
-void create_channel(server_t *server, client_t *client, char **data)
+void create_channel(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char **data = NULL;
     team_t *team = client->use->team;
 
     if (data[1] == NULL || data[2] == NULL) {

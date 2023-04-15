@@ -29,8 +29,10 @@ static void add_new_reply(server_t *server, client_t *client, char *message)
     SLIST_INSERT_HEAD(client->use->thread->messages, uuid, next);
 }
 
-void create_reply(server_t *server, client_t *client, char *comment)
+void create_reply(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *comment = NULL;
     thread_t *thread = client->use->thread;
 
     if (comment == NULL) {

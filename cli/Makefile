@@ -8,9 +8,11 @@
 SRC			=	src/commands/auth.c \
 				../server/src/util/arrays.c \
 				src/commands/basic.c \
+				src/commands/create.c \
 				src/commands/fixme.c \
 				src/commands/fixme2.c \
 				src/commands/use.c \
+				src/packets/data.c \
 				src/packets/errors.c \
 				src/packets/users.c \
 				src/packets/send.c \

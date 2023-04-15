@@ -25,6 +25,7 @@ static const message_t MESSAGES[] = {
         { 404, "Unknown command." },
         { 420, "Argument must be a UUID." },
         { 421, "Too long username." },
+        { 422, "Too long description." },
         { 430, "Please login with /login." },
         { 440, "Unknown team." },
         { 441, "Unknown channel." },

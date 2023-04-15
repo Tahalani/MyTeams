@@ -18,15 +18,16 @@ SRC			=	src/commands/auth.c \
 				src/commands/info.c \
 				src/core/cache.c \
 				src/core/commands.c \
+				src/core/data.c \
 				src/core/fdsets.c \
 				src/core/loop.c \
 				src/core/packets.c \
+				src/objects/clients.c \
+				src/objects/teams.c \
+				src/objects/users.c \
 				src/util/arrays.c \
-				src/util/clients.c \
 				src/util/context.c \
-				src/util/data.c \
 				src/util/getters.c \
-				src/util/getters2.c \
 				src/util/messages.c \
 				src/util/util.c \
 				src/server.c \

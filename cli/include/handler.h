@@ -19,6 +19,7 @@ typedef int (*packet_error_handler_t)(const char *uuid);
 
 void message_packet_handler(client_t *client);
 void context_packet_handler(client_t *client);
+void team_packet_handler(client_t *client);
 void user_packet_handler(client_t *client);
 void error_packet_handler(client_t *client);
 
@@ -38,6 +39,7 @@ typedef struct error_handler_s {
 static const handler_t HANDLERS[] = {
         { PACKET_MESSAGE, &message_packet_handler, },
         { PACKET_CONTEXT, &context_packet_handler, },
+        { PACKET_TEAM, &team_packet_handler },
         { PACKET_USER, &user_packet_handler },
         { PACKET_ERROR, &error_packet_handler },
 };
