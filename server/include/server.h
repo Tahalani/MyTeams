@@ -111,12 +111,24 @@ void save_team(team_t *team, int fd);
 void save_channel(channel_t *channel, int fd);
 void save_thread(thread_t *thread, int fd);
 void save_data(server_t *server);
+void save_message(message_t *message, int fd);
+
+void relation_team_user(server_t *server, int fd);
+void relation_channel_team(server_t *server, int fd);
+void relation_thread_channel(server_t *server, int fd);
+void relation_message_thread(server_t *server, int fd);
+
+void load_relation_team_user(server_t *server, int fd);
+void load_relation_channel_team(server_t *server, int fd);
+void load_relation_thread_channel(server_t *server, int fd);
+void load_relation_message_thread(server_t *server, int fd);
 
 user_t *load_user(int fd);
 team_t *load_team(int fd);
 channel_t *load_channel(int fd);
 thread_t *load_thread(int fd);
+message_t *load_message(int fd);
+relation_t *load_relation(int fd);
 void load_data(data_t *data, server_t *server);
-
 
 #endif

@@ -20,9 +20,22 @@ int get_fd_file(char *name)
     char *path = NULL;
     int fd = -1;
 
-    asprintf(&path, "server/database/Team/%s", name);
+    asprintf(&path, "server/database/%s", name);
     fd = open(path, O_CREAT | O_RDWR, 0744);
     if (fd == -1)
         perror("open");
     return fd;
+}
+
+relation_t *load_relation(int fd)
+{
+    relation_t *relation = malloc(sizeof(relation_t));
+
+    memset(relation, 0, sizeof(relation_t));
+    ssize_t re = read(fd, relation, sizeof(relation_t));
+    if (re != sizeof(relation_t)) {
+        free(relation);
+        return NULL;
+    }
+    return relation;
 }

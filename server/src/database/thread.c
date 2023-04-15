@@ -40,3 +40,35 @@ thread_t *load_thread(int fd)
     SLIST_INIT(thread->messages);
     return (thread);
 }
+
+void relation_thread_channel(server_t *server, int fd)
+{
+    relation_t relation;
+    channel_t *channel = NULL;
+    uuid_t *thread = NULL;
+
+    SLIST_FOREACH(channel, server->data->channels, next) {
+        SLIST_FOREACH(thread, channel->threads, next) {
+            memset(&relation, 0, sizeof(relation_t));
+            strcat(relation.first_uuid, channel->uuid);
+            strcat(relation.second_uuid, thread->uuid);
+            write(fd, &relation, sizeof(relation_t));
+        }
+    }
+}
+
+void load_relation_thread_channel(server_t *server, int fd)
+{
+    relation_t *relation = NULL;
+
+    while ((relation = load_relation(fd))) {
+        channel_t *channel = find_channel_by_uuid(server, relation->first_uuid);
+        thread_t *thread = find_thread_by_uuid(server, relation->second_uuid);
+        if (channel && thread) {
+            uuid_t *uuid = malloc(sizeof(uuid_t));
+            uuid->uuid = strdup(thread->uuid);
+            SLIST_INSERT_HEAD(channel->threads, uuid, next);
+        }
+        free(relation);
+    }
+}

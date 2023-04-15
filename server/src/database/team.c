@@ -42,3 +42,38 @@ team_t *load_team(int fd)
     SLIST_INIT(team->users);
     return (team);
 }
+
+void relation_team_user(server_t *server, int fd)
+{
+    relation_t relation;
+    user_t *user = NULL;
+    uuid_t *team = NULL;
+
+    SLIST_FOREACH(user, server->data->users, next) {
+        SLIST_FOREACH(team, user->teams, next) {
+            memset(&relation, 0, sizeof(relation_t));
+            strcat(relation.first_uuid, user->uuid);
+            strcat(relation.second_uuid, team->uuid);
+            write(fd, &relation, sizeof(relation_t));
+        }
+    }
+}
+
+void load_relation_team_user(server_t *server, int fd)
+{
+    relation_t *relation = NULL;
+
+    while ((relation = load_relation(fd))) {
+        user_t *user = find_user_by_uuid(server, relation->first_uuid);
+        team_t *team = find_team_by_uuid(server, relation->second_uuid);
+        if (user && team) {
+            uuid_t *uuid = malloc(sizeof(uuid_t));
+            uuid->uuid = strdup(team->uuid);
+            SLIST_INSERT_HEAD(user->teams, uuid, next);
+            uuid = malloc(sizeof(uuid_t));
+            uuid->uuid = strdup(user->uuid);
+            SLIST_INSERT_HEAD(team->users, uuid, next);
+        }
+        free(relation);
+    }
+}
