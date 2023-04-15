@@ -12,6 +12,7 @@
 #include <sys/queue.h>
 #include <sys/select.h>
 #include <sys/socket.h>
+#include <time.h>
 
 #include "server.h"
 #include "types.h"

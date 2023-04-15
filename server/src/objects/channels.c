@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/queue.h>
 
 #include "server.h"
 #include "types.h"

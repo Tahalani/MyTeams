@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/queue.h>
+#include <time.h>
 
 #include "commands.h"
 #include "constants.h"
