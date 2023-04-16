@@ -9,12 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/queue.h>
+#include <time.h>
 
 #include "commands.h"
+#include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
-user_t *get_sender(server_t *server, client_t *client)
+UNUSED user_t *get_sender(server_t *server, client_t *client)
 {
     user_t *node = NULL;
 
@@ -32,13 +35,15 @@ static void fill_message_struct(server_t *server, client_t *client, char **data)
     if (message == NULL)
         fatal_error("Malloc failed");
     message->sender = client->user;
-    message->content = strdup(data[2]);
-    message->time = get_time();
+    message->body = strdup(data[2]);
+    message->created_at = time(NULL);
     SLIST_INSERT_HEAD(server->data->messages, message, next);
 }
 
-void send_command(server_t *server, client_t *client, char *input)
+void send_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     char **data = str_to_word(input, ' ');
     user_t *node = NULL;
 
@@ -58,8 +63,10 @@ void send_command(server_t *server, client_t *client, char *input)
         get_username_client(server, client), data[2], CRLF);
 }
 
-void messages_command(server_t *server, client_t *client, char *input)
+void messages_command(server_t *server, client_t *client, \
+    UNUSED command_packet_t *packet)
 {
+    char *input = "";
     message_t *node = NULL;
     char **data = str_to_word(input, ' ');
 
@@ -71,7 +78,7 @@ void messages_command(server_t *server, client_t *client, char *input)
     SLIST_FOREACH(node, server->data->messages, next) {
         if (strcmp(node->sender->uuid, data[1]) == 0)
             dprintf(client->fd, "%s: %s%s",
-                node->sender->username, node->content, CRLF);
+                node->sender->username, node->body, CRLF);
     }
     send_basic_message(client->fd, "200");
     free_array(data);

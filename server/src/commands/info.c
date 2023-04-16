@@ -10,6 +10,7 @@
 
 #include "commands.h"
 #include "constants.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
@@ -69,14 +70,14 @@ client_t *client)
     thread->name, thread->uuid, thread->message, CRLF);
     SLIST_FOREACH(uuid, thread->messages, next) {
         msg = find_message_by_uuid(server, uuid->uuid);
-        dprintf(client->fd, "%s (%s)", msg->uuid, msg->content);
-        dprintf(client->fd, " %ld%s", msg->time, CRLF);
+        dprintf(client->fd, "%s (%s)", msg->uuid, msg->body);
+        dprintf(client->fd, " %ld%s", msg->created_at, CRLF);
         display_user(server, msg->sender, client->fd);
     }
 }
 
 void info_command(UNUSED server_t *server, client_t *client, \
-UNUSED char *input)
+    UNUSED command_packet_t *packet)
 {
     if (client->user == NULL) {
         send_basic_message(client->fd, "530");

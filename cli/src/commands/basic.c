@@ -5,45 +5,29 @@
 ** basic.c
 */
 
-#include <string.h>
+#include <stddef.h>
 
 #include "cli.h"
 #include "constants.h"
 #include "packets.h"
 #include "types.h"
 
-void help_command(UNUSED client_t *client, char *args)
+void help_command(UNUSED client_t *client, UNUSED char **args)
 {
-    if (strlen(args) != 0) {
-        send_rfc_message(400);
-    } else {
-        send_help_message();
-    }
+    send_help_message();
 }
 
-void info_command(client_t *client, char *input)
+void info_command(client_t *client, UNUSED char **args)
 {
-    if (strlen(input) != 0) {
-        send_rfc_message(400);
-    } else {
-        send_packet(client->fd, COMMAND_INFO, 0, NULL);
-    }
+    send_packet(client->fd, COMMAND_INFO, 0, NULL);
 }
 
-void list_command(client_t *client, char *input)
+void list_command(client_t *client, UNUSED char **args)
 {
-    if (strlen(input) != 0) {
-        send_rfc_message(400);
-    } else {
-        send_packet(client->fd, COMMAND_LIST, 0, NULL);
-    }
+    send_packet(client->fd, COMMAND_LIST, 0, NULL);
 }
 
-void users_command(client_t *client, char *input)
+void users_command(client_t *client, UNUSED char **args)
 {
-    if (strlen(input) != 0) {
-        send_rfc_message(400);
-    } else {
-        send_packet(client->fd, COMMAND_USERS, 0, NULL);
-    }
+    send_packet(client->fd, COMMAND_USERS, 0, NULL);
 }

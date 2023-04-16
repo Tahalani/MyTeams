@@ -6,53 +6,61 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 #include <sys/queue.h>
+#include <unistd.h>
 
+#include "constants.h"
+#include "logging_server.h"
+#include "packets.h"
 #include "server.h"
 #include "types.h"
 
-static void add_new_team(server_t *server, char *name, char *description)
+static void add_new_team(server_t *server, client_t *client, \
+    char *name, char *description)
 {
-    team_t *new_team = malloc(sizeof(team_t));
+    team_t *team = find_team_by_name(server, name);
 
-    if (new_team == NULL)
-        fatal_error("Malloc failed");
-    new_team->uuid = generate_uuid();
-    new_team->name = name;
-    new_team->description = description;
-    new_team->users = malloc(sizeof(struct user_l));
-    SLIST_INIT(new_team->users);
-    new_team->channels = malloc(sizeof(struct thread_l));
-    SLIST_INIT(new_team->channels);
-    SLIST_INSERT_HEAD(server->data->teams, new_team, next);
-}
-
-void create_team(server_t *server, client_t *client, char **data)
-{
-    if (data[1] == NULL || data[2] == NULL) {
-        send_basic_message(client->fd, "400");
+    if (team != NULL) {
+        send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
         return;
     }
-    add_new_team(server, data[1], data[2]);
-    send_basic_message(client->fd, "200");
+    team = new_team(name, description);
+    SLIST_INSERT_HEAD(server->data->teams, team, next);
+    server_event_team_created(team->uuid, team->name, client->user->uuid);
+    send_team_packet(client->fd, team, COMMAND_CREATE);
 }
 
-void list_team(server_t *server, client_t *client)
+void create_team(server_t *server, client_t *client, command_packet_t *packet)
+{
+    size_t size = MAX_NAME_LENGTH + MAX_DESCRIPTION_LENGTH;
+    ssize_t re = 0;
+    ssize_t re2 = 0;
+    char name[MAX_NAME_LENGTH + 1];
+    char description[MAX_DESCRIPTION_LENGTH + 1];
+
+    memset(name, 0, MAX_NAME_LENGTH + 1);
+    memset(description, 0, MAX_DESCRIPTION_LENGTH + 1);
+    if (packet->data_size != size) {
+        send_message_packet(client->fd, 500);
+        clear_buffer(client->fd, packet);
+        return;
+    }
+    re = read(client->fd, name, MAX_NAME_LENGTH);
+    re2 = read(client->fd, description, MAX_DESCRIPTION_LENGTH);
+    if (re != MAX_NAME_LENGTH || re2 != MAX_DESCRIPTION_LENGTH) {
+        send_message_packet(client->fd, 500);
+    } else {
+        add_new_team(server, client, name, description);
+    }
+}
+
+void list_teams(server_t *server, client_t *client)
 {
     team_t *team = NULL;
-    unsigned int nbr_teams = 0;
 
-    SLIST_FOREACH(team, server->data->teams, next)
-        nbr_teams++;
-    team = NULL;
-    if (nbr_teams == 0) {
-        send_basic_message(client->fd, "570");
-        return;
-    }
-    dprintf(client->fd, "%d team(s) available%s", nbr_teams, CRLF);
     SLIST_FOREACH(team, server->data->teams, next) {
-        dprintf(client->fd, "%s (%s)%s", team->name, team->uuid, CRLF);
+        send_team_packet(client->fd, team, COMMAND_LIST);
     }
-    send_basic_message(client->fd, "200");
+    send_message_packet(client->fd, 200);
 }

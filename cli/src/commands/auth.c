@@ -14,12 +14,12 @@
 
 void login_command(client_t *client, char **args)
 {
-    char name[MAX_NAME_LENGTH];
+    char name[MAX_NAME_LENGTH + 1];
 
     if (strlen(args[0]) > MAX_NAME_LENGTH) {
         send_rfc_message(421);
     } else {
-        memset(name, 0, MAX_NAME_LENGTH);
+        memset(name, 0, MAX_NAME_LENGTH + 1);
         strcat(name, args[0]);
         send_packet(client->fd, COMMAND_LOGIN, MAX_NAME_LENGTH, name);
     }

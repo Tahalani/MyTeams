@@ -11,6 +11,7 @@
     #define COMMANDS_COUNT (sizeof(COMMANDS) / sizeof(command_t))
 
     #include <stdbool.h>
+
     #include "cli.h"
 
 typedef void (*command_func_t)(client_t *client, char **args);
@@ -33,25 +34,24 @@ void help_command(client_t *client, char **args);
 typedef struct command_s {
     char *name;
     command_func_t function;
-    bool auth;
     int args;
 } command_t;
 
 static const command_t COMMANDS[] = {
-        { "/create", &create_command, true, -1 },
-        { "/help", &help_command, true, 0 },
-        { "/info", &info_command, true, 0 },
-        { "/login", &login_command, false, 1  },
-        { "/logout", &logout_command, true, 0 },
-        { "/list", &list_command, true, 0 },
-        { "/messages", &messages_command, true, 0 },
-        { "/send", &send_command, true, 1 },
-        { "/subscribe", &subscribe_command, true, 1 },
-        { "/subscribed", &subscribed_command, true, 0 },
-        { "/unsubscribe", &unsubscribe_command, true, 1 },
-        { "/use", &use_command, true, -1 },
-        { "/user", &user_command, true, 1 },
-        { "/users", &users_command, true, 0 },
+        { "/create", &create_command, -1 },
+        { "/help", &help_command, 0 },
+        { "/info", &info_command, 0 },
+        { "/login", &login_command, 1  },
+        { "/logout", &logout_command, 0 },
+        { "/list", &list_command, 0 },
+        { "/messages", &messages_command, 0 },
+        { "/send", &send_command, 1 },
+        { "/subscribe", &subscribe_command, 1 },
+        { "/subscribed", &subscribed_command, 0 },
+        { "/unsubscribe", &unsubscribe_command, 1 },
+        { "/use", &use_command, -1 },
+        { "/user", &user_command, 1 },
+        { "/users", &users_command, 0 },
 };
 
 #endif
