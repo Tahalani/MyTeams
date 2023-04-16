@@ -5,14 +5,14 @@ Cette documentation vous servira à comprendre le fonctionnement de notre Teams 
 # Table des matières
 
 - [Serveur](#serveur)
-    -[Lancement] (#lancement serveur)
+    - [Lancement] (#lancement serveur)
 
-    -[Code] (#code)
+    - [Code] (#code)
 
 - [Client](#serveur)
-    -[Lancement] (#lancement client)
+    - [Lancement] (#lancement client)
 
-    -[Commandes] (#commandes)
+    - [Commandes] (#commandes)
 
 # Serveur
 
