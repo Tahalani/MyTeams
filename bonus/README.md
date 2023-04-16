@@ -5,11 +5,13 @@ Cette documentation vous servira à comprendre le fonctionnement de notre Teams 
 # Table des matières
 
 - [Serveur](#serveur)
+
     - [Lancement] (#lancement serveur)
 
     - [Code] (#code)
 
 - [Client](#serveur)
+
     - [Lancement] (#lancement client)
 
     - [Commandes] (#commandes)
@@ -138,5 +140,37 @@ Cette section va expliquer en détail le fonctionnement de chaques commandes.
 
 ```
 /unsubscribe equipe_uuid
-- Permet de se desabonner d'une équipe
+- Permet de se desabonner d'une équipe.
+```
+
+```
+/use
+/use equipe_uuid
+/use channel_uuid
+/use thread_uuid
+- Assigne le context pour la prochaine commande (create, list, info).
+```
+
+```
+/create équipe_uuid description
+/create channel_uuid description
+/create thread_uuid message
+/create réponse
+- Crée une équipe, un channel, un thread ou une reponse.
+```
+
+```
+/list
+/list equipe_uuid
+/list channel_uuid
+/list thread_uuid
+- Liste les équipes, les channels ou les threads en ce basant sur le context.
+```
+
+```
+/info
+/info equipe_uuid
+/info channel_uuid
+/info thread_uuid
+- Affiche les informations d'une équipe, d'un channel ou d'un thread en ce basant sur le context.
 ```
