@@ -22,7 +22,12 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     channel_t *channel = get_context_channel(server, client->use);
     thread_t *thread = NULL;
 
-    if (channel == NULL) {
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 2) {
         send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
             client->use->channel_uuid);
         return;
@@ -70,7 +75,12 @@ void list_threads(server_t *server, client_t *client)
     uuid_t *uuid = NULL;
     thread_t *thread = NULL;
 
-    if (channel == NULL) {
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 2) {
         send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
             client->use->channel_uuid);
         return;

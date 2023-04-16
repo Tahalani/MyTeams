@@ -21,7 +21,17 @@ static void add_new_message(server_t *server, client_t *client, char *body)
     thread_t *thread = get_context_thread(server, client->use);
     message_t *message = NULL;
 
-    if (thread == NULL) {
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 3) {
         send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
             client->use->thread_uuid);
         return;
@@ -58,7 +68,17 @@ void list_messages(server_t *server, client_t *client)
     uuid_t *uuid = NULL;
     message_t *message = NULL;
 
-    if (thread == NULL) {
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return;
+    }
+    if (client->use->not_found == 3) {
         send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
             client->use->thread_uuid);
         return;

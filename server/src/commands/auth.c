@@ -16,9 +16,12 @@
 #include "server.h"
 #include "types.h"
 
-static void logged_in_event(client_t *client, bool new)
+static void logged_in_event(server_t *server, client_t *client, bool new)
 {
-    send_user_packet(client->fd, client->user, COMMAND_LOGIN);
+    client_t *tmp = NULL;
+
+    SLIST_FOREACH(tmp, server->clients, next)
+        send_user_packet(client->fd, client->user, COMMAND_LOGIN);
     if (new) {
         server_event_user_created(client->user->uuid, client->user->username);
     }
@@ -31,14 +34,14 @@ static void connect_user(server_t *server, client_t *client, char *name)
 
     if (user != NULL) {
         client->user = user;
-        logged_in_event(client, false);
+        logged_in_event(server, client, false);
         return;
     }
     user = new_user(name, client->fd);
     SLIST_INSERT_HEAD(server->data->users, user, next);
     client->user = user;
     user->fd = client->fd;
-    logged_in_event(client, true);
+    logged_in_event(server, client, true);
 }
 
 void login_command(server_t *server, client_t *client, command_packet_t *packet)
@@ -63,12 +66,14 @@ void login_command(server_t *server, client_t *client, command_packet_t *packet)
 void logout_command(UNUSED server_t *server, client_t *client, \
     command_packet_t *packet)
 {
+    client_t *tmp = NULL;
     if (packet->data_size != 0) {
         send_message_packet(client->fd, 500);
         clear_buffer(client->fd, packet);
         return;
     }
-    send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
+    SLIST_FOREACH(tmp, server->clients, next)
+        send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;
     client->user = NULL;
