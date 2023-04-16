@@ -12,6 +12,7 @@
 
 #include "constants.h"
 #include "logging_server.h"
+#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -36,6 +37,7 @@ static void add_new_channel(server_t *server, client_t *client, \
     SLIST_INSERT_HEAD(server->data->channels, channel, next);
     server_event_channel_created(team->uuid, channel->uuid, channel->name);
     send_channel_packet(client->fd, channel, COMMAND_CREATE);
+    client_print_channel_created(team->uuid, channel->uuid, channel->name);
 }
 
 void create_channel(server_t *server, client_t *client, \

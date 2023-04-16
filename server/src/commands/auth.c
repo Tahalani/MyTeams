@@ -21,7 +21,7 @@ static void logged_in_event(server_t *server, client_t *client, bool new)
     client_t *tmp = NULL;
 
     SLIST_FOREACH(tmp, server->clients, next)
-        send_user_packet(client->fd, client->user, COMMAND_LOGIN);
+        send_user_packet(tmp->fd, client->user, COMMAND_LOGIN);
     if (new) {
         server_event_user_created(client->user->uuid, client->user->username);
     }

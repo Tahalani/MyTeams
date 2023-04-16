@@ -38,9 +38,8 @@ team_t *fill_channel_use(server_t *server, client_t *client, char **data)
     channel_t *channel_check = NULL;
     char *channel_uuid = strdup(data[1]);
 
-    if (channel_uuid == NULL) {
+    if (channel_uuid == NULL)
         fatal_error("malloc failed");
-    }
     fill_team_use(client, data);
     client->use->channel_uuid = channel_uuid;
     team_check = find_team_by_uuid(server, client->use->team_uuid);
@@ -63,9 +62,8 @@ void fill_thread_use(server_t *server, client_t *client, char **data)
     channel_t *channel_check = NULL;
     char *thread_uuid = strdup(data[2]);
 
-    if (thread_uuid == NULL) {
+    if (thread_uuid == NULL)
         fatal_error("malloc failed");
-    }
     team = fill_channel_use(server, client, data);
     client->use->thread_uuid = thread_uuid;
     if (team == NULL)
