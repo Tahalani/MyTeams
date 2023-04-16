@@ -57,7 +57,6 @@ typedef struct team_s {
     char *uuid;
     char *name;
     char *description;
-    int fd_file;
     SLIST_HEAD(, uuid_s) *channels;
     SLIST_HEAD(user_l, uuid_s) *users;
     SLIST_ENTRY(team_s) next;

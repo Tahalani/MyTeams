@@ -68,9 +68,8 @@ static bool init_server(server_t *server, int port)
 {
     int socket_fd = init_socket(port);
 
-    if (socket_fd == -1) {
+    if (socket_fd == -1)
         return false;
-    }
     server->socket_fd = socket_fd;
     srand((unsigned long) &server + time(NULL));
     load_data(server);
