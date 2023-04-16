@@ -5,13 +5,16 @@
 ** display
 */
 
-#include "server.h"
+// IWYU pragma: keep
+#include "source.h"
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "server.h"
 
 int get_fd_file(char *name)
 {

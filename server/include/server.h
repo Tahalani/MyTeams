@@ -8,7 +8,6 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    #define _GNU_SOURCE
     #include <stdbool.h>
     #include <sys/socket.h>
 
@@ -22,6 +21,7 @@
 // Core functions
 int teams_server(int argc, char **argv);
 bool start_server(int port);
+int init_socket(int port);
 
 bool handle_stdin(void);
 void handle_incoming(server_t *server);
