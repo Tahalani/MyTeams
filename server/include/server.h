@@ -21,12 +21,13 @@
 // Core functions
 int teams_server(int argc, char **argv);
 bool start_server(int port);
+int init_socket(int port);
 
 bool handle_stdin(void);
 void handle_incoming(server_t *server);
 void handle_clients(server_t *server, fd_set *set);
 void handle_input(server_t *server, client_t *client, command_packet_t *packet);
-int refresh_fdsets(server_t *server, fd_set *set);
+int refresh_fdsets(server_t *server, fd_set *set, int sig_fd);
 void clear_buffer(int fd, command_packet_t *packet);
 
 // Packets
@@ -103,5 +104,32 @@ void fill_thread_use(client_t *client, char **data);
 team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);
 thread_t *get_context_thread(server_t *server, use_t *use);
+
+int get_fd_file(char *name);
+
+void save_user(user_t *user, int fd);
+void save_team(team_t *team, int fd);
+void save_channel(channel_t *channel, int fd);
+void save_thread(thread_t *thread, int fd);
+void save_data(server_t *server);
+void save_message(message_t *message, int fd);
+
+void relation_team_user(server_t *server, int fd);
+void relation_channel_team(server_t *server, int fd);
+void relation_thread_channel(server_t *server, int fd);
+void relation_message_thread(server_t *server, int fd);
+
+void load_relation_team_user(server_t *server, int fd);
+void load_relation_channel_team(server_t *server, int fd);
+void load_relation_thread_channel(server_t *server, int fd);
+void load_relation_message_thread(server_t *server, int fd);
+
+user_t *load_user(int fd);
+team_t *load_team(int fd);
+channel_t *load_channel(int fd);
+thread_t *load_thread(int fd);
+message_t *load_message(int fd);
+relation_t *load_relation(int fd);
+void load_data(server_t *server);
 
 #endif

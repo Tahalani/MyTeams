@@ -12,3 +12,6 @@ unit_tests
 *.gcno
 *.o
 coding-style-reports.log
+
+# Database
+server/database/

@@ -5,14 +5,15 @@
 ** socket.c
 */
 
+#include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <stdbool.h>
 #include <sys/queue.h>
 #include <sys/select.h>
-#include <sys/socket.h>
+#include <sys/signalfd.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "server.h"
 #include "types.h"
@@ -24,11 +25,20 @@ static void end_server(server_t *server)
     SLIST_FOREACH(current, server->clients, next) {
         close_connection(current);
     }
-    free(server->data->teams);
-    free(server->data->channels);
-    free(server->data->threads);
-    free(server->data->messages);
-    free(server->data->users);
+}
+
+static int init_signalfd(void)
+{
+    int sig_fd = 0;
+    sigset_t mask;
+
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT);
+    sig_fd = signalfd(-1, &mask, 0);
+    if (sig_fd == -1)
+        fatal_error("signalfd failed");
+    sigprocmask(SIG_BLOCK, &mask, NULL);
+    return sig_fd;
 }
 
 static void server_loop(server_t *server)
@@ -37,81 +47,54 @@ static void server_loop(server_t *server)
     int max_fd = 0;
     int current = 0;
     bool exit = false;
+    int sig_fd = init_signalfd();
 
     while (!exit) {
-        max_fd = refresh_fdsets(server, &set);
+        max_fd = refresh_fdsets(server, &set, sig_fd);
         current = select(max_fd + 1, &set, NULL, NULL, NULL);
-        if (current == -1) {
-            perror("select failed");
-        }
-        if (FD_ISSET(0, &set)) {
+        if (current == -1)
+            fatal_error("select failed");
+        if (FD_ISSET(0, &set))
             exit = handle_stdin();
-        }
-        if (FD_ISSET(server->socket_fd, &set)) {
+        if (FD_ISSET(sig_fd, &set))
+            exit = true;
+        if (FD_ISSET(server->socket_fd, &set))
             handle_incoming(server);
-        }
         handle_clients(server, &set);
     }
 }
 
-static int init_ftp(struct sockaddr *addr)
+static bool init_server(server_t *server, int port)
 {
-    int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-    int res = 0;
+    int socket_fd = init_socket(port);
 
-    if (socket_fd == -1) {
-        perror("socket failed");
-        return -1;
-    }
-    res = bind(socket_fd, addr, sizeof(*addr));
-    if (res == -1) {
-        perror("bind failed");
-        close(socket_fd);
-        return -1;
-    }
-    res = listen(socket_fd, MAX_CONNECTIONS);
-    if (res == -1) {
-        perror("listen failed");
-        close(socket_fd);
-        return -1;
-    }
-    return socket_fd;
-}
-
-void init_data(data_t *data)
-{
-    data->users = malloc(sizeof(struct user_list));
-    data->teams = malloc(sizeof(struct team_list));
-    data->channels = malloc(sizeof(struct channel_list));
-    data->threads = malloc(sizeof(struct thread_list));
-    data->messages = malloc(sizeof(struct message_list));
-    if (data->users == NULL || data->teams == NULL || data->channels == NULL
-    || data->threads == NULL || data->messages == NULL)
-        fatal_error("malloc failed");
-    SLIST_INIT(data->users);
-    SLIST_INIT(data->teams);
-    SLIST_INIT(data->channels);
-    SLIST_INIT(data->threads);
-    SLIST_INIT(data->messages);
+    if (socket_fd == -1)
+        return false;
+    server->socket_fd = socket_fd;
+    srand((unsigned long) &server + time(NULL));
+    load_data(server);
+    server_loop(server);
+    save_data(server);
+    end_server(server);
+    return true;
 }
 
 bool start_server(int port)
 {
-    struct sockaddr *address = generate_address(port, NULL);
-    int socket_fd = init_ftp(address);
-    data_t *data = calloc(sizeof(data_t), 1);
+    struct user_list users;
     struct client_list clients;
+    struct team_list teams;
+    struct channel_list channels;
+    struct thread_list threads;
+    struct message_list messages;
+    data_t data = { &users, &teams, &channels, &threads, &messages };
+    server_t server = { 0, &data, &clients};
+
     SLIST_INIT(&clients);
-    server_t server = { socket_fd, data, &clients};
-    setsockopt(port, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
-    if (socket_fd == -1 || data == NULL) {
-        return false;
-    }
-    srand((unsigned long) &server + time(NULL));
-    init_data(data);
-    server_loop(&server);
-    end_server(&server);
-    free(address);
-    free(data);
-    return true;
+    SLIST_INIT(&users);
+    SLIST_INIT(&teams);
+    SLIST_INIT(&channels);
+    SLIST_INIT(&threads);
+    SLIST_INIT(&messages);
+    return init_server(&server, port);
 }

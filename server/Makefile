@@ -20,8 +20,17 @@ SRC			=	src/commands/auth.c \
 				src/core/commands.c \
 				src/core/data.c \
 				src/core/fdsets.c \
+				src/core/init.c \
 				src/core/loop.c \
 				src/core/packets.c \
+				src/database/utils.c \
+				src/database/loading.c \
+				src/database/saving.c \
+				src/database/message.c \
+				src/database/team.c	\
+				src/database/channel.c \
+				src/database/thread.c \
+				src/database/user.c	\
 				src/objects/channels.c \
 				src/objects/clients.c \
 				src/objects/messages.c \
@@ -32,7 +41,7 @@ SRC			=	src/commands/auth.c \
 				src/util/context.c \
 				src/util/messages.c \
 				src/util/util.c \
-				src/server.c \
+				src/server.c
 
 MAIN		=	src/main.c
 
