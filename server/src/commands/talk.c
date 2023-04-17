@@ -58,7 +58,6 @@ static user_t *check_read(server_t *server, \
     }
     node = find_user_by_uuid(server, uuid);
     if (node == NULL || node->fd == -1) {
-        send_message_packet(client->fd, 500);
         send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
         return NULL;
     }

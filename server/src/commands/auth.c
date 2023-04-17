@@ -73,7 +73,7 @@ void logout_command(UNUSED server_t *server, client_t *client, \
         return;
     }
     SLIST_FOREACH(tmp, server->clients, next)
-        send_user_packet(client->fd, client->user, COMMAND_LOGOUT);
+        send_user_packet(tmp->fd, client->user, COMMAND_LOGOUT);
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;
     client->user = NULL;
