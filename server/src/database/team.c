@@ -5,25 +5,17 @@
 ** team
 */
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "database.h"
 #include "server.h"
+#include "types.h"
 
-void save_team(team_t *team, int fd)
-{
-    parsed_team_t parsed;
-
-    memset(&parsed, 0, sizeof(parsed_team_t));
-    strcat(parsed.name, team->name);
-    strcat(parsed.uuid, team->uuid);
-    strcat(parsed.description, team->description);
-    write(fd, &parsed, sizeof(parsed_team_t));
-}
-
-team_t *load_team(int fd)
+static team_t *load_team(int fd)
 {
     team_t *team = malloc(sizeof(team_t));
     parsed_team_t parsed;
@@ -41,6 +33,32 @@ team_t *load_team(int fd)
     SLIST_INIT(team->channels);
     SLIST_INIT(team->users);
     return (team);
+}
+
+void load_teams(server_t *server)
+{
+    team_t *team = NULL;
+    int fd_team = open(DB_FILE_TEAMS, O_RDONLY);
+
+    if (fd_team == -1)
+        return;
+    team = load_team(fd_team);
+    while (team != NULL) {
+        SLIST_INSERT_HEAD(server->data->teams, team, next);
+        team = load_team(fd_team);
+    }
+    close(fd_team);
+}
+
+void save_team(team_t *team, int fd)
+{
+    parsed_team_t parsed;
+
+    memset(&parsed, 0, sizeof(parsed_team_t));
+    strcat(parsed.name, team->name);
+    strcat(parsed.uuid, team->uuid);
+    strcat(parsed.description, team->description);
+    write(fd, &parsed, sizeof(parsed_team_t));
 }
 
 void relation_team_user(server_t *server, int fd)

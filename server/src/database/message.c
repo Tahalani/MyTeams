@@ -5,25 +5,17 @@
 ** message
 */
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "database.h"
 #include "server.h"
+#include "types.h"
 
-void save_message(message_t *message, int fd)
-{
-    parsed_message_t parsed;
-
-    memset(&parsed, 0, sizeof(parsed_message_t));
-    strcat(parsed.uuid, message->uuid);
-    strcat(parsed.uuid_user, message->sender->uuid);
-    strcat(parsed.body, message->body);
-    write(fd, &parsed, sizeof(parsed_message_t));
-}
-
-message_t *load_message(int fd)
+static message_t *load_message(int fd)
 {
     message_t *message = malloc(sizeof(message_t));
     parsed_message_t parsed;
@@ -37,6 +29,32 @@ message_t *load_message(int fd)
     message->sender = NULL;
     message->body = strdup(parsed.body);
     return (message);
+}
+
+void load_messages(server_t *server)
+{
+    message_t *message = NULL;
+    int fd_message = open(DB_FILE_MESSAGES, O_RDONLY);
+
+    if (fd_message == -1)
+        return;
+    message = load_message(fd_message);
+    while (message != NULL) {
+        SLIST_INSERT_HEAD(server->data->messages, message, next);
+        message = load_message(fd_message);
+    }
+    close(fd_message);
+}
+
+void save_message(message_t *message, int fd)
+{
+    parsed_message_t parsed;
+
+    memset(&parsed, 0, sizeof(parsed_message_t));
+    strcat(parsed.uuid, message->uuid);
+    strcat(parsed.uuid_user, message->sender->uuid);
+    strcat(parsed.body, message->body);
+    write(fd, &parsed, sizeof(parsed_message_t));
 }
 
 void relation_message_thread(server_t *server, int fd)

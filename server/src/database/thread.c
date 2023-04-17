@@ -5,25 +5,16 @@
 ** thread
 */
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "database.h"
 #include "server.h"
 
-void save_thread(thread_t *thread, int fd)
-{
-    parsed_thread_t parsed;
-
-    memset(&parsed, 0, sizeof(parsed_thread_t));
-    strcat(parsed.name, thread->name);
-    strcat(parsed.uuid, thread->uuid);
-    strcat(parsed.description, thread->message);
-    write(fd, &parsed, sizeof(parsed_thread_t));
-}
-
-thread_t *load_thread(int fd)
+static thread_t *load_thread(int fd)
 {
     thread_t *thread = malloc(sizeof(thread_t));
     parsed_thread_t parsed;
@@ -39,6 +30,32 @@ thread_t *load_thread(int fd)
     thread->messages = malloc(sizeof(struct message_l));
     SLIST_INIT(thread->messages);
     return (thread);
+}
+
+void load_threads(server_t *server)
+{
+    thread_t *thread = NULL;
+    int fd_thread = open(DB_FILE_THREADS, O_RDONLY);
+
+    if (fd_thread == -1)
+        return;
+    thread = load_thread(fd_thread);
+    while (thread != NULL) {
+        SLIST_INSERT_HEAD(server->data->threads, thread, next);
+        thread = load_thread(fd_thread);
+    }
+    close(fd_thread);
+}
+
+void save_thread(thread_t *thread, int fd)
+{
+    parsed_thread_t parsed;
+
+    memset(&parsed, 0, sizeof(parsed_thread_t));
+    strcat(parsed.name, thread->name);
+    strcat(parsed.uuid, thread->uuid);
+    strcat(parsed.description, thread->message);
+    write(fd, &parsed, sizeof(parsed_thread_t));
 }
 
 void relation_thread_channel(server_t *server, int fd)
