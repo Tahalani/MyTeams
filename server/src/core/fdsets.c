@@ -34,7 +34,7 @@ static void handle_client(server_t *server, client_t *client)
     }
 }
 
-int refresh_fdsets(server_t *server, fd_set *set)
+int refresh_fdsets(server_t *server, fd_set *set, int sig_fd)
 {
     int max_fd = server->socket_fd;
     client_t *node = NULL;
@@ -42,11 +42,12 @@ int refresh_fdsets(server_t *server, fd_set *set)
     FD_ZERO(set);
     FD_SET(0, set);
     FD_SET(server->socket_fd, set);
+    FD_SET(sig_fd, set);
     SLIST_FOREACH(node, server->clients, next) {
         FD_SET(node->fd, set);
         max_fd = MAX(max_fd, node->fd);
     }
-    return max_fd;
+    return MAX(max_fd, sig_fd);
 }
 
 void handle_incoming(server_t *server)
