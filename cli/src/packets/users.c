@@ -36,9 +36,8 @@ void user_packet_handler(client_t *client)
     user_packet_t packet;
     ssize_t re = read(client->fd, &packet, sizeof(user_packet_t));
 
-    if (re != sizeof(user_packet_t)) {
+    if (re != sizeof(user_packet_t))
         return;
-    }
     if (packet.context == COMMAND_LOGIN) {
         client_event_logged_in(packet.uuid, packet.username);
         update_user(client, &packet, true);
@@ -47,6 +46,12 @@ void user_packet_handler(client_t *client)
         update_user(client, &packet, false);
         client->context = CONTEXT_NONE;
     }
+    if (packet.context == COMMAND_USER)
+        client_print_user(packet.uuid, packet.username, packet.status);
+    if (packet.context == COMMAND_USERS)
+        client_print_users(packet.uuid, packet.username, packet.status);
+    if (packet.context == COMMAND_SUBSCRIBED)
+        client_print_users(packet.uuid, packet.username, packet.status);
 }
 
 void context_packet_handler(client_t *client)

@@ -12,24 +12,44 @@
 
 #include "constants.h"
 #include "logging_server.h"
+#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
+
+static bool check_is_exist(client_t *client)
+{
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return false;
+    }
+    if (client->use->not_found == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return false;
+    }
+    if (client->use->not_found == 3) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
+            client->use->thread_uuid);
+        return false;
+    }
+    return true;
+}
 
 static void add_new_message(server_t *server, client_t *client, char *body)
 {
     thread_t *thread = get_context_thread(server, client->use);
     message_t *message = NULL;
 
-    if (thread == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
-            client->use->thread_uuid);
+    if (check_is_exist(client) == false)
         return;
-    }
     message = new_message(body, thread, client->user);
     SLIST_INSERT_HEAD(server->data->messages, message, next);
     server_event_reply_created(thread->uuid, client->user->uuid, body);
     send_reply_packet(client->fd, message, COMMAND_CREATE);
+    client_print_reply_created(thread->uuid, client->user->uuid, \
+        message->created_at, body);
 }
 
 void create_message(server_t *server, client_t *client, \
@@ -58,11 +78,8 @@ void list_messages(server_t *server, client_t *client)
     uuid_t *uuid = NULL;
     message_t *message = NULL;
 
-    if (thread == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
-            client->use->thread_uuid);
+    if (check_is_exist(client) == false)
         return;
-    }
     SLIST_FOREACH(uuid, thread->messages, next) {
         message = find_message_in_thread_by_uuid(server, thread, uuid->uuid);
         if (message != NULL) {

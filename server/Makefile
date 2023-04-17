@@ -11,6 +11,8 @@ SRC			=	src/commands/auth.c \
 				src/commands/interaction.c \
 				src/commands/message.c \
 				src/commands/subscribe.c \
+				src/commands/unsubscribe.c \
+				src/commands/subscribed.c \
 				src/commands/talk.c \
 				src/commands/team.c \
 				src/commands/thread.c \

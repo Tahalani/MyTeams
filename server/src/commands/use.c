@@ -44,7 +44,7 @@ static int read_args(client_t *client, char **data, command_packet_t *packet)
     return count > 3 ? -1 : count;
 }
 
-void use_command(UNUSED server_t *server, client_t *client, \
+void use_command(server_t *server, client_t *client, \
     command_packet_t *packet)
 {
     char uuid1[UUID_LENGTH + 1];
@@ -62,9 +62,9 @@ void use_command(UNUSED server_t *server, client_t *client, \
     else if (len == 1)
         fill_team_use(client, data);
     if (len == 2)
-        fill_channel_use(client, data);
+        fill_channel_use(server, client, data);
     else if (len == 3)
-        fill_thread_use(client, data);
+        fill_thread_use(server, client, data);
     send_context_packet(client->fd, len);
     send_message_packet(client->fd, 200);
 }

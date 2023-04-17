@@ -97,8 +97,8 @@ void list_messages(server_t *server, client_t *client);
 
 void fill_default_use(client_t *client);
 void fill_team_use(client_t *client, char **data);
-void fill_channel_use(client_t *client, char **data);
-void fill_thread_use(client_t *client, char **data);
+team_t *fill_channel_use(server_t *server, client_t *client, char **data);
+void fill_thread_use(server_t *server, client_t *client, char **data);
 
 team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);

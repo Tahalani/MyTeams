@@ -12,9 +12,25 @@
 
 #include "constants.h"
 #include "logging_server.h"
+#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
+
+static bool check_is_exist(client_t *client)
+{
+    if (client->use->not_found == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->channel_uuid);
+        return false;
+    }
+    if (client->use->not_found == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return false;
+    }
+    return true;
+}
 
 static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)
@@ -22,11 +38,8 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     channel_t *channel = get_context_channel(server, client->use);
     thread_t *thread = NULL;
 
-    if (channel == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
-            client->use->channel_uuid);
+    if (check_is_exist(client) == false)
         return;
-    }
     thread = find_thread_in_channel_by_title(server, channel, title);
     if (thread != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
@@ -37,6 +50,8 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     server_event_thread_created(channel->uuid, thread->uuid, \
         client->user->uuid, title, message);
     send_thread_packet(client->fd, thread, COMMAND_CREATE);
+    client_print_thread_created(thread->uuid, client->user->uuid, \
+        thread->created_at, title, message);
 }
 
 void create_thread(server_t *server, client_t *client, \
@@ -70,11 +85,8 @@ void list_threads(server_t *server, client_t *client)
     uuid_t *uuid = NULL;
     thread_t *thread = NULL;
 
-    if (channel == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
-            client->use->channel_uuid);
+    if (check_is_exist(client) == false)
         return;
-    }
     SLIST_FOREACH(uuid, channel->threads, next) {
         thread = find_thread_in_channel_by_uuid(server, channel, uuid->uuid);
         if (thread != NULL) {

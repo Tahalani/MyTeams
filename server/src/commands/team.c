@@ -12,6 +12,7 @@
 
 #include "constants.h"
 #include "logging_server.h"
+#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -20,6 +21,7 @@ static void add_new_team(server_t *server, client_t *client, \
     char *name, char *description)
 {
     team_t *team = find_team_by_name(server, name);
+    client_t *tmp = NULL;
 
     if (team != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
@@ -28,7 +30,11 @@ static void add_new_team(server_t *server, client_t *client, \
     team = new_team(name, description);
     SLIST_INSERT_HEAD(server->data->teams, team, next);
     server_event_team_created(team->uuid, team->name, client->user->uuid);
-    send_team_packet(client->fd, team, COMMAND_CREATE);
+    client_print_team_created(team->uuid, team->name, client->user->uuid);
+    SLIST_FOREACH(tmp, server->clients, next) {
+        if (tmp->user != NULL)
+            send_team_packet(tmp->fd, team, COMMAND_CREATE);
+    }
 }
 
 void create_team(server_t *server, client_t *client, command_packet_t *packet)
