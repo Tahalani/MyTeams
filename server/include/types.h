@@ -31,7 +31,6 @@ typedef struct PACKED relation_s {
 typedef struct user_s {
     char *uuid;
     char *username;
-    int fd;
     SLIST_HEAD(team_l, uuid_s) *teams;
     SLIST_ENTRY(user_s) next;
 } user_t;

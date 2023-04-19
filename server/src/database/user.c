@@ -35,7 +35,6 @@ user_t *load_user(int fd)
         return (NULL);
     user->username = strdup(parsed.username);
     user->uuid = strdup(parsed.uuid);
-    user->fd = -1;
     user->teams = malloc(sizeof(struct team_l));
     SLIST_INIT(user->teams);
     return (user);

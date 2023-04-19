@@ -31,6 +31,22 @@ static void update_user(client_t *client, user_packet_t *packet, bool login)
     }
 }
 
+static void handle_login_logout(client_t *client, user_packet_t *packet)
+{
+    if (packet->context == COMMAND_LOGIN) {
+        client_event_logged_in(packet->uuid, packet->username);
+        if (packet->status) {
+            update_user(client, packet, true);
+        }
+    } else {
+        client_event_logged_out(packet->uuid, packet->username);
+        if (packet->status) {
+            update_user(client, packet, false);
+            client->context = CONTEXT_NONE;
+        }
+    }
+}
+
 void user_packet_handler(client_t *client)
 {
     user_packet_t packet;
@@ -38,19 +54,11 @@ void user_packet_handler(client_t *client)
 
     if (re != sizeof(user_packet_t))
         return;
-    if (packet.context == COMMAND_LOGIN) {
-        client_event_logged_in(packet.uuid, packet.username);
-        update_user(client, &packet, true);
-    } else if (packet.context == COMMAND_LOGOUT) {
-        client_event_logged_out(packet.uuid, packet.username);
-        update_user(client, &packet, false);
-        client->context = CONTEXT_NONE;
-    }
+    if (packet.context == COMMAND_LOGIN || packet.context == COMMAND_LOGOUT)
+        handle_login_logout(client, &packet);
     if (packet.context == COMMAND_USER || packet.context == COMMAND_INFO)
         client_print_user(packet.uuid, packet.username, packet.status);
-    if (packet.context == COMMAND_USERS)
-        client_print_users(packet.uuid, packet.username, packet.status);
-    if (packet.context == COMMAND_SUBSCRIBED)
+    if (packet.context == COMMAND_USERS || packet.context == COMMAND_SUBSCRIBED)
         client_print_users(packet.uuid, packet.username, packet.status);
 }
 

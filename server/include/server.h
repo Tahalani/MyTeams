@@ -35,7 +35,8 @@ void send_team_packet(int fd, team_t *team, packet_command_t context);
 void send_channel_packet(int fd, channel_t *channel, packet_command_t context);
 void send_thread_packet(int fd, thread_t *thread, packet_command_t context);
 void send_reply_packet(int fd, message_t *message, packet_command_t context);
-void send_user_packet(int fd, user_t *user, packet_command_t context);
+void send_user_packet(int fd, user_t *user, bool online, \
+    packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
 
 // Objects
@@ -43,7 +44,7 @@ client_t *new_client(int fd);
 void close_connection(client_t *connection);
 void free_connection(client_t *connection);
 
-user_t *new_user(char *username, int fd);
+user_t *new_user(char *username);
 user_t *find_user_by_uuid(server_t *server, char *uuid);
 user_t *find_user_by_name(server_t *server, char *name);
 
@@ -74,7 +75,7 @@ message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
-char *get_username_client(server_t *server, client_t *client);
+bool is_user_connected(server_t *server, user_t *user);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);

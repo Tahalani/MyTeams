@@ -35,17 +35,6 @@ struct sockaddr *generate_address(int port, char *address)
     return (struct sockaddr *) addr;
 }
 
-char *get_username_client(server_t *server, client_t *client)
-{
-    user_t *node = NULL;
-
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (node->fd == client->fd)
-            return node->username;
-    }
-    return NULL;
-}
-
 char *generate_uuid(void)
 {
     char *uuid = malloc(sizeof(char) * 37);
@@ -63,4 +52,16 @@ char *generate_uuid(void)
     uuid[23] = '-';
     uuid[36] = '\0';
     return uuid;
+}
+
+bool is_user_connected(server_t *server, user_t *user)
+{
+    client_t *client = NULL;
+
+    SLIST_FOREACH(client, server->clients, next) {
+        if (client->user == user) {
+            return true;
+        }
+    }
+    return false;
 }

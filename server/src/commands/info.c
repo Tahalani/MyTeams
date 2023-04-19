@@ -62,7 +62,7 @@ void info_command(UNUSED server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
     if (client->use->team_uuid == NULL) {
-        send_user_packet(client->fd, client->user, COMMAND_INFO);
+        send_user_packet(client->fd, client->user, true, COMMAND_INFO);
         return;
     }
     if (client->use->channel_uuid == NULL) {

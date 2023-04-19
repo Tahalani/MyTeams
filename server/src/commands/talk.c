@@ -17,17 +17,6 @@
 #include "server.h"
 #include "types.h"
 
-message_t *get_right_message(server_t *server, char *uuid)
-{
-    message_t *node = NULL;
-
-    SLIST_FOREACH(node, server->data->messages, next) {
-        if (strcmp(node->sender->uuid, uuid) == 0)
-            return node;
-    }
-    return NULL;
-}
-
 static message_t *fill_message_struct(server_t *server, \
     client_t *client, char *body)
 {
@@ -57,11 +46,24 @@ static user_t *check_read(server_t *server, \
         return NULL;
     }
     node = find_user_by_uuid(server, uuid);
-    if (node == NULL || node->fd == -1) {
+    if (node == NULL) {
         send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
         return NULL;
     }
     return node;
+}
+
+static void send_private_message(server_t *server, client_t *client, \
+    char *receiver, char *body)
+{
+    message_t *message = fill_message_struct(server, client, body);
+    client_t *tmp = NULL;
+
+    SLIST_FOREACH(tmp, server->clients, next) {
+        if (tmp->user != NULL && strcmp(tmp->user->uuid, receiver) == 0) {
+            send_reply_packet(tmp->fd, message, COMMAND_SEND);
+        }
+    }
 }
 
 void send_command(server_t *server, client_t *client, \
@@ -83,8 +85,7 @@ void send_command(server_t *server, client_t *client, \
     if (node == NULL)
         return;
     server_event_private_message_sended(client->user->uuid, uuid, body);
-    send_reply_packet(node->fd,
-    fill_message_struct(server, client, body), COMMAND_SEND);
+    send_private_message(server, client, uuid, body);
 }
 
 void messages_command(server_t *server, client_t *client, \

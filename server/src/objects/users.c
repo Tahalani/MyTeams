@@ -12,7 +12,7 @@
 #include "server.h"
 #include "types.h"
 
-user_t *new_user(char *username, int fd)
+user_t *new_user(char *username)
 {
     user_t *new = malloc(sizeof(user_t));
 
@@ -21,7 +21,6 @@ user_t *new_user(char *username, int fd)
     }
     new->uuid = generate_uuid();
     new->username = strdup(username);
-    new->fd = fd;
     new->teams = malloc(sizeof(struct team_l));
     if (new->teams == NULL) {
         fatal_error("malloc failed");
