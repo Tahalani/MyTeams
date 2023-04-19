@@ -21,11 +21,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Find unwanted files
-        run: find . -regextype posix-extended -regex '.*\.(~.a|o|so|gcda|gcno|gcov)' ! -name "libmyteams.so" -exec echo "::error file={},title="Unwanted file detected"::{}" \;
+        run: find . -regextype posix-extended -regex '.*\.(~.a|o|so|gcda|gcno|gcov)' ! -path "*/libs/myteams/libmyteams.so" -exec echo "::error file={},title="Unwanted file detected"::{}" \;
       - name: Find files in tmp
         run: find . -path '*/tmp/*' -exec echo "::error file={},title="Unwanted file detected"::{}" \;
       - name: Exit if file is found
-        run: find . -regextype posix-extended -regex '.*\.(a|o|so|gcda|gcno|gcov)' -o -path '*/tmp/*' | grep -q . || exit 0 && exit 1
+        run: find . -regextype posix-extended -regex '.*\.(a|o|so|gcda|gcno|gcov)' ! -path "*/libs/myteams/libmyteams.so" -o -path '*/tmp/*' | grep -q . || exit 0 && exit 1
   check_coding_style:
     runs-on: ubuntu-latest
     container:
