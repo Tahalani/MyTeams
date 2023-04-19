@@ -27,6 +27,7 @@ jobs:
       - name: Exit if file is found
         run: find . -regextype posix-extended -regex '.*\.(a|o|so|gcda|gcno|gcov)' ! -path "*/libs/myteams/libmyteams.so" -o -path '*/tmp/*' | grep -q . || exit 0 && exit 1
   check_coding_style:
+    name: Check coding style
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/epitech/coding-style-checker:latest
