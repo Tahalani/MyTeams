@@ -5,14 +5,12 @@
 ** saving
 */
 
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <sys/queue.h>
 #include <sys/stat.h>
 
 #include "server.h"
+#include "types.h"
 
 static void save_message_loop(server_t *server, thread_t *thread)
 {

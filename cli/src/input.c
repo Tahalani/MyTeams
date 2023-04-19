@@ -14,6 +14,7 @@
 #include "cli.h"
 #include "commands.h"
 #include "handler.h"
+#include "packets.h"
 #include "types.h"
 
 static void execute_command(const command_t *command, client_t *client, \

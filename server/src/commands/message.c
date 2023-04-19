@@ -5,12 +5,11 @@
 ** reply
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
-#include "constants.h"
 #include "logging_server.h"
 #include "logging_client.h"
 #include "packets.h"

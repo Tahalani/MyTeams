@@ -5,14 +5,12 @@
 ** subscribed
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
-#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"

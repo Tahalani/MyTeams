@@ -5,7 +5,7 @@
 ** thread
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>

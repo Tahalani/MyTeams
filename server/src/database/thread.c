@@ -5,12 +5,13 @@
 ** thread
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/queue.h>
 #include <unistd.h>
 
 #include "server.h"
+#include "types.h"
 
 void save_thread(thread_t *thread, int fd)
 {

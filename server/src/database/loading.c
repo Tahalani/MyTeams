@@ -6,12 +6,12 @@
 */
 
 #include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
+#include <sys/queue.h>
 #include <unistd.h>
 
 #include "server.h"
 #include "logging_server.h"
+#include "types.h"
 
 static void load_user_loop(server_t *server)
 {
