@@ -66,20 +66,27 @@ void login_command(server_t *server, client_t *client, command_packet_t *packet)
     connect_user(server, client, buffer);
 }
 
-void logout_command(UNUSED server_t *server, client_t *client, \
+void logout_command(server_t *server, client_t *client, \
     command_packet_t *packet)
 {
     client_t *tmp = NULL;
-    if (packet->data_size != 0) {
+    user_t *user = client->user;
+
+    if (packet->data_size != 0 && packet->data_size != 1) {
         send_message_packet(client->fd, 500);
         clear_buffer(client->fd, packet);
         return;
     }
+    server_event_user_logged_out(client->user->uuid);
+    if (packet->data_size == 1) {
+        close_connection(client);
+        SLIST_REMOVE(server->clients, client, client_s, next);
+        free_connection(client);
+    }
     SLIST_FOREACH(tmp, server->clients, next) {
         if (tmp->user != NULL)
-            send_user_packet(tmp->fd, client->user, \
-                (client->user == tmp->user),COMMAND_LOGOUT);
+            send_user_packet(tmp->fd, user,(user == tmp->user),COMMAND_LOGOUT);
     }
-    server_event_user_logged_out(client->user->uuid);
-    client->user = NULL;
+    if (packet->data_size != 1)
+        client->user = NULL;
 }
