@@ -1,0 +1,84 @@
+name: Chocolatine
+
+on:
+  push:
+    branches-ignore:
+      - "ga-ignore-*"
+  pull_request:
+    branches-ignore:
+      - "ga-ignore-*"
+
+env:
+  EXECUTABLES: "myteams_server,myteams_cli"
+
+jobs:
+  check_repository_cleanliness:
+    name: Check repository cleanliness
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Find unwanted files
+        run: find . -regextype posix-extended -regex '.*\.(~.a|o|so|gcda|gcno|gcov)' -exec echo "::error file={},title="Unwanted file detected"::{}" \;
+      - name: Find files in tmp
+        run: find . -path '*/tmp/*' -exec echo "::error file={},title="Unwanted file detected"::{}" \;
+      - name: Exit if file is found
+        run: find . -regextype posix-extended -regex '.*\.(a|o|so|gcda|gcno|gcov)' -o -path '*/tmp/*' | grep -q . || exit 0 && exit 1
+  check_coding_style:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/epitech/coding-style-checker:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          /usr/local/bin/check.sh $(pwd) $(pwd)
+      - run: |
+          cat $REPORT_FILE | while read LINE; do
+            TYPE=$(echo $LINE | cut -d ':' -f 3 | tr -d ' ')
+            FILE=$(echo $LINE | cut -d ':' -f 1)
+            AT=$(echo $LINE | cut -d ':' -f 2)
+            ERROR=$(echo $LINE | cut -d ':' -f 4)
+            echo "::error file=$FILE,line=$AT,title=$TYPE coding style error::$ERROR"
+          done
+          if [[ "$(cat $REPORT_FILE)" != "" ]]; then
+            exit 1
+          fi
+  check_program_compilation:
+    name: Check program compilation
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    needs:
+      - check_repository_cleanliness
+      - check_coding_style
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compilation execution
+        timeout-minutes: 2
+        run: make
+      - name: Clean execution
+        run: make clean
+      - name: Test executables presence
+        run: IFS=',' read -r -a array <<< ${{ env.EXECUTABLES }} ; for value in ${array[@]} ; do find . -executable -name "${value}" | grep -q . || echo "::error title="Executable not found"::${value}" ; done
+      - name: Exit if executable not found
+        run: IFS=',' read -r -a array <<< ${{ env.EXECUTABLES }} ; for value in ${array[@]} ; do find . -executable -name "${value}" | grep -q . || exit 1 ; done
+  run_tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    needs:
+      - check_program_compilation
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Tests execution
+        timeout-minutes: 2
+        run: make tests_run
