@@ -32,7 +32,6 @@ jobs:
     container: epitechcontent/epitest-docker
     needs:
       - check_repository_cleanliness
-      - check_coding_style
     steps:
       - name: Repository checkout
         uses: actions/checkout@v3
