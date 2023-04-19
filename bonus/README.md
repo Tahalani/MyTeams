@@ -6,15 +6,15 @@ Cette documentation vous servira à comprendre le fonctionnement de notre Teams 
 
 - [Serveur](#serveur)
 
-    - [Lancement] (#lancement serveur)
+    - [Lancement](#lancement serveur)
 
-    - [Code] (#code)
+    - [Code](#code)
 
 - [Client](#serveur)
 
-    - [Lancement] (#lancement client)
+    - [Lancement](#lancement client)
 
-    - [Commandes] (#commandes)
+    - [Commandes](#commandes)
 
 # Serveur
 
@@ -51,20 +51,42 @@ Cette section explique les codes que le serveur renvoie.
 220 Service ready for new user.
 - Utilisateur bien connecté
 
+221 Logged out.
+- Utilisateur bien déconnecté
+
 400 Invalid arguments.
 - Mauvais argument dans une commande
 
 401 Unknown command.
 - Commande inconnu
 
+410 User not found.
+- Utilisateur non trouvé
+
 420 Too long username.
 - Nom d'utilisateur trop long
+
+421 Team does not exist.
+- L'équipe n'éxiste pas
 
 430 Please login with /login.
 - Nécessite une connection avant d'utiliser les commandes
 
 500 An internal error occured.
 - Une erreur est survenue coté serveur
+
+530 Please login with /login.
+- Nécessite une connection avant d'utiliser les commandes
+
+570 Team not found.
+- L'équipe n'existe pas
+
+580 Channel not found.
+- Le channel n'existe pas
+
+590 Thread not found.
+- Le thread n'existe pas
+
 ```
 
 # Client
