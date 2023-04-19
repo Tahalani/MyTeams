@@ -92,7 +92,6 @@ void messages_command(server_t *server, client_t *client, \
 {
     char uuid[UUID_LENGTH + 1];
     message_t *node = NULL;
-    bool found = false;
 
     if (packet->data_size != UUID_LENGTH) {
         send_message_packet(client->fd, 500);
@@ -107,9 +106,8 @@ void messages_command(server_t *server, client_t *client, \
     SLIST_FOREACH(node, server->data->messages, next) {
         if (strcmp(node->sender->uuid, uuid) == 0) {
             send_reply_packet(client->fd, node, COMMAND_MESSAGES);
-            found = true;
+            return;
         }
     }
-    if (found == false)
-        send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
+    send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
 }

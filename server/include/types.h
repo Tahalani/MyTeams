@@ -98,7 +98,7 @@ typedef struct use_s {
     char *channel_uuid;
     thread_t *thread;
     char *thread_uuid;
-    int not_found;
+    int use_level;
 } use_t;
 
 typedef struct client_s {

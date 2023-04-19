@@ -19,17 +19,17 @@
 
 static bool check_is_exist(client_t *client)
 {
-    if (client->use->not_found == 1) {
+    if (client->use->use_level == 1) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
-            client->use->channel_uuid);
+            client->use->team_uuid);
         return false;
     }
-    if (client->use->not_found == 2) {
+    if (client->use->use_level == 2) {
         send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
             client->use->channel_uuid);
         return false;
     }
-    if (client->use->not_found == 3) {
+    if (client->use->use_level == 3) {
         send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
             client->use->thread_uuid);
         return false;

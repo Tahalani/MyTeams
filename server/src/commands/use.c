@@ -20,6 +20,12 @@ static void init_data(char **data)
     memset(data[2], 0, UUID_LENGTH + 1);
 }
 
+static void send_response(int fd, size_t len)
+{
+    send_context_packet(fd, len);
+    send_message_packet(fd, 200);
+}
+
 static int read_args(client_t *client, char **data, command_packet_t *packet)
 {
     int count = 0;
@@ -65,6 +71,5 @@ void use_command(server_t *server, client_t *client, \
         fill_channel_use(server, client, data);
     else if (len == 3)
         fill_thread_use(server, client, data);
-    send_context_packet(client->fd, len);
-    send_message_packet(client->fd, 200);
+    send_response(client->fd, len);
 }

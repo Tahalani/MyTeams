@@ -46,7 +46,7 @@ void user_packet_handler(client_t *client)
         update_user(client, &packet, false);
         client->context = CONTEXT_NONE;
     }
-    if (packet.context == COMMAND_USER)
+    if (packet.context == COMMAND_USER || packet.context == COMMAND_INFO)
         client_print_user(packet.uuid, packet.username, packet.status);
     if (packet.context == COMMAND_USERS)
         client_print_users(packet.uuid, packet.username, packet.status);
