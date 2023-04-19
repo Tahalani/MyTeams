@@ -49,7 +49,7 @@ void fill_team_use(client_t *client, char **data)
     client->use->team_uuid = team_uuid;
 }
 
-void fill_channel_use(server_t *server, client_t *client, char **data)
+void fill_channel_use(client_t *client, char **data)
 {
     char *channel_uuid = strdup(data[1]);
 
@@ -60,13 +60,13 @@ void fill_channel_use(server_t *server, client_t *client, char **data)
     client->use->channel_uuid = channel_uuid;
 }
 
-void fill_thread_use(server_t *server, client_t *client, char **data)
+void fill_thread_use(client_t *client, char **data)
 {
     char *thread_uuid = strdup(data[2]);
 
     if (thread_uuid == NULL) {
         fatal_error("malloc failed");
     }
-    fill_channel_use(server, client, data);
+    fill_channel_use(client, data);
     client->use->thread_uuid = thread_uuid;
 }

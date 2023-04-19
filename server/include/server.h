@@ -16,8 +16,6 @@
 
     #define MAX_CONNECTIONS 50
 
-    #define CRLF "\r\n"
-
 // Core functions
 int teams_server(int argc, char **argv);
 bool start_server(int port);
@@ -72,8 +70,6 @@ message_t *find_message_by_uuid(server_t *server, char *uuid);
 message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
     char *uuid);
 
-void send_basic_message(int fd, char *code);
-
 // Utils
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
@@ -98,8 +94,8 @@ void list_messages(server_t *server, client_t *client);
 
 void fill_default_use(client_t *client);
 void fill_team_use(client_t *client, char **data);
-void fill_channel_use(server_t *server, client_t *client, char **data);
-void fill_thread_use(server_t *server, client_t *client, char **data);
+void fill_channel_use(client_t *client, char **data);
+void fill_thread_use(client_t *client, char **data);
 void refresh_context_level(server_t *server, client_t *client);
 
 team_t *get_context_team(server_t *server, use_t *use);

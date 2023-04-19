@@ -68,8 +68,9 @@ void use_command(server_t *server, client_t *client, \
     else if (len == 1)
         fill_team_use(client, data);
     if (len == 2)
-        fill_channel_use(server, client, data);
+        fill_channel_use(client, data);
     else if (len == 3)
-        fill_thread_use(server, client, data);
+        fill_thread_use(client, data);
+    refresh_context_level(server, client);
     send_response(client->fd, len);
 }
