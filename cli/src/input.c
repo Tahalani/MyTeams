@@ -74,6 +74,9 @@ bool handle_input(client_t *client)
 
     if (len < 1) {
         exit = true;
+        if (client->user_uuid != NULL) {
+            send_packet(client->fd, COMMAND_LOGOUT, 0, NULL);
+        }
     } else {
         line[len - 1] = '\0';
         handle_command(client, line);

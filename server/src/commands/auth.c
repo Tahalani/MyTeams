@@ -20,8 +20,10 @@ static void logged_in_event(server_t *server, client_t *client, bool new)
 {
     client_t *tmp = NULL;
 
-    SLIST_FOREACH(tmp, server->clients, next)
-        send_user_packet(tmp->fd, client->user, COMMAND_LOGIN);
+    SLIST_FOREACH(tmp, server->clients, next) {
+        if (tmp->user != NULL)
+            send_user_packet(tmp->fd, client->user, COMMAND_LOGIN);
+    }
     if (new) {
         server_event_user_created(client->user->uuid, client->user->username);
     }
@@ -72,8 +74,10 @@ void logout_command(UNUSED server_t *server, client_t *client, \
         clear_buffer(client->fd, packet);
         return;
     }
-    SLIST_FOREACH(tmp, server->clients, next)
-        send_user_packet(tmp->fd, client->user, COMMAND_LOGOUT);
+    SLIST_FOREACH(tmp, server->clients, next) {
+        if (tmp->user != NULL)
+            send_user_packet(tmp->fd, client->user, COMMAND_LOGOUT);
+    }
     server_event_user_logged_out(client->user->uuid);
     client->user->fd = -1;
     client->user = NULL;
