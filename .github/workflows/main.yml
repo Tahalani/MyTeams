@@ -1,4 +1,4 @@
-name: Chocolatine
+name: my_teams CI
 
 on:
   push:
