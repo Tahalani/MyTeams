@@ -25,14 +25,16 @@ SRC			=	src/commands/auth.c \
 				src/core/init.c \
 				src/core/loop.c \
 				src/core/packets.c \
-				src/database/utils.c \
-				src/database/loading.c \
-				src/database/saving.c \
+				src/database/channel.c \
+				src/database/channel_rel.c \
+				src/database/entry.c \
 				src/database/message.c \
 				src/database/team.c	\
-				src/database/channel.c \
+				src/database/team_rel.c	\
 				src/database/thread.c \
+				src/database/thread_rel.c \
 				src/database/user.c	\
+				src/database/utils.c \
 				src/objects/channels.c \
 				src/objects/clients.c \
 				src/objects/messages.c \

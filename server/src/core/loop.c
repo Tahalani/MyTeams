@@ -14,6 +14,7 @@
 #include <sys/signalfd.h>
 #include <time.h>
 
+#include "database.h"
 #include "server.h"
 #include "types.h"
 
