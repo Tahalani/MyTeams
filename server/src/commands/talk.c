@@ -18,16 +18,18 @@
 #include "types.h"
 
 static message_t *fill_message_struct(server_t *server, \
-    client_t *client, char *body)
+    client_t *client, char *body, char *receiver)
 {
     message_t *message = malloc(sizeof(message_t));
 
     if (message == NULL)
         fatal_error("Malloc failed");
     message->uuid = generate_uuid();
-    message->sender = client->user;
     message->body = strdup(body);
+    message->author = strdup(client->user->uuid);
+    message->target = strdup(receiver);
     message->created_at = time(NULL);
+    message->is_private = true;
     SLIST_INSERT_HEAD(server->data->messages, message, next);
     return message;
 }
@@ -56,7 +58,7 @@ static user_t *check_read(server_t *server, \
 static void send_private_message(server_t *server, client_t *client, \
     char *receiver, char *body)
 {
-    message_t *message = fill_message_struct(server, client, body);
+    message_t *message = fill_message_struct(server, client, body, receiver);
     client_t *tmp = NULL;
 
     SLIST_FOREACH(tmp, server->clients, next) {
@@ -105,7 +107,7 @@ void messages_command(server_t *server, client_t *client, \
         return;
     }
     SLIST_FOREACH(node, server->data->messages, next) {
-        if (strcmp(node->sender->uuid, uuid) == 0) {
+        if (strcmp(node->author, uuid) == 0) {
             send_reply_packet(client->fd, node, COMMAND_MESSAGES);
             return;
         }

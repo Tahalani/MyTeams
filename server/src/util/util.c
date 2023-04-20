@@ -22,6 +22,13 @@ void fatal_error(const char *error)
     exit(FAILURE);
 }
 
+void ensure_allocated(void *ptr)
+{
+    if (ptr == NULL) {
+        fatal_error("malloc faled");
+    }
+}
+
 struct sockaddr *generate_address(int port, char *address)
 {
     struct sockaddr_in *addr = malloc(sizeof(struct sockaddr_in));

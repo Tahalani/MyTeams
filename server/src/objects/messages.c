@@ -23,8 +23,10 @@ message_t *new_message(char *body, thread_t *thread, user_t *user)
     }
     new->uuid = generate_uuid();
     new->body = strdup(body);
-    new->sender = user;
+    new->author = strdup(user->uuid);
+    new->target = thread->uuid;
     new->created_at = time(NULL);
+    new->is_private = false;
     message_uuid->uuid = strdup(new->uuid);
     SLIST_INSERT_HEAD(thread->messages, message_uuid, next);
     return new;

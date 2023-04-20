@@ -73,6 +73,7 @@ message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
 
 // Utils
 void fatal_error(const char *message);
+void ensure_allocated(void *ptr);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 bool is_user_connected(server_t *server, user_t *user);
@@ -105,30 +106,5 @@ channel_t *get_context_channel(server_t *server, use_t *use);
 thread_t *get_context_thread(server_t *server, use_t *use);
 
 int get_fd_file(char *name);
-
-void save_user(user_t *user, int fd);
-void save_team(team_t *team, int fd);
-void save_channel(channel_t *channel, int fd);
-void save_thread(thread_t *thread, int fd);
-void save_data(server_t *server);
-void save_message(message_t *message, int fd);
-
-void relation_team_user(server_t *server, int fd);
-void relation_channel_team(server_t *server, int fd);
-void relation_thread_channel(server_t *server, int fd);
-void relation_message_thread(server_t *server, int fd);
-
-void load_relation_team_user(server_t *server, int fd);
-void load_relation_channel_team(server_t *server, int fd);
-void load_relation_thread_channel(server_t *server, int fd);
-void load_relation_message_thread(server_t *server, int fd);
-
-user_t *load_user(int fd);
-team_t *load_team(int fd);
-channel_t *load_channel(int fd);
-thread_t *load_thread(int fd);
-message_t *load_message(int fd);
-relation_t *load_relation(int fd);
-void load_data(server_t *server);
 
 #endif
