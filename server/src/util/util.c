@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <sys/queue.h>
 #include <sys/socket.h>
-#include <time.h>
 
 #include "constants.h"
 #include "server.h"
@@ -36,17 +35,6 @@ struct sockaddr *generate_address(int port, char *address)
     return (struct sockaddr *) addr;
 }
 
-char *get_username_client(server_t *server, client_t *client)
-{
-    user_t *node = NULL;
-
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (node->fd == client->fd)
-            return node->username;
-    }
-    return NULL;
-}
-
 char *generate_uuid(void)
 {
     char *uuid = malloc(sizeof(char) * 37);
@@ -66,10 +54,14 @@ char *generate_uuid(void)
     return uuid;
 }
 
-time_t get_time(void)
+bool is_user_connected(server_t *server, user_t *user)
 {
-    time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
+    client_t *client = NULL;
 
-    return mktime(tm);
+    SLIST_FOREACH(client, server->clients, next) {
+        if (client->user == user) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -20,7 +20,6 @@ typedef struct uuid_s {
 typedef struct user_s {
     char *uuid;
     char *username;
-    int fd;
     SLIST_HEAD(team_l, uuid_s) *teams;
     SLIST_ENTRY(user_s) next;
 } user_t;
@@ -58,6 +57,7 @@ typedef struct use_s {
     char *channel_uuid;
     thread_t *thread;
     char *thread_uuid;
+    int use_level;
 } use_t;
 
 typedef struct client_s {

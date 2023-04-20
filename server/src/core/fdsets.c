@@ -67,7 +67,6 @@ void handle_incoming(server_t *server)
         return;
     }
     SLIST_INSERT_HEAD(server->clients, client, next);
-    send_message_packet(new_fd, 220);
 }
 
 void handle_clients(server_t *server, fd_set *set)

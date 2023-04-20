@@ -4,8 +4,15 @@ CODE / MESSAGE
 
 200 Command okay.
 220 Service ready for new user.
+221 Logged out.
 400 Invalid arguments.
 401 Unknown command.
+410 User not found.
 420 Too long username.
+421 Team does not exist.
 430 Please login with /login.
 500 An internal error occured.
+530 Please login with /login.
+570 Team not found.
+580 Channel not found.
+590 Thread not found.

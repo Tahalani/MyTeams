@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/queue.h>
 #include <unistd.h>
 
 #include "database.h"
@@ -27,7 +28,6 @@ static user_t *load_user(int fd)
         return (NULL);
     user->username = strdup(parsed.username);
     user->uuid = strdup(parsed.uuid);
-    user->fd = -1;
     user->teams = malloc(sizeof(struct team_l));
     SLIST_INIT(user->teams);
     return (user);

@@ -9,10 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/queue.h>
 #include <unistd.h>
 
 #include "database.h"
 #include "server.h"
+#include "types.h"
 
 static thread_t *load_thread(int fd)
 {

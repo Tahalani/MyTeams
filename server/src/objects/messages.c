@@ -29,3 +29,29 @@ message_t *new_message(char *body, thread_t *thread, user_t *user)
     SLIST_INSERT_HEAD(thread->messages, message_uuid, next);
     return new;
 }
+
+message_t *find_message_by_uuid(server_t *server, char *uuid)
+{
+    message_t *message = NULL;
+
+    SLIST_FOREACH(message, server->data->messages, next) {
+        if (strcmp(message->uuid, uuid) == 0)
+            return message;
+    }
+    return NULL;
+}
+
+message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
+    char *uuid)
+{
+    uuid_t *node = NULL;
+    message_t *message = NULL;
+
+    SLIST_FOREACH(node, thread->messages, next) {
+        message = find_message_by_uuid(server, node->uuid);
+        if (message != NULL && strcmp(message->uuid, uuid) == 0) {
+            return message;
+        }
+    }
+    return NULL;
+}

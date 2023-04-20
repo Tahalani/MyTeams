@@ -5,7 +5,7 @@
 ** thread
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
@@ -16,17 +16,29 @@
 #include "server.h"
 #include "types.h"
 
+static bool check_is_exist(client_t *client)
+{
+    if (client->use->use_level == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->team_uuid);
+        return false;
+    }
+    if (client->use->use_level == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return false;
+    }
+    return true;
+}
+
 static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)
 {
     channel_t *channel = get_context_channel(server, client->use);
     thread_t *thread = NULL;
 
-    if (channel == NULL) {
-        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
-            client->use->channel_uuid);
+    if (check_is_exist(client) == false)
         return;
-    }
     thread = find_thread_in_channel_by_title(server, channel, title);
     if (thread != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
@@ -64,39 +76,19 @@ void create_thread(server_t *server, client_t *client, \
     }
 }
 
-channel_t *find_channel_in_specified_team(server_t *server, char *team_uuid, \
-    char *channel_uuid)
-{
-    team_t *team = NULL;
-    uuid_t *uuid = NULL;
-
-    team = find_team_by_uuid(server, team_uuid);
-    if (team == NULL)
-        return NULL;
-    SLIST_FOREACH(uuid, team->channels, next) {
-        if (strcmp(uuid->uuid, channel_uuid) == 0)
-            return find_channel_by_uuid(server, channel_uuid);
-    }
-    return NULL;
-}
-
 void list_threads(server_t *server, client_t *client)
 {
+    channel_t *channel = get_context_channel(server, client->use);
     uuid_t *uuid = NULL;
-    unsigned int nbr_thread = 0;
-    channel_t *channel = find_channel_in_specified_team(server,
-        client->use->team->uuid, client->use->channel->uuid);
+    thread_t *thread = NULL;
 
-    if (channel == NULL) {
-        send_basic_message(client->fd, "580");
+    if (check_is_exist(client) == false)
         return;
-    }
-    SLIST_FOREACH(uuid, channel->threads, next)
-        nbr_thread++;
-    uuid = NULL;
-    dprintf(client->fd, "%d thread(s) available%s", nbr_thread, CRLF);
     SLIST_FOREACH(uuid, channel->threads, next) {
-        dprintf(client->fd, "%s (%s)%s", \
-            find_thread_by_uuid(server, uuid->uuid)->name, uuid->uuid, CRLF);
+        thread = find_thread_in_channel_by_uuid(server, channel, uuid->uuid);
+        if (thread != NULL) {
+            send_thread_packet(client->fd, thread, COMMAND_LIST);
+        }
     }
+    send_message_packet(client->fd, 200);
 }

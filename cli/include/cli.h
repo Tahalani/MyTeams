@@ -29,6 +29,7 @@ char **get_arguments(char *input);
 char **str_to_word(char const *str, char separator);
 size_t array_len(char **array);
 void free_array(char **array);
+bool concat_uuid(char *uuid, char *data);
 
 void fatal_error(const char *error);
 

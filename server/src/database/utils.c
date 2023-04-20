@@ -5,9 +5,6 @@
 ** display
 */
 
-// IWYU pragma: keep
-#include "source.h"
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +12,7 @@
 #include <unistd.h>
 
 #include "server.h"
+#include "types.h"
 
 int get_fd_file(char *name)
 {

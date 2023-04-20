@@ -13,7 +13,7 @@
 #include "packets.h"
 #include "types.h"
 
-static bool concat_uuid(char *uuid, char *data)
+bool concat_uuid(char *uuid, char *data)
 {
     if (!is_uuid(uuid)) {
         return false;

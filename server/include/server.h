@@ -16,8 +16,6 @@
 
     #define MAX_CONNECTIONS 50
 
-    #define CRLF "\r\n"
-
 // Core functions
 int teams_server(int argc, char **argv);
 bool start_server(int port);
@@ -37,7 +35,8 @@ void send_team_packet(int fd, team_t *team, packet_command_t context);
 void send_channel_packet(int fd, channel_t *channel, packet_command_t context);
 void send_thread_packet(int fd, thread_t *thread, packet_command_t context);
 void send_reply_packet(int fd, message_t *message, packet_command_t context);
-void send_user_packet(int fd, user_t *user, packet_command_t context);
+void send_user_packet(int fd, user_t *user, bool online, \
+    packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
 
 // Objects
@@ -45,7 +44,7 @@ client_t *new_client(int fd);
 void close_connection(client_t *connection);
 void free_connection(client_t *connection);
 
-user_t *new_user(char *username, int fd);
+user_t *new_user(char *username);
 user_t *find_user_by_uuid(server_t *server, char *uuid);
 user_t *find_user_by_name(server_t *server, char *name);
 
@@ -68,17 +67,15 @@ thread_t *find_thread_in_channel_by_title(server_t *server, \
     channel_t *channel, char *title);
 
 message_t *new_message(char *body, thread_t *thread, user_t *user);
-
 message_t *find_message_by_uuid(server_t *server, char *uuid);
-
-void send_basic_message(int fd, char *code);
+message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
+    char *uuid);
 
 // Utils
 void fatal_error(const char *message);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
-char *get_username_client(server_t *server, client_t *client);
-time_t get_time(void);
+bool is_user_connected(server_t *server, user_t *user);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
@@ -100,6 +97,7 @@ void fill_default_use(client_t *client);
 void fill_team_use(client_t *client, char **data);
 void fill_channel_use(client_t *client, char **data);
 void fill_thread_use(client_t *client, char **data);
+void refresh_context_level(server_t *server, client_t *client);
 
 team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);
