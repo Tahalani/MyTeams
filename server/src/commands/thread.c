@@ -5,26 +5,25 @@
 ** thread
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
 #include "logging_server.h"
-#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
 
 static bool check_is_exist(client_t *client)
 {
-    if (client->use->not_found == 1) {
+    if (client->use->use_level == 1) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
-            client->use->channel_uuid);
+            client->use->team_uuid);
         return false;
     }
-    if (client->use->not_found == 2) {
+    if (client->use->use_level == 2) {
         send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
             client->use->channel_uuid);
         return false;
@@ -36,6 +35,7 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)
 {
     channel_t *channel = get_context_channel(server, client->use);
+    team_t *team = get_context_team(server, client->use);
     thread_t *thread = NULL;
 
     if (check_is_exist(client) == false)
@@ -44,14 +44,15 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     if (thread != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
         return;
+    } else if (!is_user_subscribe(client->user, team)) {
+        send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
+        return;
     }
     thread = new_thread(title, message, channel);
     SLIST_INSERT_HEAD(server->data->threads, thread, next);
     server_event_thread_created(channel->uuid, thread->uuid, \
         client->user->uuid, title, message);
     send_thread_packet(client->fd, thread, COMMAND_CREATE);
-    client_print_thread_created(thread->uuid, client->user->uuid, \
-        thread->created_at, title, message);
 }
 
 void create_thread(server_t *server, client_t *client, \

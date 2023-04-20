@@ -5,14 +5,12 @@
 ** subscribe.c
 */
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
-#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -23,7 +21,6 @@ static void join_team(client_t *client, team_t *team)
     uuid_t *uuid2 = malloc(sizeof(uuid_t));
 
     if (team == NULL || uuid == NULL || uuid2 == NULL) {
-        send_basic_message(client->fd, "421");
         return;
     }
     uuid->uuid = team->uuid;

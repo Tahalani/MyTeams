@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include "packets.h"
+#include "server.h"
 #include "types.h"
 
 void send_team_packet(int fd, team_t *team, packet_command_t context)
@@ -67,7 +68,8 @@ void send_reply_packet(int fd, message_t *message, packet_command_t context)
     write(fd, &packet, sizeof(reply_packet_t));
 }
 
-void send_user_packet(int fd, user_t *user, packet_command_t context)
+void send_user_packet(int fd, user_t *user, bool online, \
+    packet_command_t context)
 {
     packet_header_t opcode = PACKET_USER;
     user_packet_t packet;
@@ -75,7 +77,7 @@ void send_user_packet(int fd, user_t *user, packet_command_t context)
     memset(&packet, 0, sizeof(user_packet_t));
     strcat(packet.uuid, user->uuid);
     strcat(packet.username, user->username);
-    packet.status = user->fd != -1;
+    packet.status = online;
     packet.context = context;
     write(fd, &opcode, sizeof(packet_header_t));
     write(fd, &packet, sizeof(user_packet_t));

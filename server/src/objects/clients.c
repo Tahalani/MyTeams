@@ -34,8 +34,6 @@ client_t *new_client(int fd)
 
 void close_connection(client_t *client)
 {
-    if (client->user != NULL)
-        client->user->fd = -1;
     close(client->fd);
 }
 

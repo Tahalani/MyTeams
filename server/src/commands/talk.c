@@ -5,10 +5,10 @@
 ** talk
 */
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/queue.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "constants.h"
@@ -17,28 +17,19 @@
 #include "server.h"
 #include "types.h"
 
-message_t *get_right_message(server_t *server, char *uuid)
-{
-    message_t *node = NULL;
-
-    SLIST_FOREACH(node, server->data->messages, next) {
-        if (strcmp(node->sender->uuid, uuid) == 0)
-            return node;
-    }
-    return NULL;
-}
-
 static message_t *fill_message_struct(server_t *server, \
-    client_t *client, char *body)
+    client_t *client, char *body, char *receiver)
 {
     message_t *message = malloc(sizeof(message_t));
 
     if (message == NULL)
         fatal_error("Malloc failed");
     message->uuid = generate_uuid();
-    message->sender = client->user;
     message->body = strdup(body);
+    message->author = strdup(client->user->uuid);
+    message->target = strdup(receiver);
     message->created_at = time(NULL);
+    message->is_private = true;
     SLIST_INSERT_HEAD(server->data->messages, message, next);
     return message;
 }
@@ -57,11 +48,24 @@ static user_t *check_read(server_t *server, \
         return NULL;
     }
     node = find_user_by_uuid(server, uuid);
-    if (node == NULL || node->fd == -1) {
+    if (node == NULL) {
         send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
         return NULL;
     }
     return node;
+}
+
+static void send_private_message(server_t *server, client_t *client, \
+    char *receiver, char *body)
+{
+    message_t *message = fill_message_struct(server, client, body, receiver);
+    client_t *tmp = NULL;
+
+    SLIST_FOREACH(tmp, server->clients, next) {
+        if (tmp->user != NULL && strcmp(tmp->user->uuid, receiver) == 0) {
+            send_reply_packet(tmp->fd, message, COMMAND_SEND);
+        }
+    }
 }
 
 void send_command(server_t *server, client_t *client, \
@@ -83,8 +87,7 @@ void send_command(server_t *server, client_t *client, \
     if (node == NULL)
         return;
     server_event_private_message_sended(client->user->uuid, uuid, body);
-    send_reply_packet(node->fd,
-    fill_message_struct(server, client, body), COMMAND_SEND);
+    send_private_message(server, client, uuid, body);
 }
 
 void messages_command(server_t *server, client_t *client, \
@@ -92,7 +95,6 @@ void messages_command(server_t *server, client_t *client, \
 {
     char uuid[UUID_LENGTH + 1];
     message_t *node = NULL;
-    bool found = false;
 
     if (packet->data_size != UUID_LENGTH) {
         send_message_packet(client->fd, 500);
@@ -105,11 +107,10 @@ void messages_command(server_t *server, client_t *client, \
         return;
     }
     SLIST_FOREACH(node, server->data->messages, next) {
-        if (strcmp(node->sender->uuid, uuid) == 0) {
+        if (strcmp(node->author, uuid) == 0) {
             send_reply_packet(client->fd, node, COMMAND_MESSAGES);
-            found = true;
+            return;
         }
     }
-    if (found == false)
-        send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
+    send_error_packet(client->fd, ERROR_UNKNOWN_USER, NULL);
 }

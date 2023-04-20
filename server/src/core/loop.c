@@ -13,8 +13,8 @@
 #include <sys/select.h>
 #include <sys/signalfd.h>
 #include <time.h>
-#include <unistd.h>
 
+#include "database.h"
 #include "server.h"
 #include "types.h"
 

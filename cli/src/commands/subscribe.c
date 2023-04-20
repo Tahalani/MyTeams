@@ -6,7 +6,6 @@
 */
 
 #include <string.h>
-#include <stdbool.h>
 
 #include "cli.h"
 #include "constants.h"
@@ -35,4 +34,21 @@ void unsubscribe_command(client_t *client, char **args)
         return;
     }
     send_packet(client->fd, COMMAND_UNSUBSCRIBE, UUID_LENGTH, uuid);
+}
+
+void subscribed_command(client_t *client, char **args)
+{
+    char data[UUID_LENGTH + 1];
+    size_t len = array_len(args);
+
+    memset(data, 0, UUID_LENGTH + 1);
+    if (len > 1) {
+        send_rfc_message(400);
+        return;
+    }
+    if (len == 1 && !concat_uuid(args[0], data)) {
+        send_rfc_message(420);
+        return;
+    }
+    send_packet(client->fd, COMMAND_SUBSCRIBED, UUID_LENGTH * len, data);
 }

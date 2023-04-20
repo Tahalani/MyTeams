@@ -5,28 +5,12 @@
 ** display
 */
 
-// IWYU pragma: keep
-#include "source.h"
-
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "server.h"
-
-int get_fd_file(char *name)
-{
-    char *path = NULL;
-    int fd = -1;
-
-    asprintf(&path, "server/database/%s", name);
-    fd = open(path, O_CREAT | O_RDWR, 0744);
-    if (fd == -1)
-        perror("open");
-    return fd;
-}
+#include "database.h"
 
 relation_t *load_relation(int fd)
 {
