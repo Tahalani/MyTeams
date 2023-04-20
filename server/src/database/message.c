@@ -13,12 +13,26 @@
 #include <unistd.h>
 
 #include "database.h"
+#include "server.h"
 #include "types.h"
 
-// TODO: Link message to target
-static void link_message(server_t *server, message_t *message)
+static bool link_message(server_t *server, message_t *message)
 {
+    thread_t *thread = NULL;
+    user_t *user = NULL;
+    uuid_t *uuid = NULL;
 
+    if (message->is_private) {
+        user = find_user_by_uuid(server, message->target);
+        return user != NULL;
+    }
+    thread = find_thread_by_uuid(server, message->target);
+    if (thread != NULL) {
+        uuid = malloc(sizeof(uuid_t));
+        uuid->uuid = strdup(message->uuid);
+        SLIST_INSERT_HEAD(thread->messages, uuid, next);
+    }
+    return thread != NULL;
 }
 
 static message_t *load_message(int fd)
@@ -32,8 +46,11 @@ static message_t *load_message(int fd)
     if (re != sizeof(parsed_message_t))
         return (NULL);
     message->uuid = strdup(parsed.uuid);
-    message->sender = NULL;
     message->body = strdup(parsed.body);
+    message->author = strdup(parsed.author);
+    message->target = strdup(parsed.target);
+    message->created_at = parsed.created_at;
+    message->is_private = parsed.is_private;
     return (message);
 }
 
@@ -46,8 +63,9 @@ void load_messages(server_t *server)
         return;
     message = load_message(fd_message);
     while (message != NULL) {
-        SLIST_INSERT_HEAD(server->data->messages, message, next);
-        link_message(server, message);
+        if (link_message(server, message)) {
+            SLIST_INSERT_HEAD(server->data->messages, message, next);
+        }
         message = load_message(fd_message);
     }
     close(fd_message);
@@ -59,8 +77,11 @@ static void save_message(message_t *message, int fd)
 
     memset(&parsed, 0, sizeof(parsed_message_t));
     strcat(parsed.uuid, message->uuid);
-    strcat(parsed.uuid_user, message->sender->uuid);
     strcat(parsed.body, message->body);
+    strcat(parsed.author, message->author);
+    strcat(parsed.target, message->target);
+    parsed.created_at = message->created_at;
+    parsed.is_private = message->is_private;
     write(fd, &parsed, sizeof(parsed_message_t));
 }
 

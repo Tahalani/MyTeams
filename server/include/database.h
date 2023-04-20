@@ -8,6 +8,8 @@
 #ifndef DATABASE_H_
     #define DATABASE_H_
 
+    #include <stdbool.h>
+
     #include "constants.h"
     #include "types.h"
 
@@ -51,8 +53,10 @@ typedef struct parsed_thread_s {
 typedef struct parsed_message_s {
     char uuid[UUID_LENGTH + 1];
     char body[MAX_BODY_LENGTH + 1];
-    char uuid_user[UUID_LENGTH + 1];
-    // TODO Author, target, target_uuid
+    char author[UUID_LENGTH + 1];
+    char target[UUID_LENGTH + 1];
+    time_t created_at;
+    bool is_private;
 } parsed_message_t;
 
 void load_data(server_t *server);

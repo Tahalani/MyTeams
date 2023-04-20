@@ -71,8 +71,10 @@ typedef struct client_s {
 typedef struct message_s {
     char *uuid;
     char *body;
-    user_t *sender;
+    char *author;
+    char *target;
     time_t created_at;
+    bool is_private;
     SLIST_ENTRY(message_s) next;
 } message_t;
 
