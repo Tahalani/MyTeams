@@ -20,7 +20,7 @@ static void leave_team(client_t *client, team_t *team, uuid_t *uuid)
         if (strcmp(uuid->uuid, client->user->uuid) == 0)
             SLIST_REMOVE(team->users, uuid, uuid_s, next);
     }
-    send_team_packet(client->fd, team, COMMAND_SUBSCRIBE);
+    send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
 }
 
 static team_t *error_handling_unsubscribe(server_t *server, client_t *client, \

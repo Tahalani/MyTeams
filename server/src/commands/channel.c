@@ -48,7 +48,7 @@ static void add_new_channel(server_t *server, client_t *client, \
     channel = new_channel(name, description, team);
     SLIST_INSERT_HEAD(server->data->channels, channel, next);
     server_event_channel_created(team->uuid, channel->uuid, channel->name);
-    send_channel_packet(client->fd, channel, COMMAND_CREATE);
+    send_channel_packet(client->fd, channel, client->user, COMMAND_CREATE);
 }
 
 void create_channel(server_t *server, client_t *client, \
@@ -89,7 +89,7 @@ void list_channels(server_t *server, client_t *client)
     SLIST_FOREACH(uuid, team->channels, next) {
         channel = find_channel_in_team_by_uuid(server, team, uuid->uuid);
         if (channel != NULL) {
-            send_channel_packet(client->fd, channel, COMMAND_LIST);
+            send_channel_packet(client->fd, channel, NULL, COMMAND_LIST);
         }
     }
     send_message_packet(client->fd, 200);

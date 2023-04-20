@@ -48,11 +48,11 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
         send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
-    thread = new_thread(title, message, channel);
+    thread = new_thread(title, message, client->user, channel);
     SLIST_INSERT_HEAD(server->data->threads, thread, next);
     server_event_thread_created(channel->uuid, thread->uuid, \
         client->user->uuid, title, message);
-    send_thread_packet(client->fd, thread, COMMAND_CREATE);
+    send_thread_packet(client->fd, thread, team, COMMAND_CREATE);
 }
 
 void create_thread(server_t *server, client_t *client, \
@@ -82,6 +82,7 @@ void create_thread(server_t *server, client_t *client, \
 
 void list_threads(server_t *server, client_t *client)
 {
+    team_t *team = get_context_team(server, client->use);
     channel_t *channel = get_context_channel(server, client->use);
     uuid_t *uuid = NULL;
     thread_t *thread = NULL;
@@ -91,7 +92,7 @@ void list_threads(server_t *server, client_t *client)
     SLIST_FOREACH(uuid, channel->threads, next) {
         thread = find_thread_in_channel_by_uuid(server, channel, uuid->uuid);
         if (thread != NULL) {
-            send_thread_packet(client->fd, thread, COMMAND_LIST);
+            send_thread_packet(client->fd, thread, team, COMMAND_LIST);
         }
     }
     send_message_packet(client->fd, 200);

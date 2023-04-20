@@ -63,7 +63,7 @@ static void send_private_message(server_t *server, client_t *client, \
 
     SLIST_FOREACH(tmp, server->clients, next) {
         if (tmp->user != NULL && strcmp(tmp->user->uuid, receiver) == 0) {
-            send_reply_packet(tmp->fd, message, COMMAND_SEND);
+            send_reply_packet(tmp->fd, message, NULL, COMMAND_SEND);
         }
     }
 }
@@ -108,7 +108,7 @@ void messages_command(server_t *server, client_t *client, \
     }
     SLIST_FOREACH(node, server->data->messages, next) {
         if (strcmp(node->author, uuid) == 0) {
-            send_reply_packet(client->fd, node, COMMAND_MESSAGES);
+            send_reply_packet(client->fd, node, NULL, COMMAND_MESSAGES);
             return;
         }
     }

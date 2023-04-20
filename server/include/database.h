@@ -48,6 +48,7 @@ typedef struct parsed_thread_s {
     char uuid[UUID_LENGTH + 1];
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
+    char author[UUID_LENGTH + 1];
 } parsed_thread_t;
 
 typedef struct parsed_message_s {
@@ -81,13 +82,5 @@ void save_team_channel_relations(server_t *server);
 void save_channel_thread_relations(server_t *server);
 
 relation_t *load_relation(int fd);
-
-void relation_team_user(server_t *server, int fd);
-void relation_channel_team(server_t *server, int fd);
-void relation_thread_channel(server_t *server, int fd);
-
-void relation_message_thread(server_t *server, int fd);
-
-void load_team_user_relations(server_t *server);
 
 #endif
