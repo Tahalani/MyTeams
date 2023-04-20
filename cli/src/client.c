@@ -39,7 +39,7 @@ static void client_loop(client_t *client)
     while (!exit) {
         max_fd = refresh_fdsets(client->fd, &set);
         if (select(max_fd + 1, &set, NULL, NULL, NULL) == -1) {
-            perror("select failed");
+            printf("select failed\n");
             return;
         }
         if (FD_ISSET(0, &set)) {
@@ -57,12 +57,12 @@ static int init_client(struct sockaddr *addr)
     int res = 0;
 
     if (socket_fd == -1) {
-        perror("socket failed");
+        printf("socket failed\n");
         return -1;
     }
     res = connect(socket_fd, addr, sizeof(*addr));
     if (res == -1) {
-        perror("connect failed");
+        printf("connect failed\n");
         return -1;
     }
     return socket_fd;

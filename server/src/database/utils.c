@@ -22,7 +22,7 @@ int get_fd_file(char *name)
     asprintf(&path, "server/database/%s", name);
     fd = open(path, O_CREAT | O_RDWR, 0744);
     if (fd == -1)
-        perror("open");
+        printf("open\n");
     return fd;
 }
 
