@@ -35,6 +35,7 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     char *message)
 {
     channel_t *channel = get_context_channel(server, client->use);
+    team_t *team = get_context_team(server, client->use);
     thread_t *thread = NULL;
 
     if (check_is_exist(client) == false)
@@ -42,6 +43,9 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     thread = find_thread_in_channel_by_title(server, channel, title);
     if (thread != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
+        return;
+    } else if (!is_user_subscribe(client->user, team)) {
+        send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
     thread = new_thread(title, message, channel);

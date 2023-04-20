@@ -15,6 +15,17 @@
 #include "server.h"
 #include "types.h"
 
+bool is_user_subscribe(user_t *user, team_t *team)
+{
+    uuid_t *uuid = NULL;
+
+    SLIST_FOREACH(uuid, team->users, next) {
+        if (strcmp(uuid->uuid, user->uuid) == 0)
+            return true;
+    }
+    return false;
+}
+
 static void add_new_channel(server_t *server, client_t *client, \
     char *name, char *description)
 {
@@ -24,6 +35,9 @@ static void add_new_channel(server_t *server, client_t *client, \
     if (team == NULL) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
             client->use->team_uuid);
+        return;
+    } else if (!is_user_subscribe(client->user, team)) {
+        send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
     channel = find_channel_in_team_by_name(server, team, name);
@@ -57,9 +71,8 @@ void create_channel(server_t *server, client_t *client, \
     re2 = read(client->fd, description, MAX_DESCRIPTION_LENGTH);
     if (re != MAX_NAME_LENGTH || re2 != MAX_DESCRIPTION_LENGTH) {
         send_message_packet(client->fd, 500);
-    } else {
+    } else
         add_new_channel(server, client, name, description);
-    }
 }
 
 void list_channels(server_t *server, client_t *client)

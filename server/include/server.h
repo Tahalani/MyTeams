@@ -77,6 +77,7 @@ void ensure_allocated(void *ptr);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 bool is_user_connected(server_t *server, user_t *user);
+bool is_user_subscribe(user_t *user, team_t *team);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
