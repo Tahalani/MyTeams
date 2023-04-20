@@ -19,20 +19,16 @@ void team_packet_handler(client_t *client)
     if (re != sizeof(team_packet_t)) {
         return;
     }
-    if (packet.context == COMMAND_CREATE) {
+    if (packet.context == COMMAND_CREATE)
         client_event_team_created(packet.uuid, packet.name, packet.description);
-    } else if (packet.context == COMMAND_LIST) {
+    if (packet.context == COMMAND_LIST || packet.context == COMMAND_SUBSCRIBED)
         client_print_teams(packet.uuid, packet.name, packet.description);
-    }
-    if (packet.context == COMMAND_SUBSCRIBED) {
-        client_print_teams(packet.uuid, packet.name, packet.description);
-    } else if (packet.context == COMMAND_SUBSCRIBE) {
+    if (packet.context == COMMAND_INFO)
+        client_print_team(packet.uuid, packet.name, packet.description);
+    else if (packet.context == COMMAND_SUBSCRIBE)
         client_print_subscribed(client->user_uuid, packet.uuid);
-    }
-    if (packet.context == COMMAND_UNSUBSCRIBE)
+    else if (packet.context == COMMAND_UNSUBSCRIBE)
         client_print_unsubscribed(client->user_uuid, packet.uuid);
-    else if (packet.context == COMMAND_INFO)
-        client_print_teams(packet.uuid, packet.name, packet.description);
 }
 
 void channel_packet_handler(client_t *client)
@@ -51,7 +47,7 @@ void channel_packet_handler(client_t *client)
             packet.description);
     }
     if (packet.context == COMMAND_INFO) {
-        client_team_print_channels(packet.uuid, packet.name, \
+        client_print_channel(packet.uuid, packet.name, \
             packet.description);
     }
 }
@@ -72,7 +68,7 @@ void thread_packet_handler(client_t *client)
         packet.created_at, packet.name, packet.message);
     }
     if (packet.context == COMMAND_INFO) {
-        client_channel_print_threads(packet.uuid, client->user_uuid, \
+        client_print_thread(packet.uuid, client->user_uuid, \
         packet.created_at, packet.name, packet.message);
     }
 }
@@ -85,7 +81,7 @@ void reply_packet_handler(client_t *client)
     if (re != sizeof(reply_packet_t))
         return;
     if (packet.context == COMMAND_CREATE) {
-        client_event_thread_reply_received("", packet.target, \
+        client_event_thread_reply_received(packet.team_uuid, packet.target, \
             packet.author, packet.body);
     } else if (packet.context == COMMAND_LIST) {
         client_thread_print_replies(packet.target, packet.author, \

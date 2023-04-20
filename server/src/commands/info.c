@@ -38,8 +38,10 @@ static void display_channel(client_t *client)
     send_channel_packet(client->fd, client->use->channel, COMMAND_INFO);
 }
 
-static void display_thread(client_t *client)
+static void display_thread(server_t *server, client_t *client)
 {
+    team_t *team = get_context_team(server, client->use);
+
     if (client->use->use_level == 1) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
             client->use->team_uuid);
@@ -55,7 +57,7 @@ static void display_thread(client_t *client)
             client->use->thread_uuid);
         return;
     }
-    send_thread_packet(client->fd, client->use->thread, COMMAND_INFO);
+    send_thread_packet(client->fd, client->use->thread, team, COMMAND_INFO);
 }
 
 void info_command(UNUSED server_t *server, client_t *client, \
@@ -73,5 +75,5 @@ void info_command(UNUSED server_t *server, client_t *client, \
         display_channel(client);
         return;
     }
-    display_thread(client);
+    display_thread(server, client);
 }

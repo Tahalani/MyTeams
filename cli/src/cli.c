@@ -27,11 +27,11 @@ static bool check_arguments(char **argv)
         return false;
     }
     if (strlen(end) > 0) {
-        fprintf(stderr, "Error: Port must be a number\n");
+        printf("Error: Port must be a number\n");
         return false;
     }
     if (parsed < 1 || parsed > 65535) {
-        fprintf(stderr, "Error: Port is invalid\n");
+        printf("Error: Port is invalid\n");
         return false;
     }
     return true;
@@ -53,7 +53,7 @@ int teams_cli(int argc, char **argv)
         return SUCCESS;
     }
     if (argc != 3) {
-        fprintf(stderr, "Error: Invalid number of arguments\n");
+        printf("Error: Invalid number of arguments\n");
         return FAILURE;
     } else if (!check_arguments(argv)) {
         return FAILURE;

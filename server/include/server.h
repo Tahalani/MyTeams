@@ -33,8 +33,10 @@ void send_message_packet(int fd, int code);
 void send_context_packet(int fd, packet_context_t context);
 void send_team_packet(int fd, team_t *team, packet_command_t context);
 void send_channel_packet(int fd, channel_t *channel, packet_command_t context);
-void send_thread_packet(int fd, thread_t *thread, packet_command_t context);
-void send_reply_packet(int fd, message_t *message, packet_command_t context);
+void send_thread_packet(int fd, thread_t *thread, team_t *team, \
+    packet_command_t context);
+void send_reply_packet(int fd, message_t *message, team_t *team, \
+    packet_command_t context);
 void send_user_packet(int fd, user_t *user, bool online, \
     packet_command_t context);
 void send_error_packet(int fd, packet_error_t error, char *uuid);
