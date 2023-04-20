@@ -28,6 +28,7 @@ static thread_t *load_thread(int fd)
     thread->name = strdup(parsed.name);
     thread->uuid = strdup(parsed.uuid);
     thread->message = strdup(parsed.description);
+    thread->author = strdup(parsed.author);
     thread->messages = malloc(sizeof(struct message_l));
     SLIST_INIT(thread->messages);
     return (thread);
@@ -56,6 +57,7 @@ static void save_thread(thread_t *thread, int fd)
     strcat(parsed.name, thread->name);
     strcat(parsed.uuid, thread->uuid);
     strcat(parsed.description, thread->message);
+    strcat(parsed.author, thread->author);
     write(fd, &parsed, sizeof(parsed_thread_t));
 }
 

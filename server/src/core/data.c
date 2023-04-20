@@ -50,6 +50,7 @@ void send_thread_packet(int fd, thread_t *thread, team_t *team, \
     strcat(packet.uuid, thread->uuid);
     strcat(packet.name, thread->name);
     strcat(packet.message, thread->message);
+    strcat(packet.author, thread->author);
     strcat(packet.team_uuid, team->uuid);
     packet.created_at = thread->created_at;
     packet.context = context;

@@ -48,7 +48,7 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
         send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
-    thread = new_thread(title, message, channel);
+    thread = new_thread(title, message, client->user, channel);
     SLIST_INSERT_HEAD(server->data->threads, thread, next);
     server_event_thread_created(channel->uuid, thread->uuid, \
         client->user->uuid, title, message);

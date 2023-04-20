@@ -61,7 +61,8 @@ channel_t *find_channel_in_team_by_uuid(server_t *server, team_t *team, \
 channel_t *find_channel_in_team_by_name(server_t *server, team_t *team, \
     char *name);
 
-thread_t *new_thread(char *title, char *message, channel_t *channel);
+thread_t *new_thread(char *title, char *message, user_t *author, \
+    channel_t *channel);
 thread_t *find_thread_by_uuid(server_t *server, char *uuid);
 thread_t *find_thread_in_channel_by_uuid(server_t *server, \
     channel_t *channel, char *uuid);

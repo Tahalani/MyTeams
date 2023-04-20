@@ -28,6 +28,7 @@ typedef struct thread_s {
     char *uuid;
     char *name;
     char *message;
+    char *author;
     time_t created_at;
     SLIST_HEAD(message_l, uuid_s) *messages;
     SLIST_ENTRY(thread_s) next;

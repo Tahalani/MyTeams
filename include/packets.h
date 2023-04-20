@@ -76,6 +76,7 @@ typedef struct PACKED team_packet_s {
     char uuid[UUID_LENGTH + 1];
     char name[MAX_NAME_LENGTH + 1];
     char description[MAX_DESCRIPTION_LENGTH + 1];
+    char author[UUID_LENGTH + 1];
     packet_command_t context;
 } team_packet_t;
 
@@ -85,6 +86,7 @@ typedef struct PACKED thread_packet_s {
     char uuid[UUID_LENGTH + 1];
     char name[MAX_NAME_LENGTH + 1];
     char message[MAX_BODY_LENGTH + 1];
+    char author[UUID_LENGTH + 1];
     char team_uuid[UUID_LENGTH + 1];
     time_t created_at;
     packet_command_t context;
