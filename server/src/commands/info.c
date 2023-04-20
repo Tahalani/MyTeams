@@ -20,7 +20,7 @@ static void display_team(client_t *client)
             client->use->team_uuid);
         return;
     }
-    send_team_packet(client->fd, client->use->team, COMMAND_INFO);
+    send_team_packet(client->fd, client->use->team, NULL, COMMAND_INFO);
 }
 
 static void display_channel(client_t *client)
@@ -35,7 +35,7 @@ static void display_channel(client_t *client)
             client->use->channel_uuid);
         return;
     }
-    send_channel_packet(client->fd, client->use->channel, COMMAND_INFO);
+    send_channel_packet(client->fd, client->use->channel, NULL, COMMAND_INFO);
 }
 
 static void display_thread(server_t *server, client_t *client)

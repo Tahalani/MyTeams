@@ -71,7 +71,7 @@ void subscribed_command(server_t *server, client_t *client, \
     if (len == 0) {
         SLIST_FOREACH(uuid, client->user->teams, next)
             send_team_packet(client->fd,
-            find_team_by_uuid(server, uuid->uuid), COMMAND_SUBSCRIBED);
+            find_team_by_uuid(server, uuid->uuid), NULL, COMMAND_SUBSCRIBED);
     } else {
         if (display_user_in_team(server, client, data) == false)
             return;

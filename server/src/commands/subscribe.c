@@ -27,7 +27,7 @@ static void join_team(client_t *client, team_t *team)
     SLIST_INSERT_HEAD(client->user->teams, uuid, next);
     uuid2->uuid = client->user->uuid;
     SLIST_INSERT_HEAD(team->users, uuid2, next);
-    send_team_packet(client->fd, team, COMMAND_SUBSCRIBE);
+    send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
 }
 
 static void check_team(server_t *server, client_t *client, char *uuid)
