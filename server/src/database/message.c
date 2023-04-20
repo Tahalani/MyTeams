@@ -13,8 +13,13 @@
 #include <unistd.h>
 
 #include "database.h"
-#include "server.h"
 #include "types.h"
+
+// TODO: Link message to target
+static void link_message(server_t *server, message_t *message)
+{
+
+}
 
 static message_t *load_message(int fd)
 {
@@ -42,12 +47,13 @@ void load_messages(server_t *server)
     message = load_message(fd_message);
     while (message != NULL) {
         SLIST_INSERT_HEAD(server->data->messages, message, next);
+        link_message(server, message);
         message = load_message(fd_message);
     }
     close(fd_message);
 }
 
-void save_message(message_t *message, int fd)
+static void save_message(message_t *message, int fd)
 {
     parsed_message_t parsed;
 
@@ -58,37 +64,16 @@ void save_message(message_t *message, int fd)
     write(fd, &parsed, sizeof(parsed_message_t));
 }
 
-void relation_message_thread(server_t *server, int fd)
+void save_messages(server_t *server)
 {
-    relation_t relation;
-    thread_t *thread = NULL;
-    uuid_t *message = NULL;
-
-    SLIST_FOREACH(thread, server->data->threads, next) {
-        SLIST_FOREACH(message, thread->messages, next) {
-            memset(&relation, 0, sizeof(relation_t));
-            strcat(relation.first_uuid, thread->uuid);
-            strcat(relation.second_uuid, message->uuid);
-            write(fd, &relation, sizeof(relation_t));
-        }
-    }
-}
-
-void load_relation_message_thread(server_t *server, int fd)
-{
-    relation_t *relation = NULL;
-    thread_t *thread = NULL;
+    int fd = open(DB_FILE_MESSAGES, O_RDWR | O_CREAT, 0777);
     message_t *message = NULL;
-    uuid_t *uuid = NULL;
 
-    while ((relation = load_relation(fd))) {
-        thread = find_thread_by_uuid(server, relation->first_uuid);
-        message = find_message_by_uuid(server, relation->second_uuid);
-        if (thread && message) {
-            uuid = malloc(sizeof(uuid_t));
-            uuid->uuid = strdup(message->uuid);
-            SLIST_INSERT_HEAD(thread->messages, uuid, next);
-        }
-        free(relation);
+    if (fd == -1) {
+        return;
     }
+    SLIST_FOREACH(message, server->data->messages, next) {
+        save_message(message, fd);
+    }
+    close(fd);
 }

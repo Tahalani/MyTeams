@@ -49,7 +49,7 @@ void load_users(server_t *server)
     close(fd_user);
 }
 
-void save_user(user_t *user, int fd)
+static void save_user(user_t *user, int fd)
 {
     parsed_user_t parsed;
 
@@ -57,4 +57,18 @@ void save_user(user_t *user, int fd)
     strcat(parsed.username, user->username);
     strcat(parsed.uuid, user->uuid);
     write(fd, &parsed, sizeof(parsed_user_t));
+}
+
+void save_users(server_t *server)
+{
+    int fd = open(DB_FILE_USERS, O_RDWR | O_CREAT, 0777);
+    user_t *user = NULL;
+
+    if (fd == -1) {
+        return;
+    }
+    SLIST_FOREACH(user, server->data->users, next) {
+        save_user(user, fd);
+    }
+    close(fd);
 }

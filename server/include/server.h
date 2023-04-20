@@ -73,6 +73,7 @@ message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
 
 // Utils
 void fatal_error(const char *message);
+void ensure_allocated(void *ptr);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 bool is_user_connected(server_t *server, user_t *user);
@@ -104,7 +105,5 @@ channel_t *get_context_channel(server_t *server, use_t *use);
 thread_t *get_context_thread(server_t *server, use_t *use);
 
 int get_fd_file(char *name);
-
-void load_data(server_t *server);
 
 #endif

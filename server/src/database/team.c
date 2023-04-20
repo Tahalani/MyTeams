@@ -13,7 +13,6 @@
 #include <unistd.h>
 
 #include "database.h"
-#include "server.h"
 #include "types.h"
 
 static team_t *load_team(int fd)
@@ -51,7 +50,7 @@ void load_teams(server_t *server)
     close(fd_team);
 }
 
-void save_team(team_t *team, int fd)
+static void save_team(team_t *team, int fd)
 {
     parsed_team_t parsed;
 
@@ -62,40 +61,16 @@ void save_team(team_t *team, int fd)
     write(fd, &parsed, sizeof(parsed_team_t));
 }
 
-void relation_team_user(server_t *server, int fd)
+void save_teams(server_t *server)
 {
-    relation_t relation;
-    user_t *user = NULL;
-    uuid_t *team = NULL;
-
-    SLIST_FOREACH(user, server->data->users, next) {
-        SLIST_FOREACH(team, user->teams, next) {
-            memset(&relation, 0, sizeof(relation_t));
-            strcat(relation.first_uuid, user->uuid);
-            strcat(relation.second_uuid, team->uuid);
-            write(fd, &relation, sizeof(relation_t));
-        }
-    }
-}
-
-void load_relation_team_user(server_t *server, int fd)
-{
-    relation_t *relation = NULL;
-    user_t *user = NULL;
+    int fd = open(DB_FILE_TEAMS, O_RDWR | O_CREAT, 0777);
     team_t *team = NULL;
-    uuid_t *uuid = NULL;
 
-    while ((relation = load_relation(fd))) {
-        user = find_user_by_uuid(server, relation->first_uuid);
-        team = find_team_by_uuid(server, relation->second_uuid);
-        if (user && team) {
-            uuid = malloc(sizeof(uuid_t));
-            uuid->uuid = strdup(team->uuid);
-            SLIST_INSERT_HEAD(user->teams, uuid, next);
-            uuid = malloc(sizeof(uuid_t));
-            uuid->uuid = strdup(user->uuid);
-            SLIST_INSERT_HEAD(team->users, uuid, next);
-        }
-        free(relation);
+    if (fd == -1) {
+        return;
     }
+    SLIST_FOREACH(team, server->data->teams, next) {
+        save_team(team, fd);
+    }
+    close(fd);
 }
