@@ -56,7 +56,7 @@ void handle_incoming(server_t *server)
     client_t *client = NULL;
 
     if (new_fd == -1) {
-        perror("accept failed");
+        printf("accept failed\n");
         return;
     }
     client = new_client(new_fd);

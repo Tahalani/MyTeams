@@ -23,7 +23,7 @@ static bool check_arguments(char **argv)
     long parsed = strtol(argv[2], &end, 10);
 
     if (address == -1) {
-        perror("invalid address");
+        printf("invalid address\n");
         return false;
     }
     if (strlen(end) > 0) {

@@ -17,13 +17,13 @@ bool setup_server(int socket_fd, struct sockaddr *addr)
     int res = bind(socket_fd, addr, sizeof(*addr));
 
     if (res == -1) {
-        perror("bind failed");
+        printf("bind failed\n");
         close(socket_fd);
         return false;
     }
     res = listen(socket_fd, MAX_CONNECTIONS);
     if (res == -1) {
-        perror("listen failed");
+        printf("listen failed\n");
         close(socket_fd);
         return false;
     }
@@ -36,7 +36,7 @@ int init_socket(int port)
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (socket_fd == -1) {
-        perror("socket failed");
+        printf("socket failed\n");
         return -1;
     }
     if (!setup_server(socket_fd, address)) {
