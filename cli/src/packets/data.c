@@ -85,17 +85,17 @@ void reply_packet_handler(client_t *client)
     if (re != sizeof(reply_packet_t))
         return;
     if (packet.context == COMMAND_CREATE) {
-        client_event_thread_reply_received("", "", client->user_uuid, \
-            packet.body);
+        client_event_thread_reply_received("", packet.target, \
+            packet.author, packet.body);
     } else if (packet.context == COMMAND_LIST) {
-        client_thread_print_replies("", client->user_uuid, \
+        client_thread_print_replies(packet.target, packet.author, \
             packet.created_at, packet.body);
     }
     if (packet.context == COMMAND_SEND) {
-        client_event_private_message_received(client->user_uuid, \
+        client_event_private_message_received(packet.author, \
             packet.body);
     } else if (packet.context == COMMAND_MESSAGES) {
-        client_private_message_print_messages(client->user_uuid, \
+        client_private_message_print_messages(packet.author, \
             packet.created_at, packet.body);
     }
 }

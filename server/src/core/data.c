@@ -62,6 +62,8 @@ void send_reply_packet(int fd, message_t *message, packet_command_t context)
 
     memset(&packet, 0, sizeof(reply_packet_t));
     strcat(packet.body, message->body);
+    strcat(packet.author, message->author);
+    strcat(packet.target, message->target);
     packet.created_at = message->created_at;
     packet.context = context;
     write(fd, &opcode, sizeof(packet_header_t));
