@@ -5,7 +5,6 @@
 ** loading
 */
 
-#include <stdio.h>
 #include <sys/stat.h>
 
 #include "database.h"
