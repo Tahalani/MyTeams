@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #include "constants.h"
+#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -28,6 +29,7 @@ static void join_team(client_t *client, team_t *team)
     uuid2->uuid = client->user->uuid;
     SLIST_INSERT_HEAD(team->users, uuid2, next);
     send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
+    server_event_user_subscribed(team->uuid, client->user->uuid);
 }
 
 static void check_team(server_t *server, client_t *client, char *uuid)

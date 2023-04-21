@@ -15,15 +15,19 @@
 #include "server.h"
 #include "types.h"
 
-bool is_user_subscribe(user_t *user, team_t *team)
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    channel_t *channel)
 {
-    uuid_t *uuid = NULL;
+    bool sub = false;
+    client_t *node = NULL;
 
-    SLIST_FOREACH(uuid, team->users, next) {
-        if (strcmp(uuid->uuid, user->uuid) == 0)
-            return true;
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_channel_packet(client->fd, channel, client->user, \
+                COMMAND_CREATE);
+        }
     }
-    return false;
 }
 
 static void add_new_channel(server_t *server, client_t *client, \
@@ -36,7 +40,7 @@ static void add_new_channel(server_t *server, client_t *client, \
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
             client->use->team_uuid);
         return;
-    } else if (!is_user_subscribe(client->user, team)) {
+    } else if (!is_user_subscribed(client->user, team)) {
         send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
@@ -48,7 +52,7 @@ static void add_new_channel(server_t *server, client_t *client, \
     channel = new_channel(name, description, team);
     SLIST_INSERT_HEAD(server->data->channels, channel, next);
     server_event_channel_created(team->uuid, channel->uuid, channel->name);
-    send_channel_packet(client->fd, channel, client->user, COMMAND_CREATE);
+    send_events(server, client, team, channel);
 }
 
 void create_channel(server_t *server, client_t *client, \

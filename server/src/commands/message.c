@@ -10,10 +10,25 @@
 #include <sys/queue.h>
 #include <unistd.h>
 
+#include "constants.h"
 #include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
+
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    message_t *message)
+{
+    bool sub = false;
+    client_t *node = NULL;
+
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_reply_packet(client->fd, message, team, COMMAND_CREATE);
+        }
+    }
+}
 
 static bool check_is_exist(client_t *client)
 {
@@ -43,10 +58,10 @@ static void add_new_message(server_t *server, client_t *client, char *body)
 
     if (check_is_exist(client) == false)
         return;
-    message = new_message(body, thread, client->user);
+    message = new_message_thread(body, thread, client->user);
     SLIST_INSERT_HEAD(server->data->messages, message, next);
     server_event_reply_created(thread->uuid, client->user->uuid, body);
-    send_reply_packet(client->fd, message, team, COMMAND_CREATE);
+    send_events(server, client, team, message);
 }
 
 void create_message(server_t *server, client_t *client, \
