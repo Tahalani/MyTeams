@@ -5,11 +5,14 @@
 ## Makefile
 ##
 
-SRC			=	../cli/src/cli.c \
-				../server/src/server.c
+SRC			=	../server/src/util/arrays.c	\
+				../cli/src/parsing.c	\
+				../cli/src/util.c	\
 
 TEST		=	unit_tests
-TESTS		=	test_server.c
+TESTS		=	test_server.c	\
+				test_utils.c	\
+				test_parsing.c	\
 
 TEST_GCDA	=	$(SRC:.c=.gcda) \
 				$(TESTS:.c=.gcda)
@@ -22,7 +25,7 @@ OBJ_T		=	$(TESTS:.c=.o)
 CC			=	gcc
 
 CFLAGS		=	-Wall -Wextra -Wpedantic --coverage
-CPPFLAGS	=	-iquote ../cli/include/ -iquote ../server/include/
+CPPFLAGS	=	-iquote ../cli/include/ -iquote ../server/include/ -iquote ../include/
 TESTFLAGS	=	--coverage -lcriterion $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 
 clean:
