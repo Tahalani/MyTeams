@@ -5,9 +5,7 @@
 ** unsubscribe
 */
 
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
@@ -23,7 +21,8 @@ static void leave_team(client_t *client, team_t *team, uuid_t *uuid)
         if (strcmp(uuid->uuid, client->user->uuid) == 0)
             SLIST_REMOVE(team->users, uuid, uuid_s, next);
     }
-    send_team_packet(client->fd, team, COMMAND_SUBSCRIBE);
+    send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
+    server_event_user_unsubscribed(team->uuid, client->user->uuid);
 }
 
 static team_t *error_handling_unsubscribe(server_t *server, client_t *client, \

@@ -10,12 +10,13 @@ SRC			=	src/commands/auth.c \
 				src/commands/info.c \
 				src/commands/interaction.c \
 				src/commands/message.c \
+				src/commands/messages.c \
+				src/commands/send.c \
 				src/commands/subscribe.c \
-				src/commands/unsubscribe.c \
 				src/commands/subscribed.c \
-				src/commands/talk.c \
 				src/commands/team.c \
 				src/commands/thread.c \
+				src/commands/unsubscribe.c \
 				src/commands/use.c \
 				src/commands/user.c \
 				src/core/cache.c \
@@ -25,14 +26,16 @@ SRC			=	src/commands/auth.c \
 				src/core/init.c \
 				src/core/loop.c \
 				src/core/packets.c \
-				src/database/utils.c \
-				src/database/loading.c \
-				src/database/saving.c \
+				src/database/channel.c \
+				src/database/channel_rel.c \
+				src/database/entry.c \
 				src/database/message.c \
 				src/database/team.c	\
-				src/database/channel.c \
+				src/database/team_rel.c	\
 				src/database/thread.c \
+				src/database/thread_rel.c \
 				src/database/user.c	\
+				src/database/utils.c \
 				src/objects/channels.c \
 				src/objects/clients.c \
 				src/objects/messages.c \
@@ -40,8 +43,8 @@ SRC			=	src/commands/auth.c \
 				src/objects/threads.c \
 				src/objects/users.c \
 				src/util/arrays.c \
+				src/util/checks.c \
 				src/util/context.c \
-				src/util/messages.c \
 				src/util/util.c \
 				src/server.c
 

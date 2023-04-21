@@ -9,17 +9,22 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/queue.h>
 #include <sys/socket.h>
 
 #include "constants.h"
 #include "server.h"
-#include "types.h"
 
 void fatal_error(const char *error)
 {
-    fprintf(stderr, "%s\n", error);
+    printf("%s\n", error);
     exit(FAILURE);
+}
+
+void ensure_allocated(void *ptr)
+{
+    if (ptr == NULL) {
+        fatal_error("malloc faled");
+    }
 }
 
 struct sockaddr *generate_address(int port, char *address)
@@ -33,17 +38,6 @@ struct sockaddr *generate_address(int port, char *address)
     addr->sin_port = htons(port);
     addr->sin_addr.s_addr = address == NULL ? INADDR_ANY : inet_addr(address);
     return (struct sockaddr *) addr;
-}
-
-char *get_username_client(server_t *server, client_t *client)
-{
-    user_t *node = NULL;
-
-    SLIST_FOREACH(node, server->data->users, next) {
-        if (node->fd == client->fd)
-            return node->username;
-    }
-    return NULL;
 }
 
 char *generate_uuid(void)

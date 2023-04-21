@@ -14,6 +14,7 @@
 #include "cli.h"
 #include "commands.h"
 #include "handler.h"
+#include "packets.h"
 #include "types.h"
 
 static void execute_command(const command_t *command, client_t *client, \
@@ -54,15 +55,13 @@ static void handle_command(client_t *client, char *input)
 
 static void process_packet(client_t *client, char opcode)
 {
-    const char *format = "Unknown packet sent by server with opcode %d\n";
-
     for (size_t i = 0; i < HANDLER_COUNT; i++) {
         if (HANDLERS[i].opcode == opcode) {
             HANDLERS[i].function(client);
             return;
         }
     }
-    fprintf(stderr, format, opcode);
+    printf("Unknown packet sent by server with opcode %d\n", opcode);
 }
 
 bool handle_input(client_t *client)
@@ -75,7 +74,7 @@ bool handle_input(client_t *client)
     if (len < 1) {
         exit = true;
         if (client->user_uuid != NULL) {
-            send_packet(client->fd, COMMAND_LOGOUT, 0, NULL);
+            send_packet(client->fd, COMMAND_LOGOUT, 1, NULL);
         }
     } else {
         line[len - 1] = '\0';

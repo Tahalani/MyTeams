@@ -13,7 +13,8 @@
 #include "server.h"
 #include "types.h"
 
-thread_t *new_thread(char *title, char *message, channel_t *channel)
+thread_t *new_thread(char *title, char *message, user_t *user, \
+    channel_t *channel)
 {
     thread_t *new = malloc(sizeof(thread_t));
     uuid_t *thread_uuid = malloc(sizeof(uuid_t));
@@ -24,6 +25,7 @@ thread_t *new_thread(char *title, char *message, channel_t *channel)
     new->uuid = generate_uuid();
     new->name = strdup(title);
     new->message = strdup(message);
+    new->author = strdup(user->uuid);
     new->created_at = time(NULL);
     new->messages = malloc(sizeof(struct message_l));
     if (new->messages == NULL) {

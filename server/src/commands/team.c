@@ -5,14 +5,12 @@
 ** team
 */
 
-#include <stdio.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
 #include "logging_server.h"
-#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -30,10 +28,9 @@ static void add_new_team(server_t *server, client_t *client, \
     team = new_team(name, description);
     SLIST_INSERT_HEAD(server->data->teams, team, next);
     server_event_team_created(team->uuid, team->name, client->user->uuid);
-    client_print_team_created(team->uuid, team->name, client->user->uuid);
     SLIST_FOREACH(tmp, server->clients, next) {
         if (tmp->user != NULL)
-            send_team_packet(tmp->fd, team, COMMAND_CREATE);
+            send_team_packet(tmp->fd, team, client->user, COMMAND_CREATE);
     }
 }
 
@@ -66,7 +63,7 @@ void list_teams(server_t *server, client_t *client)
     team_t *team = NULL;
 
     SLIST_FOREACH(team, server->data->teams, next) {
-        send_team_packet(client->fd, team, COMMAND_LIST);
+        send_team_packet(client->fd, team, NULL, COMMAND_LIST);
     }
     send_message_packet(client->fd, 200);
 }

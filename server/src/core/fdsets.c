@@ -56,7 +56,7 @@ void handle_incoming(server_t *server)
     client_t *client = NULL;
 
     if (new_fd == -1) {
-        perror("accept failed");
+        printf("accept failed\n");
         return;
     }
     client = new_client(new_fd);
@@ -67,7 +67,6 @@ void handle_incoming(server_t *server)
         return;
     }
     SLIST_INSERT_HEAD(server->clients, client, next);
-    send_message_packet(new_fd, 220);
 }
 
 void handle_clients(server_t *server, fd_set *set)

@@ -42,6 +42,6 @@ bool is_uuid(char *str)
 
 void fatal_error(const char *error)
 {
-    fprintf(stderr, "%s\n", error);
+    printf("%s\n", error);
     exit(FAILURE);
 }

@@ -5,9 +5,8 @@
 ** subscribe.c
 */
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
@@ -23,14 +22,14 @@ static void join_team(client_t *client, team_t *team)
     uuid_t *uuid2 = malloc(sizeof(uuid_t));
 
     if (team == NULL || uuid == NULL || uuid2 == NULL) {
-        send_basic_message(client->fd, "421");
         return;
     }
     uuid->uuid = team->uuid;
     SLIST_INSERT_HEAD(client->user->teams, uuid, next);
     uuid2->uuid = client->user->uuid;
     SLIST_INSERT_HEAD(team->users, uuid2, next);
-    send_team_packet(client->fd, team, COMMAND_SUBSCRIBE);
+    send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
+    server_event_user_subscribed(team->uuid, client->user->uuid);
 }
 
 static void check_team(server_t *server, client_t *client, char *uuid)

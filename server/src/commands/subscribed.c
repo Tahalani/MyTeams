@@ -5,14 +5,12 @@
 ** subscribed
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
-#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -41,15 +39,21 @@ static bool display_user_in_team(server_t *server, client_t *client, \
 {
     team_t *team = NULL;
     uuid_t *uuid = NULL;
+    user_t *user = NULL;
+    bool online = false;
 
     team = find_team_by_uuid(server, data);
     if (team == NULL) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, data);
         return false;
     }
-    SLIST_FOREACH(uuid, team->users, next)
-        send_user_packet(client->fd,
-        find_user_by_uuid(server, uuid->uuid), COMMAND_SUBSCRIBED);
+    SLIST_FOREACH(uuid, team->users, next) {
+        user = find_user_by_uuid(server, uuid->uuid);
+        if (user != NULL) {
+            online = is_user_connected(server, user);
+            send_user_packet(client->fd, user, online, COMMAND_SUBSCRIBED);
+        }
+    }
     return true;
 }
 
@@ -67,7 +71,7 @@ void subscribed_command(server_t *server, client_t *client, \
     if (len == 0) {
         SLIST_FOREACH(uuid, client->user->teams, next)
             send_team_packet(client->fd,
-            find_team_by_uuid(server, uuid->uuid), COMMAND_SUBSCRIBED);
+            find_team_by_uuid(server, uuid->uuid), NULL, COMMAND_SUBSCRIBED);
     } else {
         if (display_user_in_team(server, client, data) == false)
             return;

@@ -5,8 +5,8 @@
 ** info
 */
 
+#include <stdbool.h>
 #include <stdio.h>
-#include <sys/queue.h>
 
 #include "commands.h"
 #include "constants.h"
@@ -14,86 +14,67 @@
 #include "server.h"
 #include "types.h"
 
-static void display_user(server_t *server, user_t *user, int fd)
+static void display_team(client_t *client)
 {
-    uuid_t *uuid = NULL;
-    team_t *team = NULL;
-
-    dprintf(user->fd, "%s (%s)%s", user->username,
-    user->uuid, CRLF);
-    SLIST_FOREACH(uuid, user->teams, next) {
-        team = find_team_by_uuid(server, uuid->uuid);
-        dprintf (fd, "%s (%s) %s%s",
-        team->name, uuid->uuid, team->description, CRLF);
+    if (client->use->use_level == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->team_uuid);
+        return;
     }
+    send_team_packet(client->fd, client->use->team, NULL, COMMAND_INFO);
 }
 
-static void display_team(server_t *server, team_t *team, client_t *client)
+static void display_channel(client_t *client)
 {
-    uuid_t *uuid = NULL;
-    channel_t *channel = NULL;
-
-    dprintf(client->user->fd, "%s (%s) %s%s",
-    team->name, team->uuid, team->description, CRLF);
-    SLIST_FOREACH(uuid, team->users, next)
-        dprintf(client->user->fd, "%s (%s)%s",
-        find_user_by_uuid(server, uuid->uuid)->username, uuid->uuid, CRLF);
-    SLIST_FOREACH(uuid, team->channels, next) {
-        channel = find_channel_by_uuid(server, uuid->uuid);
-        dprintf(client->user->fd, "%s (%s) %s%s",
-        channel->name, uuid->uuid, channel->description, CRLF);
+    if (client->use->use_level == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->team_uuid);
+        return;
     }
+    if (client->use->use_level == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return;
+    }
+    send_channel_packet(client->fd, client->use->channel, NULL, COMMAND_INFO);
 }
 
-static void display_channel(server_t *server, channel_t *channel, \
-client_t *client)
+static void display_thread(server_t *server, client_t *client)
 {
-    uuid_t *uuid = NULL;
-    thread_t *thread = NULL;
+    team_t *team = get_context_team(server, client->use);
 
-    dprintf(client->fd, "%s (%s) %s%s",
-    channel->name, channel->uuid, channel->description, CRLF);
-    SLIST_FOREACH(uuid, channel->threads, next) {
-        thread = find_thread_by_uuid(server, uuid->uuid);
-        dprintf(client->fd, "%s (%s) %s%s",
-        thread->name, uuid->uuid, thread->message, CRLF);
+    if (client->use->use_level == 1) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
+            client->use->team_uuid);
+        return;
     }
-}
-
-static void display_thread(server_t *server, thread_t *thread, \
-client_t *client)
-{
-    uuid_t *uuid = NULL;
-    message_t *msg = NULL;
-
-    dprintf(client->fd, "%s (%s) %s%s",
-    thread->name, thread->uuid, thread->message, CRLF);
-    SLIST_FOREACH(uuid, thread->messages, next) {
-        msg = find_message_by_uuid(server, uuid->uuid);
-        dprintf(client->fd, "%s (%s)", msg->uuid, msg->body);
-        dprintf(client->fd, " %ld%s", msg->created_at, CRLF);
-        display_user(server, msg->sender, client->fd);
+    if (client->use->use_level == 2) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
+            client->use->channel_uuid);
+        return;
     }
+    if (client->use->use_level == 3) {
+        send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
+            client->use->thread_uuid);
+        return;
+    }
+    send_thread_packet(client->fd, client->use->thread, team, COMMAND_INFO);
 }
 
 void info_command(UNUSED server_t *server, client_t *client, \
     UNUSED command_packet_t *packet)
 {
-    if (client->user == NULL) {
-        send_basic_message(client->fd, "530");
+    if (client->use->team_uuid == NULL) {
+        send_user_packet(client->fd, client->user, true, COMMAND_INFO);
         return;
     }
-    if (client->use->team == NULL && client->use->channel == NULL
-    && client->use->thread == NULL)
-        display_user(server, client->user, client->fd);
-    else if (client->use->team != NULL && client->use->channel == NULL
-    && client->use->thread == NULL)
-        display_team(server, client->use->team, client);
-    if (client->use->channel != NULL && client->use->team != NULL
-    && client->use->thread == NULL)
-        display_channel(server, client->use->channel, client);
-    else if (client->use->thread != NULL && client->use->channel != NULL
-    && client->use->team != NULL)
-        display_thread(server, client->use->thread, client);
-    send_basic_message(client->fd, "200");
+    if (client->use->channel_uuid == NULL) {
+        display_team(client);
+        return;
+    }
+    if (client->use->thread_uuid == NULL) {
+        display_channel(client);
+        return;
+    }
+    display_thread(server, client);
 }

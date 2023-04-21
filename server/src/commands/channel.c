@@ -5,17 +5,30 @@
 ** channel
 */
 
-#include <stdio.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
 #include "logging_server.h"
-#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
+
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    channel_t *channel)
+{
+    bool sub = false;
+    client_t *node = NULL;
+
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_channel_packet(client->fd, channel, client->user, \
+                COMMAND_CREATE);
+        }
+    }
+}
 
 static void add_new_channel(server_t *server, client_t *client, \
     char *name, char *description)
@@ -27,6 +40,9 @@ static void add_new_channel(server_t *server, client_t *client, \
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
             client->use->team_uuid);
         return;
+    } else if (!is_user_subscribed(client->user, team)) {
+        send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
+        return;
     }
     channel = find_channel_in_team_by_name(server, team, name);
     if (channel != NULL) {
@@ -36,8 +52,7 @@ static void add_new_channel(server_t *server, client_t *client, \
     channel = new_channel(name, description, team);
     SLIST_INSERT_HEAD(server->data->channels, channel, next);
     server_event_channel_created(team->uuid, channel->uuid, channel->name);
-    send_channel_packet(client->fd, channel, COMMAND_CREATE);
-    client_print_channel_created(team->uuid, channel->uuid, channel->name);
+    send_events(server, client, team, channel);
 }
 
 void create_channel(server_t *server, client_t *client, \
@@ -60,9 +75,8 @@ void create_channel(server_t *server, client_t *client, \
     re2 = read(client->fd, description, MAX_DESCRIPTION_LENGTH);
     if (re != MAX_NAME_LENGTH || re2 != MAX_DESCRIPTION_LENGTH) {
         send_message_packet(client->fd, 500);
-    } else {
+    } else
         add_new_channel(server, client, name, description);
-    }
 }
 
 void list_channels(server_t *server, client_t *client)
@@ -79,7 +93,7 @@ void list_channels(server_t *server, client_t *client)
     SLIST_FOREACH(uuid, team->channels, next) {
         channel = find_channel_in_team_by_uuid(server, team, uuid->uuid);
         if (channel != NULL) {
-            send_channel_packet(client->fd, channel, COMMAND_LIST);
+            send_channel_packet(client->fd, channel, NULL, COMMAND_LIST);
         }
     }
     send_message_packet(client->fd, 200);

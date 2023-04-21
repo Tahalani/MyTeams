@@ -21,7 +21,7 @@ void send_rfc_message(int code)
             return;
         }
     }
-    fprintf(stderr, "Unknown RFC message code: %d\n", code);
+    printf("Unknown RFC message code: %d\n", code);
 }
 
 void send_packet(int fd, packet_command_t type, size_t data_size, char *data)

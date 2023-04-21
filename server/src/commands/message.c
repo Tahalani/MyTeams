@@ -5,31 +5,44 @@
 ** reply
 */
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/queue.h>
 #include <unistd.h>
 
 #include "constants.h"
 #include "logging_server.h"
-#include "logging_client.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
 
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    message_t *message)
+{
+    bool sub = false;
+    client_t *node = NULL;
+
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_reply_packet(client->fd, message, team, COMMAND_CREATE);
+        }
+    }
+}
+
 static bool check_is_exist(client_t *client)
 {
-    if (client->use->not_found == 1) {
+    if (client->use->use_level == 1) {
         send_error_packet(client->fd, ERROR_UNKNOWN_TEAM, \
-            client->use->channel_uuid);
+            client->use->team_uuid);
         return false;
     }
-    if (client->use->not_found == 2) {
+    if (client->use->use_level == 2) {
         send_error_packet(client->fd, ERROR_UNKNOWN_CHANNEL, \
             client->use->channel_uuid);
         return false;
     }
-    if (client->use->not_found == 3) {
+    if (client->use->use_level == 3) {
         send_error_packet(client->fd, ERROR_UNKNOWN_THREAD, \
             client->use->thread_uuid);
         return false;
@@ -39,17 +52,16 @@ static bool check_is_exist(client_t *client)
 
 static void add_new_message(server_t *server, client_t *client, char *body)
 {
+    team_t *team = get_context_team(server, client->use);
     thread_t *thread = get_context_thread(server, client->use);
     message_t *message = NULL;
 
     if (check_is_exist(client) == false)
         return;
-    message = new_message(body, thread, client->user);
+    message = new_message_thread(body, thread, client->user);
     SLIST_INSERT_HEAD(server->data->messages, message, next);
     server_event_reply_created(thread->uuid, client->user->uuid, body);
-    send_reply_packet(client->fd, message, COMMAND_CREATE);
-    client_print_reply_created(thread->uuid, client->user->uuid, \
-        message->created_at, body);
+    send_events(server, client, team, message);
 }
 
 void create_message(server_t *server, client_t *client, \
@@ -74,6 +86,7 @@ void create_message(server_t *server, client_t *client, \
 
 void list_messages(server_t *server, client_t *client)
 {
+    team_t *team = get_context_team(server, client->use);
     thread_t *thread = get_context_thread(server, client->use);
     uuid_t *uuid = NULL;
     message_t *message = NULL;
@@ -83,7 +96,7 @@ void list_messages(server_t *server, client_t *client)
     SLIST_FOREACH(uuid, thread->messages, next) {
         message = find_message_in_thread_by_uuid(server, thread, uuid->uuid);
         if (message != NULL) {
-            send_reply_packet(client->fd, message, COMMAND_LIST);
+            send_reply_packet(client->fd, message, team, COMMAND_LIST);
         }
     }
     send_message_packet(client->fd, 200);
