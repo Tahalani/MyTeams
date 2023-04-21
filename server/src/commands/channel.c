@@ -15,6 +15,21 @@
 #include "server.h"
 #include "types.h"
 
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    channel_t *channel)
+{
+    bool sub = false;
+    client_t *node = NULL;
+
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_channel_packet(client->fd, channel, client->user, \
+                COMMAND_CREATE);
+        }
+    }
+}
+
 static void add_new_channel(server_t *server, client_t *client, \
     char *name, char *description)
 {
@@ -37,7 +52,7 @@ static void add_new_channel(server_t *server, client_t *client, \
     channel = new_channel(name, description, team);
     SLIST_INSERT_HEAD(server->data->channels, channel, next);
     server_event_channel_created(team->uuid, channel->uuid, channel->name);
-    send_channel_packet(client->fd, channel, client->user, COMMAND_CREATE);
+    send_events(server, client, team, channel);
 }
 
 void create_channel(server_t *server, client_t *client, \

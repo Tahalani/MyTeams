@@ -16,6 +16,20 @@
 #include "server.h"
 #include "types.h"
 
+static void send_events(server_t *server, client_t *client, team_t *team, \
+    thread_t *thread)
+{
+    bool sub = false;
+    client_t *node = NULL;
+
+    SLIST_FOREACH(node, server->clients, next) {
+        sub = is_user_subscribed(node->user, team);
+        if (node->user != NULL && (sub || client->user == node->user)) {
+            send_thread_packet(client->fd, thread, team, COMMAND_CREATE);
+        }
+    }
+}
+
 static bool check_is_exist(client_t *client)
 {
     if (client->use->use_level == 1) {
@@ -52,7 +66,7 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     SLIST_INSERT_HEAD(server->data->threads, thread, next);
     server_event_thread_created(channel->uuid, thread->uuid, \
         client->user->uuid, title, message);
-    send_thread_packet(client->fd, thread, team, COMMAND_CREATE);
+    send_events(server, client, team, thread);
 }
 
 void create_thread(server_t *server, client_t *client, \

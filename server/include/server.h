@@ -71,7 +71,8 @@ thread_t *find_thread_in_channel_by_uuid(server_t *server, \
 thread_t *find_thread_in_channel_by_title(server_t *server, \
     channel_t *channel, char *title);
 
-message_t *new_message(char *body, thread_t *thread, user_t *user);
+message_t *new_message_thread(char *body, thread_t *thread, user_t *user);
+message_t *new_message_private(char *body, char *receiver, user_t *user);
 message_t *find_message_by_uuid(server_t *server, char *uuid);
 message_t *find_message_in_thread_by_uuid(server_t *server, thread_t *thread, \
     char *uuid);

@@ -10,12 +10,13 @@ SRC			=	src/commands/auth.c \
 				src/commands/info.c \
 				src/commands/interaction.c \
 				src/commands/message.c \
+				src/commands/messages.c \
+				src/commands/send.c \
 				src/commands/subscribe.c \
 				src/commands/subscribed.c \
-				src/commands/unsubscribe.c \
-				src/commands/talk.c \
 				src/commands/team.c \
 				src/commands/thread.c \
+				src/commands/unsubscribe.c \
 				src/commands/use.c \
 				src/commands/user.c \
 				src/core/cache.c \
