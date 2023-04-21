@@ -9,12 +9,10 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/queue.h>
 #include <sys/socket.h>
 
 #include "constants.h"
 #include "server.h"
-#include "types.h"
 
 void fatal_error(const char *error)
 {
@@ -59,16 +57,4 @@ char *generate_uuid(void)
     uuid[23] = '-';
     uuid[36] = '\0';
     return uuid;
-}
-
-bool is_user_connected(server_t *server, user_t *user)
-{
-    client_t *client = NULL;
-
-    SLIST_FOREACH(client, server->clients, next) {
-        if (client->user == user) {
-            return true;
-        }
-    }
-    return false;
 }

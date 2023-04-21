@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "constants.h"
+#include "logging_server.h"
 #include "packets.h"
 #include "server.h"
 #include "types.h"
@@ -21,6 +22,7 @@ static void leave_team(client_t *client, team_t *team, uuid_t *uuid)
             SLIST_REMOVE(team->users, uuid, uuid_s, next);
     }
     send_team_packet(client->fd, team, NULL, COMMAND_SUBSCRIBE);
+    server_event_user_unsubscribed(team->uuid, client->user->uuid);
 }
 
 static team_t *error_handling_unsubscribe(server_t *server, client_t *client, \

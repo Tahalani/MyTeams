@@ -42,6 +42,7 @@ SRC			=	src/commands/auth.c \
 				src/objects/threads.c \
 				src/objects/users.c \
 				src/util/arrays.c \
+				src/util/checks.c \
 				src/util/context.c \
 				src/util/util.c \
 				src/server.c

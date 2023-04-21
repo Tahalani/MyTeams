@@ -82,7 +82,7 @@ void ensure_allocated(void *ptr);
 struct sockaddr *generate_address(int port, char *address);
 char *generate_uuid(void);
 bool is_user_connected(server_t *server, user_t *user);
-bool is_user_subscribe(user_t *user, team_t *team);
+bool is_user_subscribed(user_t *user, team_t *team);
 
 char **str_to_word(char const *str, char separator);
 void free_array(char **array);
@@ -109,7 +109,5 @@ void refresh_context_level(server_t *server, client_t *client);
 team_t *get_context_team(server_t *server, use_t *use);
 channel_t *get_context_channel(server_t *server, use_t *use);
 thread_t *get_context_thread(server_t *server, use_t *use);
-
-int get_fd_file(char *name);
 
 #endif

@@ -44,7 +44,7 @@ static void add_new_thread(server_t *server, client_t *client, char *title, \
     if (thread != NULL) {
         send_error_packet(client->fd, ERROR_ALREADY_EXIST, NULL);
         return;
-    } else if (!is_user_subscribe(client->user, team)) {
+    } else if (!is_user_subscribed(client->user, team)) {
         send_error_packet(client->fd, ERROR_UNAUTHORIZED, NULL);
         return;
     }
