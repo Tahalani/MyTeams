@@ -29,7 +29,6 @@ static void retrieve_messages(server_t *server, client_t *client, char *uuid)
         s4 = strcmp(node->target, uuid) == 0;
         if ((s1 && s2) || (s3 && s4)) {
             send_reply_packet(client->fd, node, NULL, COMMAND_MESSAGES);
-            return;
         }
     }
 }
