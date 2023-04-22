@@ -27,6 +27,9 @@ bool is_user_subscribed(user_t *user, team_t *team)
 {
     uuid_t *uuid = NULL;
 
+    if (user == NULL) {
+      return false;
+    }
     SLIST_FOREACH(uuid, team->users, next) {
         if (strcmp(uuid->uuid, user->uuid) == 0)
             return true;
