@@ -37,8 +37,10 @@ clean:
 fclean: clean
 	$(RM) $(TEST)
 
+tests_run: CFLAGS += --coverage
 tests_run: clean $(OBJ) $(OBJ_T)
 	$(CC) -o $(TEST) $(OBJ) $(OBJ_T) $(TESTFLAGS)
+	$(RM) $(OBJ)
 	./$(TEST)
 
 .PHONY: clean tests_run
