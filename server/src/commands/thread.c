@@ -25,7 +25,7 @@ static void send_events(server_t *server, client_t *client, team_t *team, \
     SLIST_FOREACH(node, server->clients, next) {
         sub = is_user_subscribed(node->user, team);
         if (node->user != NULL && (sub || client->user == node->user)) {
-            send_thread_packet(client->fd, thread, team, COMMAND_CREATE);
+            send_thread_packet(node->fd, thread, team, COMMAND_CREATE);
         }
     }
 }

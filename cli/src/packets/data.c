@@ -13,16 +13,23 @@
 #include "packets.h"
 #include "types.h"
 
+static bool is_author(client_t *client, char *uuid)
+{
+    if (client->user_uuid == NULL) {
+        return false;
+    }
+    return strcmp(client->user_uuid, uuid) == 0;
+}
+
 void team_packet_handler(client_t *client)
 {
     team_packet_t packet;
     ssize_t re = read(client->fd, &packet, sizeof(team_packet_t));
-    bool is_author = strcmp(packet.author, client->user_uuid) == 0;
 
     if (re != sizeof(team_packet_t)) {
         return;
     }
-    if (packet.context == COMMAND_CREATE && is_author)
+    if (packet.context == COMMAND_CREATE && is_author(client, packet.author))
         client_print_team_created(packet.uuid, packet.name,packet.description);
     else if (packet.context == COMMAND_CREATE)
         client_event_team_created(packet.uuid, packet.name, packet.description);
@@ -40,12 +47,11 @@ void channel_packet_handler(client_t *client)
 {
     channel_packet_t packet;
     ssize_t re = read(client->fd, &packet, sizeof(channel_packet_t));
-    bool is_author = strcmp(packet.author, client->user_uuid) == 0;
 
     if (re != sizeof(channel_packet_t)) {
         return;
     }
-    if (packet.context == COMMAND_CREATE && is_author)
+    if (packet.context == COMMAND_CREATE && is_author(client, packet.author))
         client_print_channel_created(packet.uuid, packet.name, \
             packet.description);
     else if (packet.context == COMMAND_CREATE)
@@ -63,12 +69,11 @@ void thread_packet_handler(client_t *client)
 {
     thread_packet_t packet;
     ssize_t re = read(client->fd, &packet, sizeof(thread_packet_t));
-    bool is_author = strcmp(packet.author, client->user_uuid) == 0;
 
     if (re != sizeof(thread_packet_t)) {
         return;
     }
-    if (packet.context == COMMAND_CREATE && is_author)
+    if (packet.context == COMMAND_CREATE && is_author(client, packet.author))
         client_print_thread_created(packet.uuid, packet.author, \
             packet.created_at,packet.name, packet.message);
     else if (packet.context == COMMAND_CREATE)
@@ -86,11 +91,10 @@ void reply_packet_handler(client_t *client)
 {
     reply_packet_t packet;
     ssize_t re = read(client->fd, &packet, sizeof(reply_packet_t));
-    bool is_author = strcmp(packet.author, client->user_uuid) == 0;
 
     if (re != sizeof(reply_packet_t))
         return;
-    if (packet.context == COMMAND_CREATE && is_author)
+    if (packet.context == COMMAND_CREATE && is_author(client, packet.author))
         client_print_reply_created( packet.target, packet.author, \
             packet.created_at, packet.body);
     else if (packet.context == COMMAND_CREATE)
