@@ -13,6 +13,7 @@
 #include <sys/select.h>
 #include <sys/signalfd.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "database.h"
 #include "server.h"
@@ -76,6 +77,7 @@ static bool init_server(server_t *server, int port)
     server_loop(server);
     save_data(server);
     end_server(server);
+    close(socket_fd);
     return true;
 }
 

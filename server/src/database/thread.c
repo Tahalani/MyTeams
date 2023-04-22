@@ -22,8 +22,10 @@ static thread_t *load_thread(int fd)
 
     memset(&parsed, 0, sizeof(parsed_thread_t));
     re = read(fd, &parsed, sizeof(parsed_thread_t));
-    if (re != sizeof(parsed_thread_t))
+    if (re != sizeof(parsed_thread_t)) {
+        free(thread);
         return (NULL);
+    }
     thread->name = strdup(parsed.name);
     thread->uuid = strdup(parsed.uuid);
     thread->message = strdup(parsed.description);

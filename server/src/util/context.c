@@ -46,7 +46,7 @@ void fill_team_use(client_t *client, char **data)
         fatal_error("malloc failed");
     }
     fill_default_use(client);
-    client->use->team_uuid = team_uuid;
+    client->use->team_uuid = strdup(team_uuid);
 }
 
 void fill_channel_use(client_t *client, char **data)
@@ -57,7 +57,7 @@ void fill_channel_use(client_t *client, char **data)
         fatal_error("malloc failed");
     }
     fill_team_use(client, data);
-    client->use->channel_uuid = channel_uuid;
+    client->use->channel_uuid = strdup(channel_uuid);
 }
 
 void fill_thread_use(client_t *client, char **data)
@@ -68,5 +68,5 @@ void fill_thread_use(client_t *client, char **data)
         fatal_error("malloc failed");
     }
     fill_channel_use(client, data);
-    client->use->thread_uuid = thread_uuid;
+    client->use->thread_uuid = strdup(thread_uuid);
 }

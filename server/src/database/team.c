@@ -22,8 +22,10 @@ static team_t *load_team(int fd)
 
     memset(&parsed, 0, sizeof(parsed_team_t));
     re = read(fd, &parsed, sizeof(parsed_team_t));
-    if (re != sizeof(parsed_team_t))
+    if (re != sizeof(parsed_team_t)) {
+        free(team);
         return (NULL);
+    }
     team->name = strdup(parsed.name);
     team->uuid = strdup(parsed.uuid);
     team->description = strdup(parsed.description);

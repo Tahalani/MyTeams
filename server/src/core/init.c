@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -42,6 +43,6 @@ int init_socket(int port)
     if (!setup_server(socket_fd, address)) {
         return -1;
     }
-
+    free(address);
     return socket_fd;
 }

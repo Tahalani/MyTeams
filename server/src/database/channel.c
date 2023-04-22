@@ -22,8 +22,10 @@ static channel_t *load_channel(int fd)
 
     memset(&parsed, 0, sizeof(parsed_channel_t));
     re = read(fd, &parsed, sizeof(parsed_channel_t));
-    if (re != sizeof(parsed_channel_t))
+    if (re != sizeof(parsed_channel_t)) {
+        free(channel);
         return NULL;
+    }
     channel->name = strdup(parsed.name);
     channel->uuid = strdup(parsed.uuid);
     channel->description = strdup(parsed.description);

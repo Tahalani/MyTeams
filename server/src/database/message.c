@@ -43,8 +43,10 @@ static message_t *load_message(int fd)
 
     memset(&parsed, 0, sizeof(parsed_message_t));
     re = read(fd, &parsed, sizeof(parsed_message_t));
-    if (re != sizeof(parsed_message_t))
+    if (re != sizeof(parsed_message_t)) {
+        free(message);
         return (NULL);
+    }
     message->uuid = strdup(parsed.uuid);
     message->body = strdup(parsed.body);
     message->author = strdup(parsed.author);

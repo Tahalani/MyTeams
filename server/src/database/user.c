@@ -23,8 +23,10 @@ static user_t *load_user(int fd)
 
     memset(&parsed, 0, sizeof(parsed_user_t));
     re = read(fd, &parsed, sizeof(parsed_user_t));
-    if (re != sizeof(parsed_user_t))
+    if (re != sizeof(parsed_user_t)) {
+        free(user);
         return (NULL);
+    }
     user->username = strdup(parsed.username);
     user->uuid = strdup(parsed.uuid);
     user->teams = malloc(sizeof(struct team_l));
