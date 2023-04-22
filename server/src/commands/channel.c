@@ -24,7 +24,7 @@ static void send_events(server_t *server, client_t *client, team_t *team, \
     SLIST_FOREACH(node, server->clients, next) {
         sub = is_user_subscribed(node->user, team);
         if (node->user != NULL && (sub || client->user == node->user)) {
-            send_channel_packet(client->fd, channel, client->user, \
+            send_channel_packet(node->fd, channel, client->user, \
                 COMMAND_CREATE);
         }
     }
