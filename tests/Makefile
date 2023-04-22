@@ -5,8 +5,8 @@
 ## Makefile
 ##
 
-SRC			=	../server/src/util/arrays.c	\
-				../cli/src/parsing.c	\
+SRC			=	../cli/src/parsing.c	\
+				../cli/src/arrays.c	\
 				../cli/src/util.c	\
 
 TEST		=	unit_tests

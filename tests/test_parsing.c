@@ -8,7 +8,6 @@
 #include <criterion/criterion.h>
 #include <stdio.h>
 #include "cli.h"
-#include "types.h"
 
 Test(get_arguments, get_arguments)
 {
@@ -21,3 +20,24 @@ Test(get_arguments, get_arguments)
     free_array(args);
     free(input);
 }
+
+Test(get_arguments, get_arguments_with_one_quote)
+{
+    char *input = strdup("create \"server_test\" \"Hello World");
+    char **args = get_arguments(input);
+
+    cr_assert_eq(args, NULL);
+    free(input);
+}
+
+Test(get_arguments, get_arguments_with_double_quote)
+{
+    char *input = strdup("create \"server_test\" \"Hello Worldcreate    \
+            \"server_test\" \"Hello Worldcreate \"server_test\" \
+                \"Hello World");
+    char **args = get_arguments(input);
+
+    cr_assert_eq(args, NULL);
+    free(input);
+}
+

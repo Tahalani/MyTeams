@@ -20,3 +20,25 @@ Test(is_uuid, is_uuid)
     free(uuid);
     free(not_uuid);
 }
+
+Test(str_to_word, str_to_word)
+{
+    char *str = strdup("Hello World");
+    char **words = str_to_word(str, ' ');
+
+    cr_assert_str_eq(words[0], "Hello");
+    cr_assert_str_eq(words[1], "World");
+    cr_assert_eq(words[2], NULL);
+    free_array(words);
+    free(str);
+}
+
+Test(array_len, array_len)
+{
+    char *str = strdup("Hello World");
+    char **words = str_to_word(str, ' ');
+
+    cr_assert_eq(array_len(words), 2);
+    free_array(words);
+    free(str);
+}
