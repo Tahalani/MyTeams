@@ -105,8 +105,9 @@ test00()
     kill_client
     return
   fi
-  print_succeeded "$test_name"
+
   launch_test "$test_name" "$cmd1" "Client connected"
+  print_succeeded "$test_name"
   return
 }
 
